@@ -108,13 +108,14 @@ export default function Hero() {
               whileHover="hover"
               whileTap={{ scale: 0.95 }}
             >
-              <Button 
-                onClick={() => scrollToSection('contact')}
-                className="modern-btn-primary text-white px-12 py-5 text-xl font-semibold cursor-pointer"
-              >
-                Let's Discuss Your Project
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+              <a href="/contact">
+                <Button 
+                  className="modern-btn-primary text-white px-12 py-5 text-xl font-semibold cursor-pointer"
+                >
+                  Let's Discuss My Project
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </a>
             </motion.div>
             <motion.div
               variants={buttonVariants}

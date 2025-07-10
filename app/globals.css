@@ -186,3 +186,29 @@ a, button, [role="button"] {
 .animate-infinite-scroll:hover {
   animation-play-state: paused;
 }
+
+/* Radix Select Portal Styles */
+[data-radix-select-content] {
+  z-index: 50;
+  max-height: 60vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
+[data-radix-select-content]::-webkit-scrollbar {
+  width: 6px;
+}
+
+[data-radix-select-content]::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+[data-radix-select-content]::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+[data-radix-select-content]::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}

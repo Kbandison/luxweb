@@ -4,8 +4,9 @@ import Solutions from "@/components/Solutions"
 import AboutUs from "@/components/AboutUs"
 import Portfolio from "@/components/Portfolio"
 import TestimonialCarousel from "@/components/TestimonialCarousel"
-import PricingPreview from "@/components/PricingPreview"
-import Contact from "@/components/Contact"
+import PricingCondensed from "@/components/PricingCondensed"
+import FAQCondensed from "@/components/FAQCondensed"
+import CTASection from "@/components/CTASection"
 
 export default function Home() {
   return (
@@ -16,8 +17,9 @@ export default function Home() {
       <AboutUs />
       <Portfolio />
       <TestimonialCarousel />
-      <PricingPreview />
-      <Contact />
+      <PricingCondensed />
+      <FAQCondensed />
+      <CTASection />
     </main>
   )
 }

@@ -21,10 +21,9 @@ export default function Navigation() {
 
   const menuItems = [
     { href: '/', label: 'Home', isExternal: true },
-    // { href: '#services', label: 'Services' },
+    { href: '/projects', label: 'Projects', isExternal: true },
     { href: '/pricing', label: 'Pricing', isExternal: true },
-    // { href: '#portfolio', label: 'Portfolio' },
-    { href: '#contact', label: 'Contact' },
+    { href: '/contact', label: 'Contact', isExternal: true },
   ]
 
   const scrollToSection = (href: string) => {
@@ -65,11 +64,12 @@ export default function Navigation() {
       transition={{ duration: 0.6 }}
     >
       <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between md:justify-start relative h-12 md:h-auto">
-          {/* Mobile Menu Button - Left on mobile */}
+        {/* Mobile Layout */}
+        <div className="flex items-center justify-between relative h-12 md:hidden">
+          {/* Mobile Menu Button */}
           <motion.button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-white hover:text-purple-400 transition-all duration-300 ease-out cursor-pointer z-10 flex items-center justify-center h-12 w-12"
+            className="text-white hover:text-purple-400 transition-all duration-300 ease-out cursor-pointer z-10 flex items-center justify-center h-12 w-12"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             initial={{ opacity: 0, rotate: -90 }}
@@ -101,10 +101,39 @@ export default function Navigation() {
             </AnimatePresence>
           </motion.button>
 
-          {/* Logo - Center on mobile, left on desktop */}
+          {/* Mobile Logo - Center */}
           <Link href="/">
             <motion.div 
-              className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-violet-500 bg-clip-text text-transparent cursor-pointer flex items-center md:static md:transform-none absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+              className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-violet-500 bg-clip-text text-transparent cursor-pointer absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
+              LuxWeb 
+            </motion.div>
+          </Link>
+
+          {/* Mobile CTA Button */}
+          <motion.div
+            className="z-10 flex items-center h-12"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <Button
+              onClick={scrollToContact}
+              className="modern-btn-primary text-white px-3 py-2 text-xs font-medium cursor-pointer"
+            >
+              Get Started
+            </Button>
+          </motion.div>
+        </div>
+
+        {/* Desktop Layout */}
+        <div className="hidden md:flex md:items-center md:justify-between">
+          {/* Desktop Logo - Left */}
+          <Link href="/">
+            <motion.div 
+              className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-violet-500 bg-clip-text text-transparent cursor-pointer"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
@@ -112,9 +141,9 @@ export default function Navigation() {
             </motion.div>
           </Link>
 
-          {/* Desktop Menu */}
+          {/* Desktop Menu - Center */}
           <motion.div 
-            className="hidden md:flex items-center space-x-8 md:ml-8"
+            className="flex items-center space-x-8"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -158,9 +187,9 @@ export default function Navigation() {
             ))}
           </motion.div>
 
-          {/* Desktop CTA Button */}
+          {/* Desktop CTA Button - Right */}
           <motion.div
-            className="hidden md:block md:ml-auto"
+            className="flex items-center"
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
@@ -168,21 +197,6 @@ export default function Navigation() {
             <Button
               onClick={scrollToContact}
               className="modern-btn-primary text-white px-6 py-2 text-sm font-medium cursor-pointer"
-            >
-              Get Started
-            </Button>
-          </motion.div>
-
-          {/* Mobile CTA Button - Right on mobile */}
-          <motion.div
-            className="md:hidden order-3 z-10 flex items-center h-12"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <Button
-              onClick={scrollToContact}
-              className="modern-btn-primary text-white px-3 py-2 text-xs font-medium cursor-pointer"
             >
               Get Started
             </Button>

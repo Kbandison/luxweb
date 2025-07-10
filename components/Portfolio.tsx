@@ -4,43 +4,30 @@ import { ExternalLink, TrendingUp, Code, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
+import { projects, portfolioStats } from "@/data/projects"
 
 export default function Portfolio() {
-  const projects = [
-    {
-      title: "Local Bakery Online Ordering System",
-      description: "Helped local bakery increase online orders with easy-to-use ordering system",
-      tech: ["Next.js", "Responsive Design", "Contact Forms"],
-      result: "Increased online orders by 40%",
-      category: "E-commerce",
-      image: "/api/placeholder/400/300",
-      color: "from-orange-500 to-red-500"
-    },
-    {
-      title: "Healthcare Provider Professional Site",
-      description: "Professional credibility site that converts prospects into patients",
-      tech: ["Professional Design", "Mobile-First", "SEO Optimized"],
-      result: "Enhanced professional credibility",
-      category: "Healthcare",
-      image: "/api/placeholder/400/300",
-      color: "from-blue-500 to-cyan-500"
-    },
-    {
-      title: "Community Resource Platform",
-      description: "Modern, accessible design serving the community",
-      tech: ["Modern UI/UX", "Accessibility Features", "Content Management"],
-      result: "Improved community engagement",
-      category: "Community",
-      image: "/api/placeholder/400/300",
-      color: "from-purple-500 to-pink-500"
-    }
-  ]
-
   const scrollToContact = () => {
     const element = document.getElementById('contact')
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
+  }
+
+  // Icon mapping for stats
+  const iconMap = {
+    Code,
+    Users,
+    TrendingUp
+  }
+
+  const getColorClasses = (color: string) => {
+    const colorMap = {
+      green: "bg-green-400/20 text-green-400",
+      blue: "bg-blue-400/20 text-blue-400", 
+      amber: "bg-amber-400/20 text-amber-400"
+    }
+    return colorMap[color as keyof typeof colorMap] || "bg-gray-400/20 text-gray-400"
   }
 
   return (
@@ -99,10 +86,25 @@ export default function Portfolio() {
                 </div>
 
                 {/* Result */}
-                <div className="flex items-center gap-2 p-3 bg-green-400/10 rounded-lg border border-green-400/20">
+                <div className="flex items-center gap-2 p-3 bg-green-400/10 rounded-lg border border-green-400/20 mb-4">
                   <TrendingUp className="w-4 h-4 text-green-400" />
                   <span className="text-green-400 font-medium text-sm">{project.result}</span>
                 </div>
+
+                {/* Action Button */}
+                {project.links?.live && (
+                  <a 
+                    href={project.links.live} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full"
+                  >
+                    <Button className="w-full modern-btn-primary text-white py-2 text-sm font-medium">
+                      <ExternalLink className="w-4 h-4 mr-2" />
+                      View Site
+                    </Button>
+                  </a>
+                )}
               </div>
             </motion.div>
           </StaggerItem>
@@ -111,51 +113,28 @@ export default function Portfolio() {
 
         {/* Portfolio Stats */}
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16" staggerChildren={0.2}>
-          <StaggerItem>
-            <motion.div 
-              className="glass-card p-8 rounded-2xl text-center"
-              whileHover={{ 
-                y: -5,
-                transition: { duration: 0.2 }
-              }}
-            >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-400/20 mb-4">
-                <Code className="w-8 h-8 text-green-400" />
-              </div>
-              <div className="text-3xl font-bold text-white mb-2">50+</div>
-              <div className="text-gray-300">Websites Delivered</div>
-            </motion.div>
-          </StaggerItem>
-          <StaggerItem>
-            <motion.div 
-              className="glass-card p-8 rounded-2xl text-center"
-              whileHover={{ 
-                y: -5,
-                transition: { duration: 0.2 }
-              }}
-            >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-400/20 mb-4">
-                <Users className="w-8 h-8 text-blue-400" />
-              </div>
-              <div className="text-3xl font-bold text-white mb-2">100%</div>
-              <div className="text-gray-300">Client Satisfaction</div>
-            </motion.div>
-          </StaggerItem>
-          <StaggerItem>
-            <motion.div 
-              className="glass-card p-8 rounded-2xl text-center"
-              whileHover={{ 
-                y: -5,
-                transition: { duration: 0.2 }
-              }}
-            >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-400/20 mb-4">
-                <TrendingUp className="w-8 h-8 text-amber-400" />
-              </div>
-              <div className="text-3xl font-bold text-white mb-2">3x</div>
-              <div className="text-gray-300">Average ROI Increase</div>
-            </motion.div>
-          </StaggerItem>
+          {portfolioStats.map((stat, index) => {
+            const IconComponent = iconMap[stat.icon as keyof typeof iconMap]
+            const colorClasses = getColorClasses(stat.color)
+            
+            return (
+              <StaggerItem key={index}>
+                <motion.div 
+                  className="glass-card p-8 rounded-2xl text-center"
+                  whileHover={{ 
+                    y: -5,
+                    transition: { duration: 0.2 }
+                  }}
+                >
+                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${colorClasses.split(' ')[0]}`}>
+                    <IconComponent className={`w-8 h-8 ${colorClasses.split(' ')[1]}`} />
+                  </div>
+                  <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
+                  <div className="text-gray-300">{stat.label}</div>
+                </motion.div>
+              </StaggerItem>
+            )
+          })}
         </StaggerContainer>
 
       </div>

@@ -6,14 +6,7 @@ import { motion } from "framer-motion"
 import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
 import Link from "next/link"
 
-export default function PricingPreview() {
-  const scrollToContact = () => {
-    const element = document.getElementById('contact')
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
+export default function PricingCondensed() {
   const packages = [
     {
       name: "Starter Package",
@@ -60,7 +53,7 @@ export default function PricingPreview() {
   ]
 
   return (
-    <section id="services" className="py-20 px-6">
+    <section className="py-20 px-6">
       <div className="container mx-auto max-w-6xl">
         <ScrollReveal>
           <div className="text-center mb-16">
@@ -85,7 +78,7 @@ export default function PricingPreview() {
               >
                 {pkg.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-purple-400 to-violet-500 text-black px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
+                    <div className="bg-gradient-to-r from-purple-400 to-violet-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 whitespace-nowrap">
                       <Star className="w-4 h-4" />
                       MOST POPULAR
                     </div>
@@ -118,17 +111,18 @@ export default function PricingPreview() {
                   </li>
                 </ul>
 
-                <Button 
-                  onClick={scrollToContact}
-                  className={`w-full py-2 text-sm font-medium transition-all duration-200 ${
-                    pkg.popular 
-                      ? 'modern-btn-primary text-white' 
-                      : 'modern-btn-secondary text-white'
-                  }`}
-                >
-                  Get Started
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
+                <a href={`/contact?package=${encodeURIComponent(pkg.name)}`}>
+                  <Button 
+                    className={`w-full py-2 text-sm font-medium transition-all duration-200 ${
+                      pkg.popular 
+                        ? 'modern-btn-primary text-white' 
+                        : 'modern-btn-secondary text-white'
+                    }`}
+                  >
+                    Get Started
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </Button>
+                </a>
               </motion.div>
             </StaggerItem>
           ))}

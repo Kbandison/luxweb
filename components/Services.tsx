@@ -1,16 +1,28 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
-import { Check, ArrowRight, Star, Clock, Users, Flame } from "lucide-react"
+import { Check, ArrowRight, Star, Clock, Users, Flame, ChevronLeft, ChevronRight } from "lucide-react"
 import { motion } from "framer-motion"
+import { useState } from "react"
 import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
 
 export default function Services() {
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const [cardsToShow, setCardsToShow] = useState(3)
+
   const scrollToContact = () => {
     const element = document.getElementById('contact')
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
     }
+  }
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % Math.ceil(packages.length / cardsToShow))
+  }
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + Math.ceil(packages.length / cardsToShow)) % Math.ceil(packages.length / cardsToShow))
   }
 
   const packages: Array<{
@@ -109,10 +121,13 @@ export default function Services() {
         <ScrollReveal>
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-              Choose Your <span className="text-purple-400">Growth Package</span>
+              Simple, <span className="text-purple-400">Transparent Pricing</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed mb-6">
-              Every package is designed to convert visitors into customers and grow your business.
+              No hidden fees. No surprises. Just honest pricing for websites that actually convert.
+            </p>
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed mb-6">
+              Don't worry about the pricing.  We will discuss it in the initial call!
             </p>
             
             {/* FOMO Elements */}
@@ -133,107 +148,109 @@ export default function Services() {
           </div>
         </ScrollReveal>
 
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {packages.map((pkg, index) => (
-            <StaggerItem key={index}>
-              <motion.div 
-                className={`modern-card p-6 hover:transform hover:scale-[1.02] transition-all duration-200 relative ${pkg.popular ? 'border-2 border-purple-400/50' : ''}`}
-                whileHover={{ 
-                  y: -5,
-                  transition: { duration: 0.2 }
-                }}
-              >
-              {pkg.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-gradient-to-r from-purple-400 to-violet-500 text-black px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2">
-                    <Star className="w-4 h-4" />
-                    MOST POPULAR
+        {/* Carousel Container */}
+        <div className="relative">
+          {/* Navigation Buttons */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full p-2 transition-all duration-200 -ml-4"
+          >
+            <ChevronLeft className="w-6 h-6 text-white" />
+          </button>
+          
+          <button
+            onClick={nextSlide}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full p-2 transition-all duration-200 -mr-4"
+          >
+            <ChevronRight className="w-6 h-6 text-white" />
+          </button>
+
+          {/* Carousel */}
+          <div className="overflow-hidden">
+            <motion.div 
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentSlide * (100 / Math.ceil(packages.length / cardsToShow))}%)` }}
+            >
+              {packages.map((pkg, index) => (
+                <div key={index} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-3">
+                  <div className="pt-6">
+                    <motion.div 
+                      className={`modern-card p-8 h-full hover:transform hover:scale-[1.02] transition-all duration-200 relative ${pkg.popular ? 'border-2 border-purple-400/50' : ''}`}
+                      whileHover={{ 
+                        y: -5,
+                        transition: { duration: 0.2 }
+                      }}
+                    >
+                      {pkg.popular && (
+                        <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                          <div className="bg-gradient-to-r from-purple-400 to-violet-500 text-white px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-lg whitespace-nowrap">
+                            <Star className="w-3.5 h-3.5 fill-current" />
+                            MOST POPULAR
+                          </div>
+                        </div>
+                      )}
+
+                    <div className="text-center mb-6">
+                      <h3 className="text-2xl font-semibold text-white mb-3">{pkg.name}</h3>
+                      <p className="text-gray-400 mb-6 leading-relaxed">{pkg.description}</p>
+                      <div className="mb-4">
+                        {pkg.originalPrice && (
+                          <div className="text-base text-gray-500 line-through">{pkg.originalPrice}</div>
+                        )}
+                        <div className="text-3xl font-bold text-white mb-2">{pkg.price}</div>
+                        {pkg.badge && (
+                          <div className="text-base text-green-400 font-medium">{pkg.badge}</div>
+                        )}
+                      </div>
+                      <div className="text-base text-gray-400 mb-6">Limited time offer</div>
+                    </div>
+
+                    <ul className="space-y-3 mb-6">
+                      {pkg.features.map((feature, featureIndex) => (
+                        <li key={featureIndex} className="flex items-start gap-3">
+                          <Check className="w-5 h-5 text-green-400 mt-0.5 flex-shrink-0" />
+                          <span className="text-gray-300 text-base leading-relaxed">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="border-t border-white/10 pt-6 mb-6">
+                      <p className="text-sm text-gray-400 mb-2">Ideal for:</p>
+                      <p className="text-white text-base font-medium leading-relaxed">{pkg.idealFor}</p>
+                    </div>
+
+                    <a href={`/contact?package=${encodeURIComponent(pkg.name)}`} className="block">
+                      <Button 
+                        className={`w-full py-3 text-base font-medium transition-all duration-200 ${
+                          pkg.popular 
+                            ? 'modern-btn-primary text-white' 
+                            : 'modern-btn-secondary text-white'
+                        }`}
+                      >
+                        Choose This Package
+                        <ArrowRight className="w-5 h-5 ml-2" />
+                      </Button>
+                    </a>
+                  </motion.div>
                   </div>
                 </div>
-              )}
-
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-semibold text-white mb-2">{pkg.name}</h3>
-                <p className="text-gray-400 mb-4 leading-relaxed">{pkg.description}</p>
-                <div className="mb-2">
-                  {pkg.originalPrice && (
-                    <div className="text-sm text-gray-500 line-through">{pkg.originalPrice}</div>
-                  )}
-                  <div className="text-2xl font-bold text-white mb-1">{pkg.price}</div>
-                  {pkg.badge && (
-                    <div className="text-sm text-green-400 font-medium">{pkg.badge}</div>
-                  )}
-                </div>
-                <div className="text-sm text-gray-400 mb-4">Limited time offer</div>
-              </div>
-
-              <ul className="space-y-2 mb-6">
-                {pkg.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-start gap-2">
-                    <Check className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-300 text-sm leading-relaxed">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="border-t border-white/10 pt-4 mb-6">
-                <p className="text-xs text-gray-400 mb-1">Ideal for:</p>
-                <p className="text-white text-sm font-medium leading-relaxed">{pkg.idealFor}</p>
-              </div>
-
-              <Button 
-                onClick={scrollToContact}
-                className={`w-full py-2 text-sm font-medium transition-all duration-200 ${
-                  pkg.popular 
-                    ? 'modern-btn-primary text-white' 
-                    : 'modern-btn-secondary text-white'
-                }`}
-              >
-                {pkg.cta}
-                <ArrowRight className="w-4 h-4 ml-1" />
-              </Button>
+              ))}
             </motion.div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-
-        <ScrollReveal delay={0.2}>
-          <div className="text-center mt-16">
-            <div className="modern-card p-8 max-w-3xl mx-auto">
-              <h3 className="text-2xl font-semibold text-white mb-6">Why Choose LuxWeb Studio?</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-              <div className="flex items-start gap-3">
-                <Check className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                <div>
-                  <div className="font-semibold text-white">Personal attention</div>
-                  <div className="text-gray-400 text-sm">Not outsourced to junior developers</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                <div>
-                  <div className="font-semibold text-white">Fast delivery</div>
-                  <div className="text-gray-400 text-sm">Websites in days, not months</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                <div>
-                  <div className="font-semibold text-white">Full Customizable and Unique</div>
-                  <div className="text-gray-400 text-sm">No templates, all custom work</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Check className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                <div>
-                  <div className="font-semibold text-white">Direct communication</div>
-                  <div className="text-gray-400 text-sm">Work directly with the developer</div>
-                </div>
-              </div>
-            </div>
-            </div>
           </div>
-        </ScrollReveal>
+
+          {/* Carousel Indicators */}
+          <div className="flex justify-center mt-8 space-x-2">
+            {Array.from({ length: Math.ceil(packages.length / cardsToShow) }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                  index === currentSlide ? 'bg-purple-400' : 'bg-white/30'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   )
