@@ -48,17 +48,6 @@ export default function Services() {
     setCurrentSlide((prev) => (prev - 1 + Math.ceil(packages.length / cardsToShow)) % Math.ceil(packages.length / cardsToShow))
   }
 
-  const handleDragEnd = (event: any, info: any) => {
-    const threshold = 30 // Reduced threshold for easier swiping
-    
-    if (info.offset.x > threshold) {
-      // Swiped right - go to previous slide
-      prevSlide()
-    } else if (info.offset.x < -threshold) {
-      // Swiped left - go to next slide
-      nextSlide()
-    }
-  }
 
   const packages: Array<{
     name: string;
@@ -188,16 +177,14 @@ export default function Services() {
           {/* Navigation Buttons */}
           <button
             onClick={prevSlide}
-            onPointerDown={(e) => e.stopPropagation()}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-30 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full p-2 transition-all duration-200 -ml-4"
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full p-2 transition-all duration-200 -ml-4"
           >
             <ChevronLeft className="w-6 h-6 text-white" />
           </button>
           
           <button
             onClick={nextSlide}
-            onPointerDown={(e) => e.stopPropagation()}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-30 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full p-2 transition-all duration-200 -mr-4"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full p-2 transition-all duration-200 -mr-4"
           >
             <ChevronRight className="w-6 h-6 text-white" />
           </button>
@@ -205,15 +192,8 @@ export default function Services() {
           {/* Carousel */}
           <div className="overflow-hidden">
             <motion.div 
-              className="flex cursor-grab active:cursor-grabbing"
-              animate={{ 
-                x: `-${currentSlide * (100 / cardsToShow)}%`,
-              }}
-              drag="x"
-              dragConstraints={{ left: -100, right: 100 }}
-              dragElastic={0.1}
-              onDragEnd={handleDragEnd}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentSlide * (100 / cardsToShow)}%)` }}
             >
               {packages.map((pkg, index) => (
                 <div key={index} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-3">
@@ -224,8 +204,6 @@ export default function Services() {
                         y: -5,
                         transition: { duration: 0.2 }
                       }}
-                      style={{ pointerEvents: 'auto' }}
-                      onPointerDown={(e) => e.stopPropagation()}
                     >
                       {pkg.popular && (
                         <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
