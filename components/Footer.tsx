@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Github, Linkedin, Twitter } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -46,8 +47,14 @@ export default function Footer() {
             transition={{ duration: 0.6 }}
           >
             <Link href="/">
-              <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-violet-500 bg-clip-text text-transparent mb-4 cursor-pointer">
-                LuxWeb Studio
+              <div className="mb-4 cursor-pointer">
+                <Image
+                  src="/logo-with-text.png"
+                  alt="LuxWeb Studio"
+                  width={220}
+                  height={55}
+                  className="h-14 w-auto"
+                />
               </div>
             </Link>
             <p className="text-gray-400 mb-6 leading-relaxed">

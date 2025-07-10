@@ -64,7 +64,7 @@ export default function Hero() {
   }
 
   return (
-    <section className="min-h-[80vh] sm:min-h-[75vh] lg:min-h-[80vh] flex items-center justify-center px-6 pt-8 pb-2 sm:pt-12 sm:pb-4 lg:py-16 relative overflow-hidden">
+    <section className="min-h-[80vh] sm:min-h-[75vh] lg:min-h-[80vh] flex items-center justify-center px-6 pt-24 pb-2 sm:pt-28 sm:pb-4 lg:pt-32 lg:pb-16 relative overflow-hidden">
       
       <div className="container mx-auto max-w-7xl relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">

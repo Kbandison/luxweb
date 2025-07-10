@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 
 export default function Navigation() {
@@ -104,11 +105,17 @@ export default function Navigation() {
           {/* Mobile Logo - Center */}
           <Link href="/">
             <motion.div 
-              className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-violet-500 bg-clip-text text-transparent cursor-pointer absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
+              className="cursor-pointer absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              LuxWeb 
+              <Image
+                src="/logo-icon.png"
+                alt="LuxWeb Studio"
+                width={44}
+                height={44}
+                className="w-11 h-11"
+              />
             </motion.div>
           </Link>
 
@@ -134,11 +141,17 @@ export default function Navigation() {
           {/* Desktop Logo - Left */}
           <Link href="/">
             <motion.div 
-              className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-violet-500 bg-clip-text text-transparent cursor-pointer"
+              className="cursor-pointer"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              LuxWeb Studio
+              <Image
+                src="/logo-with-text.png"
+                alt="LuxWeb Studio"
+                width={220}
+                height={55}
+                className="h-14 w-auto"
+              />
             </motion.div>
           </Link>
 
