@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
 import { projects, portfolioStats } from "@/data/projects"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function Portfolio() {
   const scrollToContact = () => {
@@ -57,8 +58,14 @@ export default function Portfolio() {
                   transition: { duration: 0.3 }
                 }}
               >
-              {/* Project Image Placeholder */}
-              <div className={`h-48 bg-gradient-to-br ${project.color} relative overflow-hidden`}>
+              {/* Project Image */}
+              <div className="h-48 relative overflow-hidden">
+                <Image
+                  src={project.images[0]}
+                  alt={project.title}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                />
                 <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                   <div className="text-white/80 text-sm font-medium px-3 py-1 bg-black/30 rounded-full">
                     {project.category}
