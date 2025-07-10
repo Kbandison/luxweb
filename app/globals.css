@@ -96,7 +96,7 @@ body {
 .modern-btn-primary {
   background: linear-gradient(135deg, rgb(98, 67, 255) 0%, rgb(138, 97, 255) 100%);
   border: none;
-  border-radius: 28px;
+  border-radius: 10px;
   box-shadow: 0 2px 8px rgba(98, 67, 255, 0.2);
   transition: all 0.2s ease;
   font-weight: 500;
@@ -112,7 +112,7 @@ body {
 .modern-btn-secondary {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 28px;
+  border-radius: 10px;
   transition: all 0.2s ease;
   font-weight: 500;
   cursor: pointer;
@@ -126,7 +126,7 @@ body {
 .modern-btn-outline {
   background: transparent;
   border: 2px solid rgba(98, 67, 255, 0.5);
-  border-radius: 28px;
+  border-radius: 10px;
   transition: all 0.3s ease;
   font-weight: 500;
   cursor: pointer;
@@ -166,6 +166,7 @@ body {
 /* General cursor styles */
 a, button, [role="button"] {
   cursor: pointer;
+
 }
 
 /* Infinite scroll animation */

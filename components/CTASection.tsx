@@ -27,15 +27,15 @@ export default function CTASection() {
               
               {/* Urgency Elements */}
               <div className="flex flex-wrap justify-center gap-4 mb-8">
-                <div className="flex items-center gap-2 bg-green-500/10 px-4 py-2 rounded-full border border-green-500/20">
+                <div className="flex items-center gap-2 bg-green-500/10 px-4 py-2 rounded-xl border border-green-500/20">
                   <Zap className="w-4 h-4 text-green-400" />
                   <span className="text-green-400 font-medium text-sm">Free Consultation</span>
                 </div>
-                <div className="flex items-center gap-2 bg-blue-500/10 px-4 py-2 rounded-full border border-blue-500/20">
+                <div className="flex items-center gap-2 bg-blue-500/10 px-4 py-2 rounded-xl border border-blue-500/20">
                   <Clock className="w-4 h-4 text-blue-400" />
                   <span className="text-blue-400 font-medium text-sm">24hr Response Time</span>
                 </div>
-                <div className="flex items-center gap-2 bg-purple-500/10 px-4 py-2 rounded-full border border-purple-500/20">
+                <div className="flex items-center gap-2 bg-purple-500/10 px-4 py-2 rounded-xl border border-purple-500/20">
                   <Users className="w-4 h-4 text-purple-400" />
                   <span className="text-purple-400 font-medium text-sm">Limited Availability</span>
                 </div>

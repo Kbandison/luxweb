@@ -78,7 +78,7 @@ export default function PricingCondensed() {
               >
                 {pkg.popular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-purple-400 to-violet-500 text-white px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 whitespace-nowrap">
+                    <div className="bg-gradient-to-r from-purple-400 to-violet-500 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 whitespace-nowrap">
                       <Star className="w-4 h-4" />
                       MOST POPULAR
                     </div>

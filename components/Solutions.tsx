@@ -46,12 +46,17 @@ export default function Solutions() {
               <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/20"></div>
               
               <div className="relative z-10">
+                <div className="flex justify-start items-center gap-2">
+
                 <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-black/50 mb-6 group-hover:scale-110 transition-transform duration-300`}>
                   <solution.icon className={`w-8 h-8 ${solution.color}`} />
                 </div>
                 
-                <div className={`inline-block px-4 py-2 rounded-full text-sm font-medium mb-6 ${solution.color} bg-current bg-opacity-20`}>
+                <div className={`inline-block px-4 py-2 rounded-xl text-2xl font-medium mb-6 ${solution.color} bg-current bg-opacity-20`}>
+                  <div className="text-white">
                   {solution.benefit}
+                  </div>
+                </div>
                 </div>
                 
                 <h3 className="text-2xl font-semibold text-white mb-4">{solution.title}</h3>

@@ -193,7 +193,7 @@ export default function TestimonialCarousel() {
                     </div>
 
                     <div className="text-center">
-                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-400/10 rounded-full border border-green-400/20">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-400/10 rounded-xl border border-green-400/20">
                         <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                         <span className="text-green-400 font-medium text-sm">{testimonial.result}</span>
                       </div>
