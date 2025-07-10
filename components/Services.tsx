@@ -48,6 +48,18 @@ export default function Services() {
     setCurrentSlide((prev) => (prev - 1 + Math.ceil(packages.length / cardsToShow)) % Math.ceil(packages.length / cardsToShow))
   }
 
+  const handleDragEnd = (event: any, info: any) => {
+    const threshold = 50 // Minimum distance to trigger slide change
+    
+    if (info.offset.x > threshold) {
+      // Swiped right - go to previous slide
+      prevSlide()
+    } else if (info.offset.x < -threshold) {
+      // Swiped left - go to next slide
+      nextSlide()
+    }
+  }
+
   const packages: Array<{
     name: string;
     description: string;
@@ -191,8 +203,14 @@ export default function Services() {
           {/* Carousel */}
           <div className="overflow-hidden">
             <motion.div 
-              className="flex transition-transform duration-500 ease-in-out"
+              className="flex cursor-grab active:cursor-grabbing"
               style={{ transform: `translateX(-${currentSlide * (100 / cardsToShow)}%)` }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.1}
+              onDragEnd={handleDragEnd}
+              animate={{ x: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
               {packages.map((pkg, index) => (
                 <div key={index} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-3">
@@ -203,6 +221,8 @@ export default function Services() {
                         y: -5,
                         transition: { duration: 0.2 }
                       }}
+                      style={{ pointerEvents: 'auto' }}
+                      onPointerDown={(e) => e.stopPropagation()}
                     >
                       {pkg.popular && (
                         <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
