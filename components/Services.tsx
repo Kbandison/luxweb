@@ -12,20 +12,26 @@ export default function Services() {
 
   useEffect(() => {
     const updateCardsToShow = () => {
+      let newCardsToShow
       if (window.innerWidth >= 1024) {
-        setCardsToShow(3)
+        newCardsToShow = 3
       } else if (window.innerWidth >= 768) {
-        setCardsToShow(2)
+        newCardsToShow = 2
       } else {
-        setCardsToShow(1)
+        newCardsToShow = 1
       }
-      setCurrentSlide(0) // Reset to first slide when screen size changes
+      
+      // Only reset currentSlide if cardsToShow actually changed
+      if (newCardsToShow !== cardsToShow) {
+        setCardsToShow(newCardsToShow)
+        setCurrentSlide(0)
+      }
     }
 
     updateCardsToShow()
     window.addEventListener('resize', updateCardsToShow)
     return () => window.removeEventListener('resize', updateCardsToShow)
-  }, [])
+  }, [cardsToShow])
 
   const scrollToContact = () => {
     const element = document.getElementById('contact')
