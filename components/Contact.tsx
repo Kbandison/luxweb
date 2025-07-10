@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Send, CheckCircle, AlertCircle, Clock, Users, Zap, HelpCircle } from "lucide-react"
 import { motion } from "framer-motion"
-import { supabase } from "@/lib/supabase"
 import ScrollReveal from "./ScrollReveal"
 
 export default function Contact() {
@@ -55,7 +54,6 @@ export default function Contact() {
     if (!formData.project_type) newErrors.project_type = 'Project type is required'
     if (!formData.budget_range) newErrors.budget_range = 'Budget range is required'
     if (!formData.project_goals.trim()) newErrors.project_goals = 'Project goals are required'
-    if (!formData.message.trim()) newErrors.message = 'Additional details are required'
     
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -76,11 +74,19 @@ export default function Contact() {
     setSubmitStatus('idle')
 
     try {
-      const { error } = await supabase
-        .from('contact_submissions')
-        .insert([formData])
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
 
-      if (error) throw error
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit form')
+      }
 
       setSubmitStatus('success')
       setFormData({
@@ -320,7 +326,7 @@ export default function Contact() {
 
             <div>
               <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                Additional Details *
+                Additional Details
               </label>
               <Textarea
                 id="message"

@@ -1,10 +1,11 @@
 'use client'
 
-import { ExternalLink, TrendingUp, Code, Users } from "lucide-react"
+import { ExternalLink, TrendingUp, Code, Users, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
 import { projects, portfolioStats } from "@/data/projects"
+import Link from "next/link"
 
 export default function Portfolio() {
   const scrollToContact = () => {
@@ -47,7 +48,7 @@ export default function Portfolio() {
         </ScrollReveal>
 
         <StaggerContainer className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-          {projects.map((project, index) => (
+          {projects.slice(0, 3).map((project, index) => (
             <StaggerItem key={index}>
               <motion.div 
                 className="glass-card rounded-2xl overflow-hidden glass-hover group"
@@ -110,6 +111,20 @@ export default function Portfolio() {
           </StaggerItem>
           ))}
         </StaggerContainer>
+
+        {/* View More Projects Button - Only show if there are more than 3 projects */}
+        {projects.length > 3 && (
+          <ScrollReveal delay={0.3}>
+            <div className="text-center mb-16">
+              <Link href="/projects">
+                <Button className="modern-btn-outline text-white px-8 py-4 text-lg font-semibold">
+                  View More Projects
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+            </div>
+          </ScrollReveal>
+        )}
 
         {/* Portfolio Stats */}
         <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16" staggerChildren={0.2}>
