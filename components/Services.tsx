@@ -3,12 +3,29 @@
 import { Button } from "@/components/ui/button"
 import { Check, ArrowRight, Star, Clock, Users, Flame, ChevronLeft, ChevronRight } from "lucide-react"
 import { motion } from "framer-motion"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
 
 export default function Services() {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const [cardsToShow, setCardsToShow] = useState(3)
+  const [cardsToShow, setCardsToShow] = useState(1)
+
+  useEffect(() => {
+    const updateCardsToShow = () => {
+      if (window.innerWidth >= 1024) {
+        setCardsToShow(3)
+      } else if (window.innerWidth >= 768) {
+        setCardsToShow(2)
+      } else {
+        setCardsToShow(1)
+      }
+      setCurrentSlide(0) // Reset to first slide when screen size changes
+    }
+
+    updateCardsToShow()
+    window.addEventListener('resize', updateCardsToShow)
+    return () => window.removeEventListener('resize', updateCardsToShow)
+  }, [])
 
   const scrollToContact = () => {
     const element = document.getElementById('contact')
@@ -169,7 +186,7 @@ export default function Services() {
           <div className="overflow-hidden">
             <motion.div 
               className="flex transition-transform duration-500 ease-in-out"
-              style={{ transform: `translateX(-${currentSlide * (100 / Math.ceil(packages.length / cardsToShow))}%)` }}
+              style={{ transform: `translateX(-${currentSlide * (100 / cardsToShow)}%)` }}
             >
               {packages.map((pkg, index) => (
                 <div key={index} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-3">

@@ -138,7 +138,7 @@ export default function Contact() {
           </div>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.2}>
+        <ScrollReveal delay={0.1} amount={0.15}>
           <motion.div 
             className="glass-card p-8 md:p-12 rounded-2xl"
             whileHover={{ y: -2 }}
