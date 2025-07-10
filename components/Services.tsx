@@ -49,7 +49,7 @@ export default function Services() {
   }
 
   const handleDragEnd = (event: any, info: any) => {
-    const threshold = 50 // Minimum distance to trigger slide change
+    const threshold = 30 // Reduced threshold for easier swiping
     
     if (info.offset.x > threshold) {
       // Swiped right - go to previous slide
@@ -188,14 +188,16 @@ export default function Services() {
           {/* Navigation Buttons */}
           <button
             onClick={prevSlide}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full p-2 transition-all duration-200 -ml-4"
+            onPointerDown={(e) => e.stopPropagation()}
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-30 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full p-2 transition-all duration-200 -ml-4"
           >
             <ChevronLeft className="w-6 h-6 text-white" />
           </button>
           
           <button
             onClick={nextSlide}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-20 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full p-2 transition-all duration-200 -mr-4"
+            onPointerDown={(e) => e.stopPropagation()}
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-30 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full p-2 transition-all duration-200 -mr-4"
           >
             <ChevronRight className="w-6 h-6 text-white" />
           </button>
@@ -204,12 +206,13 @@ export default function Services() {
           <div className="overflow-hidden">
             <motion.div 
               className="flex cursor-grab active:cursor-grabbing"
-              style={{ transform: `translateX(-${currentSlide * (100 / cardsToShow)}%)` }}
+              animate={{ 
+                x: `-${currentSlide * (100 / cardsToShow)}%`,
+              }}
               drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
+              dragConstraints={{ left: -100, right: 100 }}
               dragElastic={0.1}
               onDragEnd={handleDragEnd}
-              animate={{ x: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
               {packages.map((pkg, index) => (
