@@ -1,6 +1,8 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY);
+const adminEmail = process.env.ADMIN_EMAIL;
+const fromEmail = process.env.FROM_EMAIL_DOMAIN;
 
 export interface EmailData {
   name: string
@@ -115,10 +117,9 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
           border-left: 4px solid #10b981;
         }
         .step {
+          display: flex;
+          align-items: center;
           margin-bottom: 15px;
-        }
-        .step-table {
-          width: 100%;
         }
         .step-number {
           background: #10b981;
@@ -128,18 +129,11 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
           border-radius: 50%;
           font-size: 12px;
           font-weight: bold;
+          margin-right: 15px;
+          flex-shrink: 0;
           text-align: center;
           line-height: 24px;
           display: inline-block;
-          vertical-align: top;
-        }
-        .step-number-cell {
-          width: 39px;
-          vertical-align: top;
-          padding-right: 15px;
-        }
-        .step-text-cell {
-          vertical-align: top;
         }
         .footer {
           background: #1f2937;
@@ -200,52 +194,20 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
           <div class="next-steps">
             <h3 style="margin-top: 0; color: #1f2937;">What Happens Next?</h3>
             <div class="step">
-              <table class="step-table" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td class="step-number-cell">
-                    <div class="step-number">1</div>
-                  </td>
-                  <td class="step-text-cell">
-                    We'll review your project requirements within 24 hours
-                  </td>
-                </tr>
-              </table>
+              <div class="step-number">1</div>
+              <div>We'll review your project requirements within 24 hours</div>
             </div>
             <div class="step">
-              <table class="step-table" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td class="step-number-cell">
-                    <div class="step-number">2</div>
-                  </td>
-                  <td class="step-text-cell">
-                    Schedule a free consultation call to discuss your vision
-                  </td>
-                </tr>
-              </table>
+              <div class="step-number">2</div>
+              <div>Schedule a free consultation call to discuss your vision</div>
             </div>
             <div class="step">
-              <table class="step-table" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td class="step-number-cell">
-                    <div class="step-number">3</div>
-                  </td>
-                  <td class="step-text-cell">
-                    Receive a customized proposal and timeline
-                  </td>
-                </tr>
-              </table>
+              <div class="step-number">3</div>
+              <div>Receive a customized proposal and timeline</div>
             </div>
             <div class="step">
-              <table class="step-table" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td class="step-number-cell">
-                    <div class="step-number">4</div>
-                  </td>
-                  <td class="step-text-cell">
-                    Start building your amazing website!
-                  </td>
-                </tr>
-              </table>
+              <div class="step-number">4</div>
+              <div>Start building your amazing website!</div>
             </div>
           </div>
           
@@ -261,8 +223,8 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
             Creating stunning, high-converting websites
           </div>
           <div>
-            <a href="mailto:hello@luxwebstudio.com" class="footer-link">hello@luxwebstudio.com</a> | 
-            <a href="tel:+1234567890" class="footer-link">(123) 456-7890</a>
+            <a href="mailto:support@luxwebstudio.dev" class="footer-link">support@luxwebstudio.dev</a> | 
+            <a href="tel:+17186350736" class="footer-link">(718) 635-0736</a>
           </div>
           <div style="margin-top: 15px; font-size: 12px;">
             This email was sent because you submitted a project inquiry on our website.
@@ -275,7 +237,7 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
 
   try {
     await resend.emails.send({
-      from: 'LuxWeb Studio <onboarding@resend.dev>', // Use Resend's test domain for now
+      from: `LuxWeb Studio ${fromEmail}`, // Use Resend's test domain for now
       to: [data.email],
       subject: 'Thank you for your project inquiry - LuxWeb Studio',
       html: emailHtml,
@@ -454,15 +416,7 @@ export const sendAdminNotificationEmail = async (data: EmailData) => {
               <li>Add to CRM/project management system</li>
             </ul>
             
-            <a href="mailto:${data.email}?subject=${encodeURIComponent('Re: Your Project Inquiry - Let\'s Schedule a Call')}&body=${encodeURIComponent(`Hi ${data.name},
-
-Thank you for reaching out about your ${formatProjectType(data.project_type).toLowerCase()} project. I've reviewed your requirements and would love to discuss how we can help bring your vision to life.
-
-Would you be available for a quick 15-minute call this week to discuss your project in more detail?
-
-Best regards,
-[Your Name]
-LuxWeb Studio`)}" class="cta-button">
+            <a href="mailto:${data.email}?subject=Re: Your Project Inquiry - Let's Schedule a Call&body=Hi ${data.name},%0D%0A%0D%0AThank you for reaching out about your ${formatProjectType(data.project_type).toLowerCase()} project. I've reviewed your requirements and would love to discuss how we can help bring your vision to life.%0D%0A%0D%0AWould you be available for a quick 15-minute call this week to discuss your project in more detail?%0D%0A%0D%0ABest regards,%0D%0A[Your Name]%0D%0ALuxWeb Studio" class="cta-button">
               📧 Reply to Client
             </a>
           </div>
@@ -479,8 +433,8 @@ LuxWeb Studio`)}" class="cta-button">
 
   try {
     await resend.emails.send({
-      from: 'LuxWeb Studio <onboarding@resend.dev>', // Use Resend's test domain for now
-      to: [process.env.ADMIN_EMAIL || 'admin@example.com'], // Will use environment variable
+      from: `LuxWeb Studio ${fromEmail}`, // Use Resend's test domain for now
+      to: [adminEmail || 'admin@example.com'], // Will use environment variable
       subject: `🚨 New Project Inquiry from ${data.name} - ${formatProjectType(data.project_type)}`,
       html: emailHtml,
     })

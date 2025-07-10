@@ -57,13 +57,13 @@ export default function Footer() {
             
             {/* Contact Info */}
             <div className="space-y-3">
-              <a href="mailto:hello@luxwebstudio.com" className="flex items-center gap-3 text-gray-400 hover:text-purple-400 transition-colors duration-200">
+              <a href="mailto:support@luxwebstudio.dev" className="flex items-center gap-3 text-gray-400 hover:text-purple-400 transition-colors duration-200">
                 <Mail className="w-4 h-4" />
-                hello@luxwebstudio.com
+                support@luxwebstudio.dev
               </a>
-              <a href="tel:+1234567890" className="flex items-center gap-3 text-gray-400 hover:text-purple-400 transition-colors duration-200">
+              <a href="tel:+17186350736" className="flex items-center gap-3 text-gray-400 hover:text-purple-400 transition-colors duration-200">
                 <Phone className="w-4 h-4" />
-                (123) 456-7890
+                (718) 635-0736
               </a>
               <div className="flex items-center gap-3 text-gray-400">
                 <MapPin className="w-4 h-4" />

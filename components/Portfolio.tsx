@@ -33,7 +33,7 @@ export default function Portfolio() {
   }
 
   return (
-    <section id="portfolio" className="py-20 px-4">
+    <section id="portfolio" className="py-20 px-4 relative">
       <div className="container mx-auto max-w-7xl">
         <ScrollReveal>
           <div className="text-center mb-16">

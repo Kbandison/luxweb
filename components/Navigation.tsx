@@ -119,12 +119,13 @@ export default function Navigation() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <Button
-              onClick={scrollToContact}
-              className="modern-btn-primary text-white px-3 py-2 text-xs font-medium cursor-pointer"
-            >
-              Get Started
-            </Button>
+            <Link href="/contact">
+              <Button
+                className="modern-btn-primary text-white px-3 py-2 text-xs font-medium cursor-pointer"
+              >
+                Get Started
+              </Button>
+            </Link>
           </motion.div>
         </div>
 
@@ -194,12 +195,13 @@ export default function Navigation() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <Button
-              onClick={scrollToContact}
-              className="modern-btn-primary text-white px-6 py-2 text-sm font-medium cursor-pointer"
-            >
-              Get Started
-            </Button>
+            <Link href="/contact">
+              <Button
+                className="modern-btn-primary text-white px-6 py-2 text-sm font-medium cursor-pointer"
+              >
+                Get Started
+              </Button>
+            </Link>
           </motion.div>
         </div>
 

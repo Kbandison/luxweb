@@ -26,7 +26,7 @@ export default function Solutions() {
   ]
 
   return (
-    <section className="py-24 px-4">
+    <section className="py-24 px-4 relative">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">

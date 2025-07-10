@@ -24,7 +24,7 @@ export default function PainPoints() {
   ]
 
   return (
-    <section className="py-20 px-6">
+    <section className="py-20 px-6 relative">
       <div className="container mx-auto max-w-6xl">
         <ScrollReveal>
           <div className="text-center mb-16">

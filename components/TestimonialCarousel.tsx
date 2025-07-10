@@ -133,7 +133,7 @@ export default function TestimonialCarousel() {
 
   return (
     <motion.section
-      className="py-20 px-6"
+      className="py-20 px-6 relative"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.3 }}

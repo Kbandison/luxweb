@@ -361,8 +361,8 @@ export default function Contact() {
           <div className="mt-8 pt-8 border-t border-white/10 text-center">
             <p className="text-gray-400 text-sm">
               Or email us directly at{' '}
-              <a href="mailto:hello@luxwebstudio.com" className="text-green-400 hover:text-green-300 transition-colors duration-300 ease-out">
-                hello@luxwebstudio.com
+              <a href="mailto:support@luxwebstudio.dev" className="text-green-400 hover:text-green-300 transition-colors duration-300 ease-out">
+                support@luxwebstudio.dev
               </a>
             </p>
           </div>
