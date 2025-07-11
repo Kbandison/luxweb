@@ -175,7 +175,7 @@ export default function Hero() {
               <div className="aspect-[4/3] relative">
                 <Image
                   src="/Screenshot 2025-06-19 133941.png"
-                  alt="Professional Website Design Example"
+                  alt="Professional website design example showing modern business website with clean layout, responsive design, and conversion-focused elements created by LuxWeb Studio"
                   fill
                   className="object-cover"
                   priority
