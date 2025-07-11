@@ -81,7 +81,7 @@ export default function Hero() {
               className="text-4xl sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl font-extrabold leading-[1.1] tracking-tight bg-gradient-to-r from-white via-white to-[rgb(98,67,255)] bg-clip-text text-transparent"
               variants={itemVariants}
             >
-              Get More Customers With A Website
+              Get More Customers With A Professional Website
               <br />
               <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">That Actually Converts</span>
             </motion.h1>
@@ -92,7 +92,7 @@ export default function Hero() {
               variants={itemVariants}
             >
               Stop losing potential customers to competitors with better websites. 
-              We build modern, professional sites that turn visitors into customers.
+              We build modern, professional, mobile-responsive websites that turn visitors into customers with fast loading speeds, SEO optimization, and conversion-focused design.
             </motion.p>
           </motion.div>
 
