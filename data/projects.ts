@@ -60,6 +60,36 @@ export const projects: Project[] = [
     links: {
       live: "https://reparationroad.org"
     }
+  },
+  {
+    title: "Axiyonix",
+    description: "From launch to legacy—Axionyx empowers brands with premium, future-forward digital solutions. Begin your legacy with our agency’s award-winning web design, SaaS, and ongoing innovation.",
+    tech: ["Modern UI/UX", "Accessibility Features", "Content Management"],
+    result: "Enhanced Client Retention",
+    category: "Agency",
+    images: [
+      "/Screenshot 2025-06-10 140131.png",
+    ],
+    color: "from-purple-500 to-pink-500",
+    links: {
+      live: "https://axionyx.vercel.app/"
+    }
+  },
+  {
+    title: "FlexFit Gym",
+    description: "Join FlexFit Gym and discover the perfect balance of expert guidance, state-of-the-art equipment, and a supportive community to help you achieve your fitness goals.",
+    tech: ["Modern UI/UX", "Accessibility Features", "Content Management"],
+    result: "Improved Gym Subscriptions",
+    category: "Agency",
+    images: [
+      "/Screenshot 2025-07-07 163435.png",
+      "/Screenshot 2025-07-07 163456.png",
+      "/Screenshot 2025-07-07 163511.png"
+    ],
+    color: "from-purple-500 to-pink-500",
+    links: {
+      live: "https://flexfit-gym-eight.vercel.app/"
+    }
   }
 ]
 
