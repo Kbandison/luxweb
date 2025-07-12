@@ -94,7 +94,9 @@ export const metadata: Metadata = {
     "newsletter signup",
     "social media integration",
     "Google Analytics setup",
-    "LuxWeb Studio"
+    "LuxWeb Studio",
+    "lux",
+    "luxweb"
   ],
   authors: [{ name: "LuxWeb Studio" }],
   creator: "LuxWeb Studio",
