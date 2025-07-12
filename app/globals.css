@@ -213,3 +213,29 @@ a, button, [role="button"] {
 [data-radix-select-content]::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(10, 10, 10, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(45deg, rgb(45, 27, 105), rgb(28, 3, 60));
+  border-radius: 4px;
+  border: 1px solid #1de1ff;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(45deg, rgb(55, 37, 115), rgb(38, 13, 70));
+  box-shadow: 0 0 8px rgba(45, 27, 105, 0.5);
+}
+
+/* Firefox scrollbar */
+html {
+  scrollbar-width: auto;
+  scrollbar-color: rgb(45, 27, 105) rgba(10, 10, 10, 0.8);
+}

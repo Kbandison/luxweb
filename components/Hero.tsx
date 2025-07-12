@@ -110,7 +110,7 @@ export default function Hero() {
                 <Button 
                   className="modern-btn-primary text-white px-12 py-5 text-xl font-semibold cursor-pointer"
                 >
-                  Let's Discuss My Project
+                  Discuss My Project
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </a>

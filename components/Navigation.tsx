@@ -130,7 +130,7 @@ export default function Navigation() {
               <Button
                 className="modern-btn-primary text-white px-3 py-2 text-xs font-medium cursor-pointer"
               >
-                Get Started
+                Discuss My Project
               </Button>
             </Link>
           </motion.div>
@@ -212,7 +212,7 @@ export default function Navigation() {
               <Button
                 className="modern-btn-primary text-white px-6 py-2 text-sm font-medium cursor-pointer"
               >
-                Get Started
+                Discuss My Project
               </Button>
             </Link>
           </motion.div>
