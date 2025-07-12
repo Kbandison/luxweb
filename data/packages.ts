@@ -35,7 +35,7 @@ export const packages: Package[] = [
     price: "$1,300",
     originalPrice: "$1,700",
     features: [
-      "Multi-page custom website",
+      "2 - 10 page custom website",
       "Advanced SEO setup",
       "Analytics integration",
       "Social media integration",
@@ -43,7 +43,7 @@ export const packages: Package[] = [
       "2 weeks delivery",
       "60-day support"
     ],
-    idealFor: "Growing businesses, e-commerce, professional services",
+    idealFor: "Growing businesses, professional services",
     cta: "Start Your Project",
     popular: true,
     badge: "Save $400"
@@ -54,7 +54,7 @@ export const packages: Package[] = [
     price: "$1,500",
     originalPrice: "$2,000",
     features: [
-      "Custom web application",
+      "Unlimited Pages",
       "Database integration",
       "User authentication",
       "Payment processing",
@@ -62,7 +62,7 @@ export const packages: Package[] = [
       "2+ weeks delivery",
       "90-day support"
     ],
-    idealFor: "Established businesses, complex requirements",
+    idealFor: "Established businesses, complex requirements, E-commerce sites",
     cta: "Let's Discuss",
     popular: false,
     badge: "Save $500"
