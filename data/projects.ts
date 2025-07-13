@@ -62,6 +62,23 @@ export const projects: Project[] = [
     }
   },
   {
+    title: "JSW Law Group",
+    description: "JSW Law Group provides comprehensive legal services in metro-Atlanta including real estate, business law, corporate transactions, and immigration services. Licensed in Georgia and California since 2003.",
+    tech: ["Modern UI/UX", "Accessibility Features", "Content Management"],
+    result: "Boosted Client engagement",
+    category: "Community",
+    images: [
+      "/Screenshot 2025-07-12 234024.png",
+      "/Screenshot 2025-07-12 234046.png",
+      "/Screenshot 2025-07-12 234059.png",
+      "/Screenshot 2025-07-12 234115.png",
+    ],
+    color: "from-purple-500 to-pink-500",
+    links: {
+      live: "https://jswlaw.vercel.app"
+    }
+  },
+  {
     title: "Axiyonix",
     description: "From launch to legacy—Axionyx empowers brands with premium, future-forward digital solutions. Begin your legacy with our agency’s award-winning web design, SaaS, and ongoing innovation.",
     tech: ["Modern UI/UX", "Accessibility Features", "Content Management"],
