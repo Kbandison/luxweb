@@ -64,9 +64,9 @@ export default function Hero() {
   }
 
   return (
-    <section className="min-h-[80vh] sm:min-h-[75vh] lg:min-h-[80vh] flex items-center justify-center px-6 pt-24 pb-2 sm:pt-28 sm:pb-4 lg:pt-32 lg:pb-16 relative overflow-hidden">
+    <section className="min-h-[80vh] sm:min-h-[75vh] lg:min-h-[80vh] flex items-center justify-center px-6 pt-24 pb-2 sm:pt-28 sm:pb-4 lg:pt-32 lg:pb-16 relative overflow-hidden ">
       
-      <div className="container mx-auto max-w-7xl relative z-10">
+      <div className="container mx-auto max-w-8xl relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Main Content */}
           <motion.div 
@@ -81,9 +81,9 @@ export default function Hero() {
               className="text-4xl sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl font-extrabold leading-[1.1] tracking-tight bg-gradient-to-r from-white via-white to-[rgb(98,67,255)] bg-clip-text text-transparent"
               variants={itemVariants}
             >
-              Get More Customers With A Professional Website
+              Get a Premium Website,
               <br />
-              <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">That Actually Converts</span>
+              <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">Get More Customers</span>
             </motion.h1>
 
             {/* Subheadline */}
@@ -98,7 +98,7 @@ export default function Hero() {
 
           {/* Call to Action Buttons */}
           <motion.div 
-            className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start items-center pt-6 sm:pt-8"
+            className="flex flex-col sm:flex-row gap-6 justify-center items-center pt-6 sm:pt-8"
             variants={itemVariants}
           >
             <motion.div
@@ -131,7 +131,7 @@ export default function Hero() {
           </motion.div>
 
           {/* Trust Badges */}
-          <motion.div 
+          {/* <motion.div 
             className="flex flex-wrap justify-center lg:justify-start gap-4 pt-6"
             variants={itemVariants}
           >
@@ -147,7 +147,7 @@ export default function Hero() {
               <Users className="w-4 h-4 text-purple-400" />
               <span className="text-purple-400 font-medium text-sm">Limited Availability</span>
             </div>
-          </motion.div>
+          </motion.div> */}
 
           {/* Social Proof */}
           <motion.div 
@@ -160,7 +160,7 @@ export default function Hero() {
 
         {/* Right Image Section - Desktop Only */}
         <motion.div 
-          className="relative hidden lg:block"
+          className="relative hidden lg:block w-[30vw]"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}

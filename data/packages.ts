@@ -14,8 +14,8 @@ export const packages: Package[] = [
   {
     name: "Starter Package",
     description: "Perfect for new businesses getting online",
-    price: "$1,100+",
-    originalPrice: "$1,400",
+    price: "$1,500+",
+    originalPrice: "$1,800",
     features: [
       "Professional single-page website",
       "Mobile-responsive design",
@@ -32,8 +32,8 @@ export const packages: Package[] = [
   {
     name: "Growth Package",
     description: "Ideal for established businesses ready to scale",
-    price: "$1,300+",
-    originalPrice: "$1,700",
+    price: "$2,200+",
+    originalPrice: "$2,600",
     features: [
       "2 - 10 page custom website",
       "Advanced SEO setup",
@@ -51,8 +51,8 @@ export const packages: Package[] = [
   {
     name: "Complete Package",
     description: "Full-service solution for serious growth",
-    price: "$1,500+",
-    originalPrice: "$2,000",
+    price: "$2,800+",
+    originalPrice: "$3,300",
     features: [
       "10-30 Pages",
       "Database integration",
@@ -70,8 +70,8 @@ export const packages: Package[] = [
   {
     name: "Enterprise Package",
     description: "Premium solution for maximum results",
-    price: "$2,500+",
-    originalPrice: "$3,200",
+    price: "$3,500+",
+    originalPrice: "$4,200",
     features: [
       "Custom enterprise web application",
       "Advanced database architecture",

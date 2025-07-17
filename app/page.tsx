@@ -43,11 +43,11 @@ export default function Home() {
         <Hero />
         <PainPoints />
         <Solutions />
-        <AboutUs />
+        {/* <AboutUs /> */}
         <ProcessSection />
-        <Portfolio />
+        {/* <Portfolio /> */}
         <TestimonialCarousel />
-        <PricingCondensed />
+        {/* <PricingCondensed /> */}
         <FAQCondensed />
         <CTASection />
       </div>
