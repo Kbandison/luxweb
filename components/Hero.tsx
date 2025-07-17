@@ -131,8 +131,8 @@ export default function Hero() {
           </motion.div>
 
           {/* Trust Badges */}
-          {/* <motion.div 
-            className="flex flex-wrap justify-center lg:justify-start gap-4 pt-6"
+          <motion.div 
+            className="flex flex-wrap justify-center gap-4 pt-6"
             variants={itemVariants}
           >
             <div className="flex items-center gap-2 bg-green-500/10 px-4 py-2 rounded-xl border border-green-500/20">
@@ -147,7 +147,7 @@ export default function Hero() {
               <Users className="w-4 h-4 text-purple-400" />
               <span className="text-purple-400 font-medium text-sm">Limited Availability</span>
             </div>
-          </motion.div> */}
+          </motion.div>
 
           {/* Social Proof */}
           <motion.div 
