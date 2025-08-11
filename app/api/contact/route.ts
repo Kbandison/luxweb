@@ -65,23 +65,24 @@ export async function POST(request: NextRequest) {
       message: submissionData.additional_details || undefined
     }
 
-    // Send emails (don't block the response if emails fail)
-    const emailPromises = [
-      sendClientConfirmationEmail(emailData),
-      sendAdminNotificationEmail(emailData)
-    ]
-
-    // Send emails in parallel but don't wait for them
-    Promise.all(emailPromises).then((results) => {
-      const [clientResult, adminResult] = results
-      if (!clientResult.success) {
-        console.error('Failed to send client email:', clientResult.error)
+    // Send emails in background without blocking the response
+    setImmediate(async () => {
+      try {
+        const [clientResult, adminResult] = await Promise.allSettled([
+          sendClientConfirmationEmail(emailData),
+          sendAdminNotificationEmail(emailData)
+        ])
+        
+        if (clientResult.status === 'rejected' || (clientResult.status === 'fulfilled' && !clientResult.value.success)) {
+          console.error('Failed to send client email:', clientResult.status === 'rejected' ? clientResult.reason : clientResult.value.error)
+        }
+        
+        if (adminResult.status === 'rejected' || (adminResult.status === 'fulfilled' && !adminResult.value.success)) {
+          console.error('Failed to send admin email:', adminResult.status === 'rejected' ? adminResult.reason : adminResult.value.error)
+        }
+      } catch (error) {
+        console.error('Email sending process failed:', error)
       }
-      if (!adminResult.success) {
-        console.error('Failed to send admin email:', adminResult.error)
-      }
-    }).catch((error) => {
-      console.error('Email sending failed:', error)
     })
 
     // Return success immediately

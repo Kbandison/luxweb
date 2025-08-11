@@ -2,7 +2,33 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const adminEmail = process.env.ADMIN_EMAIL;
-const fromEmail = process.env.FROM_EMAIL_DOMAIN;
+const fromEmailDomain = process.env.FROM_EMAIL_DOMAIN;
+
+// Parse the FROM_EMAIL_DOMAIN - handle cases where it might contain full email
+let parsedFromEmail = 'onboarding@resend.dev'; // default fallback
+
+if (fromEmailDomain) {
+  const cleaned = fromEmailDomain.replace(/[<>]/g, '').trim();
+  if (cleaned.includes('@')) {
+    // If it's already a full email address, format it with display name
+    parsedFromEmail = `LuxWeb Studio <${cleaned}>`;
+  } else {
+    // If it's just a domain, construct the email with display name
+    parsedFromEmail = `LuxWeb Studio <noreply@${cleaned}>`;
+  }
+}
+
+// Use the parsed email
+const fromEmail = parsedFromEmail;
+const finalAdminEmail = adminEmail || 'kbandison@gmail.com';
+
+console.log('Email configuration:', {
+  hasApiKey: !!process.env.RESEND_API_KEY,
+  fromEmailDomain,
+  fromEmail,
+  adminEmail: finalAdminEmail,
+  isProduction: process.env.NODE_ENV === 'production'
+});
 
 export interface EmailData {
   name: string
@@ -38,6 +64,8 @@ const formatBudgetRange = (range: string) => {
 }
 
 export const sendClientConfirmationEmail = async (data: EmailData) => {
+  // Use the actual client email since we have a verified domain
+  const emailTo = data.email;
   const emailHtml = `
     <!DOCTYPE html>
     <html>
@@ -236,16 +264,17 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
   `
 
   try {
-    await resend.emails.send({
-      from: `LuxWeb Studio ${fromEmail}`, // Use Resend's test domain for now
-      to: [data.email],
+    const result = await resend.emails.send({
+      from: fromEmail,
+      to: [emailTo],
       subject: 'Thank you for your project inquiry - LuxWeb Studio',
       html: emailHtml,
     })
-    return { success: true }
+    console.log('Client email sent successfully:', result.data?.id)
+    return { success: true, data: result }
   } catch (error) {
     console.error('Error sending client email:', error)
-    return { success: false, error }
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
@@ -432,15 +461,16 @@ export const sendAdminNotificationEmail = async (data: EmailData) => {
   `
 
   try {
-    await resend.emails.send({
-      from: `LuxWeb Studio ${fromEmail}`, // Use Resend's test domain for now
-      to: [adminEmail || 'admin@example.com'], // Will use environment variable
+    const result = await resend.emails.send({
+      from: fromEmail,
+      to: [finalAdminEmail],
       subject: `🚨 New Project Inquiry from ${data.name} - ${formatProjectType(data.project_type)}`,
       html: emailHtml,
     })
-    return { success: true }
+    console.log('Admin email sent successfully:', result.data?.id)
+    return { success: true, data: result }
   } catch (error) {
     console.error('Error sending admin email:', error)
-    return { success: false, error }
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }

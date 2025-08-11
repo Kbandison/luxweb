@@ -176,6 +176,9 @@ export default function Footer() {
               <Link href="/contact" className="text-gray-400 hover:text-purple-400 transition-colors duration-200">
                 Contact
               </Link>
+              <Link href="/admin/dashboard" className="text-gray-400 hover:text-purple-400 transition-colors duration-200">
+                Admin
+              </Link>
             </div>
           </div>
         </motion.div>

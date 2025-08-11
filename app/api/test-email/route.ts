@@ -10,10 +10,10 @@ export async function POST(request: NextRequest) {
     console.log('API Key starts with:', process.env.RESEND_API_KEY?.substring(0, 10) + '...')
 
     const { data, error } = await resend.emails.send({
-      from: 'Test <onboarding@resend.dev>',
-      to: ['test@example.com'], // This won't actually send, just tests the API
-      subject: 'Test Email',
-      html: '<p>This is a test email</p>',
+      from: 'LuxWeb Studio <onboarding@resend.dev>',
+      to: ['kbandison@gmail.com'], // Use your verified email address for testing
+      subject: 'Test Email - LuxWeb Studio',
+      html: '<p>This is a test email from LuxWeb Studio contact form</p>',
     })
 
     if (error) {
