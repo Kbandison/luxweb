@@ -13,6 +13,28 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    title: "Hoop Metrix",
+    description: "Your number one spot for NBA and WNBA Rosters.",
+    tech: ["Next.js", "Responsive Design", "TypeScript"],
+    result: "Increased Memberships by 57%",
+    category: "Sports",
+    images: [
+      "/Screenshot 2025-10-25 203837.png",
+      "/Screenshot 2025-10-25 204057.png",
+      "/Screenshot 2025-10-25 204016.png",
+      "/Screenshot 2025-10-25 204122.png",
+      "/Screenshot 2025-10-25 204218.png",
+      "/Screenshot 2025-10-25 204347.png",
+      "/Screenshot 2025-10-25 204235.png",
+      "/Screenshot 2025-10-25 204421.png",
+      "/Screenshot 2025-10-25 204256.png"
+    ],
+    color: "from-blue-500 to-orange-500",
+    links: {
+      live: "http://bit.ly/47qyvr0"
+    }
+  },
+  {
     title: "Cake Haven",
     description: "Helped local bakery increase online orders with easy-to-use ordering system",
     tech: ["Next.js", "Responsive Design", "TypeScript"],
