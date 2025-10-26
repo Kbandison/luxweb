@@ -42,8 +42,8 @@ async function getClientProjects(clientId: string) {
 export default async function ClientFilesPage() {
   const user = await requireClientAuth()
   const [files, projects] = await Promise.all([
-    getClientFiles(user.client_id),
-    getClientProjects(user.client_id)
+    getClientFiles(user.client.id),
+    getClientProjects(user.client.id)
   ])
 
   return (

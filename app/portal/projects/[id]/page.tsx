@@ -46,7 +46,7 @@ interface ProjectPageProps {
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const user = await requireClientAuth()
   const { id } = await params
-  const project = await getProject(id, user.client_id)
+  const project = await getProject(id, user.client.id)
 
   if (!project) {
     notFound()

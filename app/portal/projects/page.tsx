@@ -33,7 +33,7 @@ async function getClientProjects(clientId: string) {
 
 export default async function ClientProjectsPage() {
   const user = await requireClientAuth()
-  const projects = await getClientProjects(user.client_id)
+  const projects = await getClientProjects(user.client.id)
 
   return (
     <div className="space-y-8">

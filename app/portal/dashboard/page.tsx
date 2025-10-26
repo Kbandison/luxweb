@@ -59,7 +59,7 @@ async function getDashboardData(clientId: string) {
 
 export default async function PortalDashboard() {
   const user = await requireClientAuth()
-  const dashboardData = await getDashboardData(user.client_id)
+  const dashboardData = await getDashboardData(user.client.id)
 
   return (
     <div className="space-y-8">

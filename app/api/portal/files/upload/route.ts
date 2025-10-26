@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     const timestamp = Date.now()
     const fileExtension = file.name.split('.').pop()
     const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_').replace(/\.+/g, '.')
-    const fileName = `client_${user.client_id}/${projectId || 'general'}/${timestamp}_${sanitizedName}`
+    const fileName = `client_${user.client.id}/${projectId || 'general'}/${timestamp}_${sanitizedName}`
 
     // Convert File to ArrayBuffer for Supabase upload
     const fileBuffer = await file.arrayBuffer()
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       .from('project_files')
       .insert({
         project_id: projectId || null,
-        client_id: user.client_id,
+        client_id: user.client.id,
         filename: fileName,
         original_filename: file.name,
         file_path: uploadData.path,

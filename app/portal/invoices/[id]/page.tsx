@@ -35,7 +35,7 @@ interface InvoicePageProps {
 export default async function InvoicePage({ params }: InvoicePageProps) {
   const user = await requireClientAuth()
   const { id } = await params
-  const invoice = await getInvoice(id, user.client_id)
+  const invoice = await getInvoice(id, user.client.id)
 
   if (!invoice) {
     notFound()

@@ -23,7 +23,7 @@ async function getClientInvoices(clientId: string) {
 
 export default async function ClientInvoicesPage() {
   const user = await requireClientAuth()
-  const invoices = await getClientInvoices(user.client_id)
+  const invoices = await getClientInvoices(user.client.id)
 
   return (
     <div className="space-y-8">
