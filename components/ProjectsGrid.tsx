@@ -6,9 +6,21 @@ import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
 import { projects, portfolioStats } from "@/data/projects"
+import ImageLightbox from "./ImageLightbox"
 
 export default function ProjectsGrid() {
   const [currentImageIndex, setCurrentImageIndex] = useState<Record<number, number>>({})
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxImages, setLightboxImages] = useState<string[]>([])
+  const [lightboxIndex, setLightboxIndex] = useState(0)
+  const [lightboxTitle, setLightboxTitle] = useState('')
+
+  const openLightbox = (images: string[], index: number, title: string) => {
+    setLightboxImages(images)
+    setLightboxIndex(index)
+    setLightboxTitle(title)
+    setLightboxOpen(true)
+  }
 
   const nextImage = (projectIndex: number, totalImages: number) => {
     setCurrentImageIndex(prev => ({
@@ -97,16 +109,19 @@ export default function ProjectsGrid() {
             >
               {/* Project Image Carousel */}
               <div className="relative h-64 overflow-hidden">
-                {/* Current Image */}
-                <div className={`h-full bg-gradient-to-br ${project.color} relative transition-all duration-500`}>
+                {/* Current Image - Clickable */}
+                <div
+                  className={`h-full bg-gradient-to-br ${project.color} relative transition-all duration-500 cursor-pointer`}
+                  onClick={() => openLightbox(project.images, currentImageIndex[index] || 0, project.title)}
+                >
                   {project.images.length > 0 && (
-                    <img 
-                      src={project.images[currentImageIndex[index] || 0]} 
+                    <img
+                      src={project.images[currentImageIndex[index] || 0]}
                       alt={`${project.title} - Image ${(currentImageIndex[index] || 0) + 1}`}
                       className="w-full h-full object-cover"
                     />
                   )}
-                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
                     <div className="text-white/90 text-lg font-semibold px-4 py-2 bg-black/40 rounded-full">
                       {project.category}
                     </div>
@@ -117,14 +132,20 @@ export default function ProjectsGrid() {
                 {project.images.length > 1 && (
                   <>
                     <button
-                      onClick={() => prevImage(index, project.images.length)}
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        prevImage(index, project.images.length)
+                      }}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm z-10"
                     >
                       <ChevronLeft className="w-5 h-5 text-white" />
                     </button>
                     <button
-                      onClick={() => nextImage(index, project.images.length)}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        nextImage(index, project.images.length)
+                      }}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm z-10"
                     >
                       <ChevronRight className="w-5 h-5 text-white" />
                     </button>
@@ -133,14 +154,17 @@ export default function ProjectsGrid() {
 
                 {/* Image Indicators - Only show if multiple images */}
                 {project.images.length > 1 && (
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                     {project.images.map((_, imageIndex) => (
                       <button
                         key={imageIndex}
-                        onClick={() => setCurrentImageIndex(prev => ({ ...prev, [index]: imageIndex }))}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setCurrentImageIndex(prev => ({ ...prev, [index]: imageIndex }))
+                        }}
                         className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                          (currentImageIndex[index] || 0) === imageIndex 
-                            ? 'bg-white' 
+                          (currentImageIndex[index] || 0) === imageIndex
+                            ? 'bg-white'
                             : 'bg-white/50 hover:bg-white/80'
                         }`}
                       />
@@ -149,7 +173,7 @@ export default function ProjectsGrid() {
                 )}
 
                 {/* External Link Icon */}
-                <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                   <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
                     <ExternalLink className="w-6 h-6 text-white" />
                   </div>
@@ -234,6 +258,15 @@ export default function ProjectsGrid() {
           </div>
         </div>
       </ScrollReveal>
+
+      {/* Image Lightbox */}
+      <ImageLightbox
+        images={lightboxImages}
+        initialIndex={lightboxIndex}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        projectTitle={lightboxTitle}
+      />
     </div>
   )
 }

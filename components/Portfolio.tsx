@@ -7,8 +7,22 @@ import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
 import { projects, portfolioStats } from "@/data/projects"
 import Link from "next/link"
 import Image from "next/image"
+import ImageLightbox from "./ImageLightbox"
+import { useState } from "react"
 
 export default function Portfolio() {
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxImages, setLightboxImages] = useState<string[]>([])
+  const [lightboxIndex, setLightboxIndex] = useState(0)
+  const [lightboxTitle, setLightboxTitle] = useState('')
+
+  const openLightbox = (images: string[], index: number, title: string) => {
+    setLightboxImages(images)
+    setLightboxIndex(index)
+    setLightboxTitle(title)
+    setLightboxOpen(true)
+  }
+
   const scrollToContact = () => {
     const element = document.getElementById('contact')
     if (element) {
@@ -59,7 +73,10 @@ export default function Portfolio() {
                 }}
               >
               {/* Project Image */}
-              <div className="h-48 relative overflow-hidden">
+              <div
+                className="h-48 relative overflow-hidden cursor-pointer"
+                onClick={() => openLightbox(project.images, 0, project.title)}
+              >
                 <Image
                   src={project.images[0]}
                   alt={project.title}
@@ -160,6 +177,15 @@ export default function Portfolio() {
         </StaggerContainer>
 
       </div>
+
+      {/* Image Lightbox */}
+      <ImageLightbox
+        images={lightboxImages}
+        initialIndex={lightboxIndex}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        projectTitle={lightboxTitle}
+      />
     </section>
   )
 }
