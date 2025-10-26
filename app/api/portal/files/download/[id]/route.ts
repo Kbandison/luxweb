@@ -20,7 +20,7 @@ export async function GET(
       .from('project_files')
       .select('*')
       .eq('id', fileId)
-      .eq('client_id', user.client_id)
+      .eq('client_id', user.client.id)
       .eq('is_public', true)
       .single()
 
