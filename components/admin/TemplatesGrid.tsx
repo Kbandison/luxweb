@@ -177,9 +177,9 @@ export function TemplatesGrid({ contractTemplates, emailTemplates }: TemplatesGr
               <p>Type: ${type.charAt(0).toUpperCase() + type.slice(1)} Template</p>
             </div>
             <div class="content">
-              ${('template_content' in template) ? template.template_content : 
-                ('subject' in template) ? `<h2>${template.subject}</h2><div>${template.template_content}</div>` : 
-                'No content available'}
+              ${type === 'email' && 'subject' in template
+                ? `<h2>${template.subject}</h2><div>${template.template_content}</div>`
+                : template.template_content || 'No content available'}
             </div>
           </body>
         </html>
