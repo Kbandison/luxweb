@@ -11,7 +11,19 @@ CREATE TABLE admin_users (
   last_login TIMESTAMP WITH TIME ZONE
 );
 
--- 2. Clients Table (converted leads become clients)
+-- 2. Service Packages
+CREATE TABLE packages (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  name TEXT NOT NULL CHECK (name IN ('starter', 'growth', 'complete', 'enterprise')),
+  display_name TEXT NOT NULL,
+  description TEXT,
+  price DECIMAL(10,2) NOT NULL,
+  features JSONB, -- Array of features
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 3. Clients Table (converted leads become clients)
 CREATE TABLE clients (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   contact_submission_id UUID REFERENCES contact_submissions(id), -- Link to original lead
@@ -29,7 +41,7 @@ CREATE TABLE clients (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 3. Projects Table
+-- 4. Projects Table
 CREATE TABLE projects (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
@@ -45,7 +57,7 @@ CREATE TABLE projects (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 4. Project Tasks/Milestones
+-- 5. Project Tasks/Milestones
 CREATE TABLE project_tasks (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
@@ -60,7 +72,7 @@ CREATE TABLE project_tasks (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 5. Invoices Table
+-- 6. Invoices Table
 CREATE TABLE invoices (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
@@ -78,7 +90,7 @@ CREATE TABLE invoices (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 6. Contract Templates
+-- 7. Contract Templates
 CREATE TABLE contract_templates (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   name TEXT NOT NULL,
@@ -90,7 +102,7 @@ CREATE TABLE contract_templates (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 7. Generated Contracts (filled templates)
+-- 8. Generated Contracts (filled templates)
 CREATE TABLE contracts (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
@@ -104,7 +116,33 @@ CREATE TABLE contracts (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 8. Project Files
+-- 9. Email Templates
+CREATE TABLE email_templates (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  name TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  template_content TEXT NOT NULL, -- HTML/markdown content with placeholders like {{client_name}}
+  template_type TEXT NOT NULL CHECK (template_type IN ('invoice', 'proposal', 'follow_up', 'welcome', 'reminder', 'custom')),
+  placeholder_fields JSONB NOT NULL, -- {"client_name": "text", "project_name": "text", "custom_message": "text"}
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 10. Project Milestones (alias for project_tasks for API compatibility)
+CREATE VIEW project_milestones AS 
+SELECT 
+  id,
+  project_id,
+  title as milestone_name,
+  description,
+  status,
+  due_date,
+  completed_at,
+  created_at
+FROM project_tasks;
+
+-- 11. Project Files
 CREATE TABLE project_files (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   project_id UUID REFERENCES projects(id) ON DELETE CASCADE,
@@ -121,15 +159,16 @@ CREATE TABLE project_files (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 9. Client Communications Log
-CREATE TABLE communications (
+-- 12. Client Communications Log
+CREATE TABLE client_communications (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
   project_id UUID REFERENCES projects(id) ON DELETE SET NULL,
-  type TEXT NOT NULL CHECK (type IN ('email', 'sms', 'call', 'meeting', 'note')),
+  communication_type TEXT NOT NULL CHECK (communication_type IN ('email', 'sms', 'call', 'meeting', 'note')),
   subject TEXT,
   content TEXT NOT NULL,
   direction TEXT NOT NULL CHECK (direction IN ('inbound', 'outbound')),
+  status TEXT DEFAULT 'sent' CHECK (status IN ('draft', 'sent', 'scheduled', 'completed', 'cancelled')),
   sent_by TEXT DEFAULT 'admin', -- admin, system, client
   delivered_at TIMESTAMP WITH TIME ZONE,
   opened_at TIMESTAMP WITH TIME ZONE,
@@ -137,7 +176,7 @@ CREATE TABLE communications (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 10. Client Questionnaires
+-- 13. Client Questionnaires
 CREATE TABLE questionnaire_responses (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
@@ -147,7 +186,7 @@ CREATE TABLE questionnaire_responses (
   completed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 11. Client Portal Sessions (for secure access)
+-- 14. Client Portal Sessions (for secure access)
 CREATE TABLE client_portal_sessions (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   client_id UUID REFERENCES clients(id) ON DELETE CASCADE,
@@ -166,19 +205,21 @@ CREATE INDEX idx_invoices_client_id ON invoices(client_id);
 CREATE INDEX idx_invoices_status ON invoices(status);
 CREATE INDEX idx_invoices_due_date ON invoices(due_date);
 CREATE INDEX idx_project_files_project_id ON project_files(project_id);
-CREATE INDEX idx_communications_client_id ON communications(client_id);
+CREATE INDEX idx_communications_client_id ON client_communications(client_id);
 CREATE INDEX idx_client_portal_sessions_token ON client_portal_sessions(session_token);
 
 -- Enable RLS on all tables
 ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE packages ENABLE ROW LEVEL SECURITY;
 ALTER TABLE clients ENABLE ROW LEVEL SECURITY;
 ALTER TABLE projects ENABLE ROW LEVEL SECURITY;
 ALTER TABLE project_tasks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE invoices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contract_templates ENABLE ROW LEVEL SECURITY;
+ALTER TABLE email_templates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE contracts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE project_files ENABLE ROW LEVEL SECURITY;
-ALTER TABLE communications ENABLE ROW LEVEL SECURITY;
+ALTER TABLE client_communications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE questionnaire_responses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE client_portal_sessions ENABLE ROW LEVEL SECURITY;
 
@@ -186,6 +227,19 @@ ALTER TABLE client_portal_sessions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Admin users can manage own account" ON admin_users
 FOR ALL TO authenticated
 USING (auth.uid()::text = id::text);
+
+-- RLS Policies for Packages
+CREATE POLICY "Everyone can view packages" ON packages
+FOR SELECT TO authenticated, anon
+USING (is_active = true);
+
+CREATE POLICY "Admin can manage packages" ON packages
+FOR ALL TO authenticated
+USING (true);
+
+CREATE POLICY "Service role can manage packages" ON packages
+FOR ALL TO service_role
+USING (true);
 
 -- RLS Policies for Clients (Admin can see all, clients can see their own)
 CREATE POLICY "Admin can manage all clients" ON clients
@@ -232,6 +286,15 @@ CREATE POLICY "Service role can manage contract templates" ON contract_templates
 FOR ALL TO service_role
 USING (true);
 
+-- RLS Policies for Email Templates
+CREATE POLICY "Admin can manage email templates" ON email_templates
+FOR ALL TO authenticated
+USING (true);
+
+CREATE POLICY "Service role can manage email templates" ON email_templates
+FOR ALL TO service_role
+USING (true);
+
 -- RLS Policies for Contracts
 CREATE POLICY "Admin can manage all contracts" ON contracts
 FOR ALL TO authenticated
@@ -250,12 +313,12 @@ CREATE POLICY "Service role can manage project files" ON project_files
 FOR ALL TO service_role
 USING (true);
 
--- RLS Policies for Communications
-CREATE POLICY "Admin can manage all communications" ON communications
+-- RLS Policies for Client Communications
+CREATE POLICY "Admin can manage all communications" ON client_communications
 FOR ALL TO authenticated
 USING (true);
 
-CREATE POLICY "Service role can manage communications" ON communications
+CREATE POLICY "Service role can manage communications" ON client_communications
 FOR ALL TO service_role
 USING (true);
 
@@ -327,6 +390,94 @@ INSERT INTO contract_templates (name, template_content, placeholder_fields, serv
   <p>By signing below, both parties agree to the terms outlined in this agreement.</p>',
   '{"client_name": "text", "company_name": "text", "project_name": "text", "project_price": "currency", "start_date": "date", "completion_date": "date", "payment_terms": "text"}',
   'growth'
+);
+
+-- Insert default packages
+INSERT INTO packages (name, display_name, description, price, features) VALUES 
+(
+  'starter',
+  'Starter Package',
+  'Perfect for new businesses getting online',
+  1500.00,
+  '["Professional single-page website", "Mobile-responsive design", "Basic SEO optimization", "Contact form integration", "1 week delivery", "30-day support"]'
+),
+(
+  'growth',
+  'Growth Package',
+  'Ideal for established businesses ready to scale',
+  2200.00,
+  '["Multi-page custom website", "Advanced SEO setup", "Analytics integration", "Social media integration", "Blog setup (optional)", "2 weeks delivery", "60-day support"]'
+),
+(
+  'complete',
+  'Complete Package',
+  'Full-service solution for serious growth',
+  2800.00,
+  '["Custom web application", "Database integration", "User authentication", "Payment processing", "Advanced functionality", "2+ weeks delivery", "90-day support"]'
+),
+(
+  'enterprise',
+  'Enterprise Package',
+  'Custom solution for complex business needs',
+  3500.00,
+  '["Fully custom development", "API integrations", "Advanced security", "Performance optimization", "Dedicated support", "Custom timeline", "6-month support"]'
+);
+
+-- Insert default email templates
+INSERT INTO email_templates (name, subject, template_content, template_type, placeholder_fields) VALUES 
+(
+  'Invoice Follow-up',
+  'Invoice Due: {{invoice_number}}',
+  '<p>Dear {{client_name}},</p>
+  <p>This is a friendly reminder that your invoice {{invoice_number}} for ${{invoice_amount}} is due on {{due_date}}.</p>
+  <p>Project: {{project_name}}</p>
+  <p>If you have any questions, please don''t hesitate to reach out.</p>
+  <p>Best regards,<br>LuxWeb Studio Team</p>',
+  'invoice',
+  '{"client_name": "text", "invoice_number": "text", "invoice_amount": "currency", "due_date": "date", "project_name": "text"}'
+),
+(
+  'Project Proposal',
+  'Your Web Development Proposal - {{project_name}}',
+  '<p>Dear {{client_name}},</p>
+  <p>Thank you for your interest in working with LuxWeb Studio. We''re excited to present our proposal for {{project_name}}.</p>
+  <p><strong>Project Summary:</strong></p>
+  <p>{{project_description}}</p>
+  <p><strong>Investment:</strong> ${{project_price}}</p>
+  <p><strong>Timeline:</strong> {{timeline}}</p>
+  <p>We look forward to bringing your vision to life!</p>
+  <p>Best regards,<br>LuxWeb Studio Team</p>',
+  'proposal',
+  '{"client_name": "text", "project_name": "text", "project_description": "text", "project_price": "currency", "timeline": "text"}'
+),
+(
+  'Welcome Email',
+  'Welcome to LuxWeb Studio - {{client_name}}',
+  '<p>Dear {{client_name}},</p>
+  <p>Welcome to LuxWeb Studio! We''re thrilled to have you as a client and can''t wait to start working on {{project_name}}.</p>
+  <p>Here''s what happens next:</p>
+  <ul>
+    <li>You''ll receive access to your client portal within 24 hours</li>
+    <li>We''ll schedule a discovery call to dive deep into your project requirements</li>
+    <li>Our team will begin the planning and design process</li>
+  </ul>
+  <p>If you have any questions, feel free to reply to this email.</p>
+  <p>Best regards,<br>LuxWeb Studio Team</p>',
+  'welcome',
+  '{"client_name": "text", "project_name": "text"}'
+),
+(
+  'Project Milestone Update',
+  'Project Update: {{milestone_name}} Complete',
+  '<p>Dear {{client_name}},</p>
+  <p>Great news! We''ve completed another milestone for {{project_name}}.</p>
+  <p><strong>Completed:</strong> {{milestone_name}}</p>
+  <p><strong>Progress:</strong> {{progress_percentage}}% complete</p>
+  <p><strong>Next Steps:</strong> {{next_steps}}</p>
+  <p>You can view the latest updates in your client portal.</p>
+  <p>Best regards,<br>LuxWeb Studio Team</p>',
+  'follow_up',
+  '{"client_name": "text", "project_name": "text", "milestone_name": "text", "progress_percentage": "number", "next_steps": "text"}'
 );
 
 -- Insert default project task templates

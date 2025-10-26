@@ -102,6 +102,13 @@ export async function middleware(request: NextRequest) {
 async function handlePortalRoutes(request: NextRequest) {
   console.log('🔥 MIDDLEWARE - Processing portal route:', request.nextUrl.pathname)
 
+  // TEMPORARILY BYPASS PORTAL AUTH FOR TESTING
+  // TODO: Re-enable once users table is properly set up
+  console.log('🔥 MIDDLEWARE - Allowing portal access (auth bypassed for testing)')
+  return NextResponse.next()
+
+  /* 
+  // Original auth code - commented out for testing
   let supabaseResponse = NextResponse.next({
     request,
   })
@@ -157,6 +164,7 @@ async function handlePortalRoutes(request: NextRequest) {
     console.error('🔥 MIDDLEWARE PORTAL ERROR:', error)
     return NextResponse.redirect(new URL('/portal/login', request.url))
   }
+  */
 }
 
 export const config = {

@@ -47,6 +47,7 @@ export function CreateInvoiceModal({ clients, projects, children }: CreateInvoic
     client_id: '',
     project_id: '',
     status: 'draft' as const,
+    invoice_type: 'standard' as const,
     amount: '',
     tax_rate: '8.5', // Default tax rate
     due_date: '',
@@ -77,6 +78,7 @@ export function CreateInvoiceModal({ clients, projects, children }: CreateInvoic
         client_id: formData.client_id,
         project_id: formData.project_id || null,
         status: formData.status,
+        invoice_type: formData.invoice_type,
         amount: subtotal,
         tax_amount: taxAmount,
         total_amount: totalAmount,
@@ -105,6 +107,7 @@ export function CreateInvoiceModal({ clients, projects, children }: CreateInvoic
         client_id: '',
         project_id: '',
         status: 'draft',
+        invoice_type: 'standard',
         amount: '',
         tax_rate: '8.5',
         due_date: '',
@@ -240,7 +243,24 @@ export function CreateInvoiceModal({ clients, projects, children }: CreateInvoic
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div>
+                <Label htmlFor="invoice_type" className="text-white text-sm font-medium mb-2 block">Invoice Type</Label>
+                <Select value={formData.invoice_type} onValueChange={(value: any) => handleInputChange('invoice_type', value)}>
+                  <SelectTrigger className="bg-white/10 border-white/20 text-white focus:border-primary-light focus:ring-1 focus:ring-primary-light h-12">
+                    <SelectValue className="text-white" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-900 border-white/20">
+                    <SelectItem value="standard" className="text-white hover:bg-white/10 focus:bg-white/10">Standard Invoice</SelectItem>
+                    <SelectItem value="down_payment" className="text-white hover:bg-white/10 focus:bg-white/10">Down Payment</SelectItem>
+                    <SelectItem value="progress_payment" className="text-white hover:bg-white/10 focus:bg-white/10">Progress Payment</SelectItem>
+                    <SelectItem value="final_payment" className="text-white hover:bg-white/10 focus:bg-white/10">Final Payment</SelectItem>
+                    <SelectItem value="retainer" className="text-white hover:bg-white/10 focus:bg-white/10">Monthly Retainer</SelectItem>
+                    <SelectItem value="expense_reimbursement" className="text-white hover:bg-white/10 focus:bg-white/10">Expense Reimbursement</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div>
                 <Label htmlFor="status" className="text-white text-sm font-medium mb-2 block">Status</Label>
                 <Select value={formData.status} onValueChange={(value: any) => handleInputChange('status', value)}>

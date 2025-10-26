@@ -14,7 +14,7 @@ export const packages: Package[] = [
   {
     name: "Starter Package",
     description: "Perfect for new businesses getting online",
-    price: "$1,500+",
+    price: "$800+",
     originalPrice: "$1,800",
     features: [
       "Professional single-page website",
@@ -27,13 +27,13 @@ export const packages: Package[] = [
     idealFor: "New businesses, personal brands, service providers",
     cta: "Get Your Quote",
     popular: false,
-    badge: "Save $300"
+    badge: "Save $1,000"
   },
   {
     name: "Growth Package",
     description: "Ideal for established businesses ready to scale",
-    price: "$2,200+",
-    originalPrice: "$2,600",
+    price: "$1,200+",
+    originalPrice: "$2,200",
     features: [
       "2 - 10 page custom website",
       "Advanced SEO setup",
@@ -46,13 +46,13 @@ export const packages: Package[] = [
     idealFor: "Growing businesses, professional services",
     cta: "Start Your Project",
     popular: true,
-    badge: "Save $400"
+    badge: "Save $1,000"
   },
   {
     name: "Complete Package",
     description: "Full-service solution for serious growth",
-    price: "$2,800+",
-    originalPrice: "$3,300",
+    price: "$1,600+",
+    originalPrice: "$2,600",
     features: [
       "10-30 Pages",
       "Database integration",
@@ -65,13 +65,13 @@ export const packages: Package[] = [
     idealFor: "Established businesses, complex requirements, E-commerce sites",
     cta: "Let's Discuss",
     popular: false,
-    badge: "Save $500"
+    badge: "Save $1,000"
   },
   {
     name: "Enterprise Package",
     description: "Premium solution for maximum results",
-    price: "$3,500+",
-    originalPrice: "$4,200",
+    price: "$2,200+",
+    originalPrice: "$3,200",
     features: [
       "Custom enterprise web application",
       "Advanced database architecture",
@@ -86,6 +86,6 @@ export const packages: Package[] = [
     idealFor: "Large businesses, complex enterprise needs",
     cta: "Contact Sales",
     popular: false,
-    badge: "Save $700"
+    badge: "Save $1,000"
   }
 ]

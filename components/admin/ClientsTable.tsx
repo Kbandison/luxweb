@@ -49,6 +49,10 @@ const statusColors = {
 export function ClientsTable({ clients }: ClientsTableProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [editingClient, setEditingClient] = useState<Client | null>(null)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage] = useState(10)
 
   const filteredClients = clients.filter(client => {
     const matchesSearch = 
@@ -60,6 +64,45 @@ export function ClientsTable({ clients }: ClientsTableProps) {
 
     return matchesSearch && matchesStatus
   })
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredClients.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedClients = filteredClients.slice(startIndex, endIndex)
+
+  const goToPreviousPage = () => {
+    setCurrentPage(prev => Math.max(prev - 1, 1))
+  }
+
+  const goToNextPage = () => {
+    setCurrentPage(prev => Math.min(prev + 1, totalPages))
+  }
+
+  const handleEditClient = (client: Client) => {
+    // Navigate to edit client page
+    window.location.href = `/admin/clients/${client.id}/edit`
+  }
+
+  const handleDeleteClient = async (clientId: string) => {
+    if (confirm('Are you sure you want to delete this client? This action cannot be undone.')) {
+      try {
+        const response = await fetch(`/api/admin/clients/${clientId}`, {
+          method: 'DELETE',
+        })
+        
+        if (response.ok) {
+          // Reload page to reflect changes
+          window.location.reload()
+        } else {
+          alert('Failed to delete client. Please try again.')
+        }
+      } catch (error) {
+        console.error('Error deleting client:', error)
+        alert('An error occurred while deleting the client.')
+      }
+    }
+  }
 
   return (
     <div className="p-6">
@@ -100,14 +143,14 @@ export function ClientsTable({ clients }: ClientsTableProps) {
             </tr>
           </thead>
           <tbody>
-            {filteredClients.length === 0 ? (
+            {paginatedClients.length === 0 ? (
               <tr>
                 <td colSpan={6} className="text-center py-12 text-gray-400">
                   No clients found
                 </td>
               </tr>
             ) : (
-              filteredClients.map((client) => (
+              paginatedClients.map((client) => (
                 <tr
                   key={client.id}
                   className="border-b border-white/5 hover:bg-white/5 transition-colors"
@@ -184,10 +227,20 @@ export function ClientsTable({ clients }: ClientsTableProps) {
                           <Eye className="h-4 w-4" />
                         </Button>
                       </Link>
-                      <Button size="sm" variant="ghost" className="text-gray-400 hover:text-white">
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        onClick={() => handleEditClient(client)}
+                        className="text-gray-400 hover:text-white"
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
-                      <Button size="sm" variant="ghost" className="text-gray-400 hover:text-red-400">
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        onClick={() => handleDeleteClient(client.id)}
+                        className="text-gray-400 hover:text-red-400"
+                      >
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -203,13 +256,28 @@ export function ClientsTable({ clients }: ClientsTableProps) {
       {filteredClients.length > 0 && (
         <div className="mt-6 flex items-center justify-between text-sm text-gray-400">
           <div>
-            Showing {filteredClients.length} of {clients.length} clients
+            Showing {startIndex + 1}-{Math.min(endIndex, filteredClients.length)} of {filteredClients.length} clients
           </div>
           <div className="flex items-center gap-2">
-            <Button size="sm" variant="ghost" disabled className="text-gray-500">
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              onClick={goToPreviousPage}
+              disabled={currentPage === 1}
+              className="text-gray-400 hover:text-white disabled:text-gray-600"
+            >
               Previous
             </Button>
-            <Button size="sm" variant="ghost" disabled className="text-gray-500">
+            <span className="text-white px-2">
+              {currentPage} of {totalPages}
+            </span>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages}
+              className="text-gray-400 hover:text-white disabled:text-gray-600"
+            >
               Next
             </Button>
           </div>

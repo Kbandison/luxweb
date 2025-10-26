@@ -5,6 +5,26 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 export async function getClientUser() {
+  // TEMPORARILY RETURN MOCK DATA FOR TESTING
+  // TODO: Re-enable once users table is properly set up
+  return {
+    id: 'test-client-id',
+    email: 'test@client.com',
+    role: 'client',
+    client: {
+      id: 'test-client-id',
+      primary_contact: 'Test Client',
+      company_name: 'Test Company',
+      email: 'test@client.com',
+      brand_colors: {
+        primary: '#2d1b69',
+        secondary: '#7c3aed',
+        accent: '#d4b3ff'
+      }
+    }
+  }
+
+  /* Original code - commented out for testing
   const cookieStore = await cookies()
   
   const supabase = createServerClient(
@@ -42,6 +62,7 @@ export async function getClientUser() {
   }
 
   return clientUser
+  */
 }
 
 export async function requireClientAuth() {

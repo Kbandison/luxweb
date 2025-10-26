@@ -43,6 +43,10 @@ interface ProjectsListProps {
 }
 
 export function ProjectsList({ projects }: ProjectsListProps) {
+  const handleEditProject = (projectId: string) => {
+    window.location.href = `/admin/projects/${projectId}/edit`
+  }
+
   const getStatusBadge = (status: Project['status']) => {
     const statusConfig = {
       planning: { label: 'Planning', variant: 'secondary', icon: Clock },
@@ -190,7 +194,11 @@ export function ProjectsList({ projects }: ProjectsListProps) {
                       <Eye className="w-4 h-4" />
                     </Button>
                   </Link>
-                  <Button variant="ghost" size="sm">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => handleEditProject(project.id)}
+                  >
                     <Edit className="w-4 h-4" />
                   </Button>
                 </div>

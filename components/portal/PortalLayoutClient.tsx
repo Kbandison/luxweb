@@ -5,6 +5,7 @@ import { ClientTheme } from '@/lib/theme-generator'
 import { ThemeProvider } from '@/components/portal/ThemeProvider'
 import { PortalHeader } from '@/components/portal/PortalHeader'
 import { PortalSidebar } from '@/components/portal/PortalSidebar'
+import { PortalBreadcrumbs } from '@/components/portal/Breadcrumbs'
 
 interface PortalLayoutClientProps {
   user: any
@@ -39,6 +40,7 @@ export function PortalLayoutClient({ user, theme, children }: PortalLayoutClient
           />
           <main className="flex-1 overflow-y-auto lg:ml-0">
             <div className="p-6">
+              <PortalBreadcrumbs />
               {children}
             </div>
           </main>

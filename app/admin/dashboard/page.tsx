@@ -86,7 +86,7 @@ export default async function AdminDashboard() {
   } = await getDashboardData()
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="py-6 space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
         <p className="text-gray-400">Welcome back! Here's what's happening with your business.</p>

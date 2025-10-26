@@ -48,6 +48,10 @@ interface ProjectDetailsProps {
 }
 
 export function ProjectDetails({ project }: ProjectDetailsProps) {
+  const handleEditProject = () => {
+    window.location.href = `/admin/projects/${project.id}/edit`
+  }
+
   const getStatusBadge = (status: ProjectDetailsProps['project']['status']) => {
     const statusConfig = {
       planning: { label: 'Planning', variant: 'secondary', icon: Clock },
@@ -103,7 +107,7 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-white">Project Details</h2>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" onClick={handleEditProject}>
           <Edit className="w-4 h-4 mr-2" />
           Edit
         </Button>

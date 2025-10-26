@@ -48,6 +48,44 @@ interface InvoicesListProps {
 }
 
 export function InvoicesList({ invoices }: InvoicesListProps) {
+  const handleDownloadInvoice = (invoiceId: string, invoiceNumber: string) => {
+    // Create a simple text-based invoice download as placeholder for PDF
+    const invoice = invoices.find(inv => inv.id === invoiceId)
+    if (!invoice) return
+    
+    const content = `LUXWEB STUDIO INVOICE
+========================
+
+Invoice: ${invoice.invoice_number}
+Date: ${new Date(invoice.created_at).toLocaleDateString()}
+Due Date: ${invoice.due_date ? new Date(invoice.due_date).toLocaleDateString() : 'N/A'}
+
+Bill To:
+${invoice.clients?.primary_contact || 'Unknown'}
+${invoice.clients?.company_name || ''}
+${invoice.clients?.email || ''}
+
+Project: ${invoice.projects?.project_name || 'N/A'}
+Description: ${invoice.description || 'No description'}
+
+Amount: ${formatCurrency(invoice.amount)}
+Tax: ${formatCurrency(invoice.tax_amount)}
+Total: ${formatCurrency(invoice.total_amount)}
+
+Status: ${invoice.status.toUpperCase()}
+`
+    
+    const blob = new Blob([content], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `invoice-${invoice.invoice_number}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
   const getStatusBadge = (status: Invoice['status']) => {
     const statusConfig = {
       draft: { label: 'Draft', variant: 'secondary', icon: FileText },
@@ -225,7 +263,11 @@ export function InvoicesList({ invoices }: InvoicesListProps) {
                         <Eye className="w-4 h-4" />
                       </Button>
                     </Link>
-                    <Button variant="ghost" size="sm">
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => handleDownloadInvoice(invoice.id, invoice.invoice_number)}
+                    >
                       <Download className="w-4 h-4" />
                     </Button>
                   </div>

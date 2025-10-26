@@ -278,6 +278,269 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
   }
 }
 
+export interface ClientInvitationData {
+  client_name: string
+  client_email: string
+  company_name?: string | null
+  project_name?: string | null
+  project_type?: string
+  temporary_password: string
+  login_url: string
+  personal_message?: string | null
+}
+
+export const sendClientInvitationEmail = async (data: ClientInvitationData) => {
+  const emailHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Welcome to LuxWeb Studio - Client Portal Access</title>
+      <style>
+        body { 
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          line-height: 1.6;
+          color: #333;
+          background: #f8fafc;
+          margin: 0;
+          padding: 20px;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          background: white;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+          color: white;
+          padding: 40px 30px;
+          text-align: center;
+        }
+        .logo {
+          font-size: 28px;
+          font-weight: bold;
+          margin-bottom: 10px;
+        }
+        .content {
+          padding: 40px 30px;
+        }
+        .greeting {
+          font-size: 24px;
+          font-weight: 600;
+          color: #1f2937;
+          margin-bottom: 20px;
+        }
+        .message {
+          font-size: 16px;
+          color: #4b5563;
+          margin-bottom: 30px;
+        }
+        .credentials-box {
+          background: #f0f9ff;
+          border-radius: 8px;
+          padding: 25px;
+          margin: 30px 0;
+          border-left: 4px solid #0ea5e9;
+        }
+        .credential-row {
+          display: flex;
+          margin-bottom: 12px;
+          align-items: center;
+        }
+        .credential-label {
+          font-weight: 600;
+          color: #374151;
+          min-width: 120px;
+          flex-shrink: 0;
+        }
+        .credential-value {
+          background: white;
+          padding: 8px 12px;
+          border-radius: 4px;
+          font-family: 'Monaco', 'Menlo', monospace;
+          color: #1f2937;
+          border: 1px solid #e5e7eb;
+          flex: 1;
+        }
+        .cta-button {
+          background: #6366f1;
+          color: white;
+          padding: 15px 30px;
+          border-radius: 8px;
+          text-decoration: none;
+          font-weight: 600;
+          display: inline-block;
+          margin: 25px 0;
+          text-align: center;
+        }
+        .security-notice {
+          background: #fef3f2;
+          border-radius: 8px;
+          padding: 20px;
+          margin: 30px 0;
+          border-left: 4px solid #ef4444;
+        }
+        .features-list {
+          background: #f8fafc;
+          border-radius: 8px;
+          padding: 25px;
+          margin: 30px 0;
+        }
+        .feature-item {
+          display: flex;
+          align-items: center;
+          margin-bottom: 12px;
+        }
+        .feature-icon {
+          color: #10b981;
+          margin-right: 12px;
+        }
+        .footer {
+          background: #1f2937;
+          color: #9ca3af;
+          padding: 30px;
+          text-align: center;
+          font-size: 14px;
+        }
+        .footer-link {
+          color: #6366f1;
+          text-decoration: none;
+        }
+        .personal-message {
+          background: #f9fafb;
+          border-radius: 8px;
+          padding: 20px;
+          margin: 30px 0;
+          border-left: 4px solid #6366f1;
+          font-style: italic;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="logo">LuxWeb Studio</div>
+          <div>Welcome to Your Client Portal</div>
+        </div>
+        
+        <div class="content">
+          <div class="greeting">Welcome, ${data.client_name}!</div>
+          
+          ${data.personal_message ? `
+          <div class="personal-message">
+            <div style="white-space: pre-line;">${data.personal_message}</div>
+          </div>
+          ` : ''}
+          
+          <div class="message">
+            Your client portal has been set up! This secure portal allows you to track your project progress, 
+            review deliverables, manage invoices, and communicate directly with our team.
+          </div>
+          
+          <div class="credentials-box">
+            <h3 style="margin-top: 0; color: #1f2937; margin-bottom: 20px;">🔐 Your Login Credentials</h3>
+            <div class="credential-row">
+              <div class="credential-label">Portal URL:</div>
+              <div class="credential-value">${data.login_url}</div>
+            </div>
+            <div class="credential-row">
+              <div class="credential-label">Email:</div>
+              <div class="credential-value">${data.client_email}</div>
+            </div>
+            <div class="credential-row">
+              <div class="credential-label">Temporary Password:</div>
+              <div class="credential-value">${data.temporary_password}</div>
+            </div>
+          </div>
+          
+          <div style="text-align: center;">
+            <a href="${data.login_url}" class="cta-button">
+              🚀 Access Your Portal
+            </a>
+          </div>
+          
+          <div class="features-list">
+            <h3 style="margin-top: 0; color: #1f2937;">What you can do in your portal:</h3>
+            <div class="feature-item">
+              <span class="feature-icon">✅</span>
+              <span>Track project progress and milestones in real-time</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">📁</span>
+              <span>Access and download project files and deliverables</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">💰</span>
+              <span>View and pay invoices securely online</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">💬</span>
+              <span>Communicate directly with your development team</span>
+            </div>
+            <div class="feature-item">
+              <span class="feature-icon">📊</span>
+              <span>Review project updates and status reports</span>
+            </div>
+          </div>
+          
+          <div class="security-notice">
+            <h3 style="margin-top: 0; color: #dc2626;">🔒 Important Security Note</h3>
+            <p style="margin-bottom: 0;">
+              For your security, please log in and change your password immediately. 
+              Never share your login credentials with anyone.
+            </p>
+          </div>
+          
+          ${data.project_name ? `
+          <div class="message">
+            <strong>Your Project:</strong> ${data.project_name}
+            ${data.project_type ? `<br><strong>Package:</strong> ${formatProjectType(data.project_type)}` : ''}
+          </div>
+          ` : ''}
+          
+          <div class="message">
+            If you have any questions or need assistance accessing your portal, 
+            please don't hesitate to reach out. We're here to help!
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div style="margin-bottom: 15px;">
+            <strong>LuxWeb Studio</strong><br>
+            Professional Web Development Services
+          </div>
+          <div>
+            <a href="mailto:support@luxwebstudio.dev" class="footer-link">support@luxwebstudio.dev</a> | 
+            <a href="tel:+17186350736" class="footer-link">(718) 635-0736</a>
+          </div>
+          <div style="margin-top: 15px; font-size: 12px;">
+            This email was sent because an account was created for you. If you believe this was sent in error, please contact us immediately.
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `
+
+  try {
+    const result = await resend.emails.send({
+      from: fromEmail,
+      to: [data.client_email],
+      subject: 'Welcome to LuxWeb Studio - Your Client Portal is Ready!',
+      html: emailHtml,
+    })
+    console.log('Client invitation email sent successfully:', result.data?.id)
+    return { success: true, data: result }
+  } catch (error) {
+    console.error('Error sending client invitation email:', error)
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
+  }
+}
+
 export const sendAdminNotificationEmail = async (data: EmailData) => {
   const emailHtml = `
     <!DOCTYPE html>

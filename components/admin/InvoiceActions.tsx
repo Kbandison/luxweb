@@ -25,6 +25,8 @@ export function InvoiceActions({ invoice }: InvoiceActionsProps) {
   const [loading, setLoading] = useState(false)
 
   const handleMarkAsPaid = async () => {
+    if (!confirm('Mark this invoice as paid?')) return
+    
     setLoading(true)
     try {
       const response = await fetch(`/api/admin/invoices/${invoice.id}/mark-paid`, {
@@ -32,16 +34,34 @@ export function InvoiceActions({ invoice }: InvoiceActionsProps) {
       })
       
       if (response.ok) {
-        window.location.reload()
+        // Show success message
+        const successDiv = document.createElement('div')
+        successDiv.innerHTML = `
+          <div class="fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50">
+            ✅ Invoice marked as paid successfully!
+          </div>
+        `
+        document.body.appendChild(successDiv)
+        
+        setTimeout(() => {
+          document.body.removeChild(successDiv)
+          window.location.reload()
+        }, 2000)
+      } else {
+        const errorData = await response.json()
+        alert(`Error: ${errorData.error || 'Failed to mark as paid'}`)
       }
     } catch (error) {
       console.error('Error marking invoice as paid:', error)
+      alert('Network error. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
   const handleSendInvoice = async () => {
+    if (!confirm('Send this invoice to the client?')) return
+    
     setLoading(true)
     try {
       const response = await fetch(`/api/admin/invoices/${invoice.id}/send`, {
@@ -49,18 +69,81 @@ export function InvoiceActions({ invoice }: InvoiceActionsProps) {
       })
       
       if (response.ok) {
-        window.location.reload()
+        // Show success message
+        const successDiv = document.createElement('div')
+        successDiv.innerHTML = `
+          <div class="fixed top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg z-50">
+            📧 Invoice sent successfully!
+          </div>
+        `
+        document.body.appendChild(successDiv)
+        
+        setTimeout(() => {
+          document.body.removeChild(successDiv)
+          window.location.reload()
+        }, 2000)
+      } else {
+        const errorData = await response.json()
+        alert(`Error: ${errorData.error || 'Failed to send invoice'}`)
       }
     } catch (error) {
       console.error('Error sending invoice:', error)
+      alert('Network error. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleDownload = () => {
-    // Placeholder for PDF generation
-    alert('PDF download feature coming soon!')
+  const handleDownload = async () => {
+    setLoading(true)
+    try {
+      // Create a simple PDF download simulation
+      const response = await fetch(`/api/admin/invoices/${invoice.id}/download`, {
+        method: 'GET'
+      })
+      
+      if (response.ok) {
+        // For now, create a simple invoice text download
+        const invoiceText = `INVOICE ${invoice.invoice_number}
+        
+Total Amount: $${invoice.total_amount.toLocaleString()}
+Status: ${invoice.status.toUpperCase()}
+Date: ${new Date().toLocaleDateString()}
+
+This is a simplified invoice download. 
+Full PDF generation will be implemented soon.`
+
+        const blob = new Blob([invoiceText], { type: 'text/plain' })
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `Invoice-${invoice.invoice_number}.txt`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        window.URL.revokeObjectURL(url)
+        
+        // Show success message
+        const successDiv = document.createElement('div')
+        successDiv.innerHTML = `
+          <div class="fixed top-4 right-4 bg-purple-600 text-white px-4 py-2 rounded-lg shadow-lg z-50">
+            📄 Invoice downloaded! (PDF generation coming soon)
+          </div>
+        `
+        document.body.appendChild(successDiv)
+        
+        setTimeout(() => {
+          document.body.removeChild(successDiv)
+        }, 3000)
+      } else {
+        alert('Download failed. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error downloading invoice:', error)
+      alert('Network error. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (

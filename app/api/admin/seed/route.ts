@@ -46,15 +46,15 @@ export async function POST() {
 
     if (projectError) throw projectError
 
-    // Create test project milestones
-    const { error: milestonesError } = await supabaseAdmin
-      .from('project_milestones')
+    // Create test project tasks
+    const { error: tasksError } = await supabaseAdmin
+      .from('project_tasks')
       .insert([
         {
           project_id: project.id,
           title: 'Discovery Call',
           description: 'Initial consultation and requirements gathering',
-          milestone_order: 1,
+          task_order: 1,
           status: 'completed',
           requires_client_action: true,
           completed_at: new Date().toISOString()
@@ -63,7 +63,7 @@ export async function POST() {
           project_id: project.id,
           title: 'Design Mockups',
           description: 'Create initial design concepts',
-          milestone_order: 2,
+          task_order: 2,
           status: 'in_progress',
           requires_client_action: false,
         },
@@ -71,13 +71,13 @@ export async function POST() {
           project_id: project.id,
           title: 'Client Review',
           description: 'Client feedback on designs',
-          milestone_order: 3,
+          task_order: 3,
           status: 'pending',
           requires_client_action: true,
         }
       ])
 
-    if (milestonesError) throw milestonesError
+    if (tasksError) throw tasksError
 
     // Create a test communication
     const { error: commError } = await supabaseAdmin
@@ -86,7 +86,7 @@ export async function POST() {
         {
           client_id: client.id,
           project_id: project.id,
-          type: 'email',
+          communication_type: 'email',
           subject: 'Project Kickoff - Website Redesign',
           content: 'Thanks for choosing LuxWeb Studio! We\'re excited to work on your website redesign. I\'ve scheduled our discovery call for next week.',
           direction: 'outbound',

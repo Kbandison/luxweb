@@ -1,8 +1,9 @@
 import { supabaseAdmin } from '@/lib/supabase-server'
 import { ClientsTable } from '@/components/admin/ClientsTable'
 import { CreateClientModal } from '@/components/admin/CreateClientModal'
+import { InviteClientModal } from '@/components/admin/InviteClientModal'
 import { Button } from '@/components/ui/button'
-import { Plus, Users } from 'lucide-react'
+import { Plus, Users, Mail } from 'lucide-react'
 
 async function getClientsData() {
   try {
@@ -37,12 +38,20 @@ export default async function ClientsPage() {
           <h1 className="text-3xl font-bold text-white mb-2">Clients</h1>
           <p className="text-gray-400">Manage your client relationships and projects</p>
         </div>
-        <CreateClientModal>
-          <Button className="bg-primary-light hover:bg-primary-medium text-white">
-            <Plus className="h-4 w-4 mr-2" />
-            New Client
-          </Button>
-        </CreateClientModal>
+        <div className="flex items-center space-x-3">
+          <InviteClientModal>
+            <Button className="bg-green-600 hover:bg-green-700 text-white">
+              <Mail className="h-4 w-4 mr-2" />
+              Invite Client
+            </Button>
+          </InviteClientModal>
+          <CreateClientModal>
+            <Button className="bg-primary-light hover:bg-primary-medium text-white">
+              <Plus className="h-4 w-4 mr-2" />
+              New Client
+            </Button>
+          </CreateClientModal>
+        </div>
       </div>
 
       {/* Stats */}
