@@ -31,9 +31,9 @@ export async function POST(request: NextRequest) {
       email: email.toLowerCase().trim(),
       phone: body.phone?.trim() || null,
       company: body.company?.trim() || null,
-      project_type: body.project_type || null,
+      project_type: body.project_type || 'not-specified',
       project_goals: message.trim(), // Use message as project_goals for DB compatibility
-      budget_range: null,
+      budget_range: 'discuss', // Default to "Let's discuss" since it's required in DB
       additional_details: '',
       status: 'new' as const
     }
