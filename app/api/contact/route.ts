@@ -31,10 +31,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Map project_type to valid database enum values
-    const validProjectTypes = ['starter', 'growth', 'complete', 'enterprise']
-    const projectType = validProjectTypes.includes(body.project_type)
-      ? body.project_type
-      : 'starter' // Default to starter if not specified or invalid
+    // Database only allows: 'starter', 'growth', 'complete' - NOT 'enterprise'
+    const projectTypeMap: Record<string, string> = {
+      'starter': 'starter',
+      'growth': 'growth',
+      'complete': 'complete',
+      'enterprise': 'complete', // Map enterprise to complete (highest tier in DB)
+    }
+    const projectType = projectTypeMap[body.project_type] || 'starter'
+    console.log('Project type mapping:', body.project_type, '->', projectType)
 
     // Prepare data for database (optional fields handled gracefully)
     const submissionData = {
