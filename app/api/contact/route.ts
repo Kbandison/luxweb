@@ -3,13 +3,17 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { sendClientConfirmationEmail, sendAdminNotificationEmail, EmailData } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
+  console.log('=== Contact Form Submission Started ===')
+
   try {
     const body = await request.json()
+    console.log('Received body:', JSON.stringify(body, null, 2))
 
     // Validate required fields (simplified: only name, email, message)
     const { name, email, message } = body
 
     if (!name || !email || !message) {
+      console.log('Validation failed: Missing required fields', { name: !!name, email: !!email, message: !!message })
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -19,11 +23,18 @@ export async function POST(request: NextRequest) {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email)) {
+      console.log('Validation failed: Invalid email format')
       return NextResponse.json(
         { error: 'Invalid email format' },
         { status: 400 }
       )
     }
+
+    // Map project_type to valid database enum values
+    const validProjectTypes = ['starter', 'growth', 'complete', 'enterprise']
+    const projectType = validProjectTypes.includes(body.project_type)
+      ? body.project_type
+      : 'starter' // Default to starter if not specified or invalid
 
     // Prepare data for database (optional fields handled gracefully)
     const submissionData = {
@@ -31,14 +42,17 @@ export async function POST(request: NextRequest) {
       email: email.toLowerCase().trim(),
       phone: body.phone?.trim() || null,
       company: body.company?.trim() || null,
-      project_type: body.project_type || 'not-specified',
+      project_type: projectType,
       project_goals: message.trim(), // Use message as project_goals for DB compatibility
       budget_range: 'discuss', // Default to "Let's discuss" since it's required in DB
       additional_details: '',
       status: 'new' as const
     }
 
+    console.log('Submission data prepared:', JSON.stringify(submissionData, null, 2))
+
     // Save to Supabase
+    console.log('Attempting to save to Supabase...')
     const { data: submissionResult, error: dbError } = await supabaseAdmin
       .from('contact_submissions')
       .insert([submissionData])
@@ -46,12 +60,19 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (dbError) {
-      console.error('Database error:', dbError)
+      console.error('Database error:', {
+        message: dbError.message,
+        details: dbError.details,
+        hint: dbError.hint,
+        code: dbError.code
+      })
       return NextResponse.json(
         { error: 'Failed to save submission', details: dbError.message },
         { status: 500 }
       )
     }
+
+    console.log('Successfully saved to database:', submissionResult?.id)
 
     // Prepare email data
     const emailData: EmailData = {
@@ -65,20 +86,27 @@ export async function POST(request: NextRequest) {
       message: message.trim()
     }
 
+    console.log('Email data prepared, sending emails in background...')
+
     // Send emails in background without blocking the response
     setImmediate(async () => {
       try {
+        console.log('Background email sending started...')
         const [clientResult, adminResult] = await Promise.allSettled([
           sendClientConfirmationEmail(emailData),
           sendAdminNotificationEmail(emailData)
         ])
-        
+
         if (clientResult.status === 'rejected' || (clientResult.status === 'fulfilled' && !clientResult.value.success)) {
           console.error('Failed to send client email:', clientResult.status === 'rejected' ? clientResult.reason : clientResult.value.error)
+        } else {
+          console.log('Client email sent successfully')
         }
-        
+
         if (adminResult.status === 'rejected' || (adminResult.status === 'fulfilled' && !adminResult.value.success)) {
           console.error('Failed to send admin email:', adminResult.status === 'rejected' ? adminResult.reason : adminResult.value.error)
+        } else {
+          console.log('Admin email sent successfully')
         }
       } catch (error) {
         console.error('Email sending process failed:', error)
@@ -86,6 +114,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Return success immediately
+    console.log('=== Contact Form Submission Completed Successfully ===')
     return NextResponse.json({
       success: true,
       message: 'Your message has been sent successfully! We\'ll get back to you within 24 hours.',
@@ -93,7 +122,9 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
+    console.error('=== Contact Form Submission Failed ===')
     console.error('API Error:', error)
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace')
     return NextResponse.json(
       { error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
