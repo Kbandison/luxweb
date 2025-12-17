@@ -4,21 +4,18 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const adminEmail = process.env.ADMIN_EMAIL;
 const fromEmailDomain = process.env.FROM_EMAIL_DOMAIN;
 
-// Parse the FROM_EMAIL_DOMAIN - handle cases where it might contain full email
-let parsedFromEmail = 'onboarding@resend.dev'; // default fallback
+// Parse the FROM_EMAIL_DOMAIN
+let parsedFromEmail = 'onboarding@resend.dev';
 
 if (fromEmailDomain) {
   const cleaned = fromEmailDomain.replace(/[<>]/g, '').trim();
   if (cleaned.includes('@')) {
-    // If it's already a full email address, format it with display name
     parsedFromEmail = `LuxWeb Studio <${cleaned}>`;
   } else {
-    // If it's just a domain, construct the email with display name
     parsedFromEmail = `LuxWeb Studio <noreply@${cleaned}>`;
   }
 }
 
-// Use the parsed email
 const fromEmail = parsedFromEmail;
 const finalAdminEmail = adminEmail || 'kbandison@gmail.com';
 
@@ -30,235 +27,140 @@ console.log('Email configuration:', {
   isProduction: process.env.NODE_ENV === 'production'
 });
 
+// Simplified EmailData to match the new contact form
 export interface EmailData {
   name: string
   email: string
+  message: string
   phone?: string
   company?: string
-  project_type: string
-  project_goals: string
-  budget_range: string
-  message?: string
+  project_type?: string
 }
 
-const formatProjectType = (type: string) => {
-  const typeMap = {
+const formatProjectType = (type?: string) => {
+  if (!type) return null
+  const typeMap: Record<string, string> = {
     'starter': 'Starter Package',
-    'growth': 'Growth Package', 
+    'growth': 'Growth Package',
     'complete': 'Complete Package',
     'enterprise': 'Enterprise Package'
   }
-  return typeMap[type as keyof typeof typeMap] || type
+  return typeMap[type] || null
 }
 
-const formatBudgetRange = (range: string) => {
-  const rangeMap = {
-    'under-1k': 'Under $1,000',
-    '1k-3k': '$1,000 - $3,000',
-    '3k-5k': '$3,000 - $5,000', 
-    '5k-10k': '$5,000 - $10,000',
-    '10k-plus': '$10,000+',
-    'discuss': 'Let\'s discuss'
-  }
-  return rangeMap[range as keyof typeof rangeMap] || range
-}
-
+// Client confirmation email - sleek, professional design
 export const sendClientConfirmationEmail = async (data: EmailData) => {
-  // Use the actual client email since we have a verified domain
-  const emailTo = data.email;
   const emailHtml = `
     <!DOCTYPE html>
     <html>
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Thank You - LuxWeb Studio</title>
-      <style>
-        body { 
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          line-height: 1.6;
-          color: #333;
-          background: #f8fafc;
-          margin: 0;
-          padding: 20px;
-        }
-        .container {
-          max-width: 600px;
-          margin: 0 auto;
-          background: white;
-          border-radius: 12px;
-          overflow: hidden;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-          color: white;
-          padding: 40px 30px;
-          text-align: center;
-        }
-        .logo {
-          font-size: 28px;
-          font-weight: bold;
-          margin-bottom: 10px;
-        }
-        .content {
-          padding: 40px 30px;
-        }
-        .greeting {
-          font-size: 24px;
-          font-weight: 600;
-          color: #1f2937;
-          margin-bottom: 20px;
-        }
-        .message {
-          font-size: 16px;
-          color: #4b5563;
-          margin-bottom: 30px;
-        }
-        .details-box {
-          background: #f8fafc;
-          border-radius: 8px;
-          padding: 25px;
-          margin: 30px 0;
-          border-left: 4px solid #6366f1;
-        }
-        .detail-row {
-          display: flex;
-          margin-bottom: 12px;
-          align-items: flex-start;
-        }
-        .detail-label {
-          font-weight: 600;
-          color: #374151;
-          min-width: 140px;
-          flex-shrink: 0;
-        }
-        .detail-value {
-          color: #6b7280;
-          flex: 1;
-        }
-        .next-steps {
-          background: #ecfdf5;
-          border-radius: 8px;
-          padding: 25px;
-          margin: 30px 0;
-          border-left: 4px solid #10b981;
-        }
-        .step {
-          display: flex;
-          align-items: center;
-          margin-bottom: 15px;
-        }
-        .step-number {
-          background: #10b981;
-          color: white;
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
-          font-size: 12px;
-          font-weight: bold;
-          margin-right: 15px;
-          flex-shrink: 0;
-          text-align: center;
-          line-height: 24px;
-          display: inline-block;
-        }
-        .footer {
-          background: #1f2937;
-          color: #9ca3af;
-          padding: 30px;
-          text-align: center;
-          font-size: 14px;
-        }
-        .footer-link {
-          color: #6366f1;
-          text-decoration: none;
-        }
-      </style>
+      <title>We received your message - LuxWeb Studio</title>
     </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <div class="logo">LuxWeb Studio</div>
-          <div>Professional Web Development</div>
-        </div>
-        
-        <div class="content">
-          <div class="greeting">Thank you, ${data.name}!</div>
-          
-          <div class="message">
-            We've received your project inquiry and are excited to help bring your vision to life. 
-            Your request has been submitted successfully and our team will review it shortly.
-          </div>
-          
-          <div class="details-box">
-            <h3 style="margin-top: 0; color: #1f2937;">Your Project Details</h3>
-            <div class="detail-row">
-              <div class="detail-label">Package:</div>
-              <div class="detail-value">${formatProjectType(data.project_type)}</div>
-            </div>
-            <div class="detail-row">
-              <div class="detail-label">Budget Range:</div>
-              <div class="detail-value">${formatBudgetRange(data.budget_range)}</div>
-            </div>
-            ${data.company ? `
-            <div class="detail-row">
-              <div class="detail-label">Company:</div>
-              <div class="detail-value">${data.company}</div>
-            </div>
-            ` : ''}
-            <div class="detail-row">
-              <div class="detail-label">Project Goals:</div>
-              <div class="detail-value">${data.project_goals}</div>
-            </div>
-            ${data.message ? `
-            <div class="detail-row">
-              <div class="detail-label">Additional Details:</div>
-              <div class="detail-value">${data.message}</div>
-            </div>
-            ` : ''}
-          </div>
-          
-          <div class="next-steps">
-            <h3 style="margin-top: 0; color: #1f2937;">What Happens Next?</h3>
-            <div class="step">
-              <div class="step-number">1</div>
-              <div>We'll review your project requirements within 24 hours</div>
-            </div>
-            <div class="step">
-              <div class="step-number">2</div>
-              <div>Schedule a free consultation call to discuss your vision</div>
-            </div>
-            <div class="step">
-              <div class="step-number">3</div>
-              <div>Receive a customized proposal and timeline</div>
-            </div>
-            <div class="step">
-              <div class="step-number">4</div>
-              <div>Start building your amazing website!</div>
-            </div>
-          </div>
-          
-          <div class="message">
-            Have questions in the meantime? Feel free to reply to this email or give us a call. 
-            We're here to help make your project a success!
-          </div>
-        </div>
-        
-        <div class="footer">
-          <div style="margin-bottom: 15px;">
-            <strong>LuxWeb Studio</strong><br>
-            Creating stunning, high-converting websites
-          </div>
-          <div>
-            <a href="mailto:support@luxwebstudio.dev" class="footer-link">support@luxwebstudio.dev</a> | 
-            <a href="tel:+17186350736" class="footer-link">(718) 635-0736</a>
-          </div>
-          <div style="margin-top: 15px; font-size: 12px;">
-            This email was sent because you submitted a project inquiry on our website.
-          </div>
-        </div>
-      </div>
+    <body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0a0a0a;">
+        <tr>
+          <td align="center" style="padding: 40px 20px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 520px; background: linear-gradient(180deg, #111111 0%, #0d0d0d 100%); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden;">
+
+              <!-- Header -->
+              <tr>
+                <td style="padding: 48px 40px 32px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                  <div style="font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">LuxWeb Studio</div>
+                  <div style="font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; letter-spacing: 0.5px;">WEB DEVELOPMENT</div>
+                </td>
+              </tr>
+
+              <!-- Main Content -->
+              <tr>
+                <td style="padding: 40px;">
+                  <h1 style="margin: 0 0 16px; font-size: 28px; font-weight: 600; color: #ffffff; line-height: 1.3;">
+                    Thanks, ${data.name}!
+                  </h1>
+                  <p style="margin: 0 0 32px; font-size: 16px; color: rgba(255,255,255,0.7); line-height: 1.6;">
+                    We've received your message and will get back to you within 24 hours.
+                  </p>
+
+                  <!-- Message Box -->
+                  <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 24px; border: 1px solid rgba(255,255,255,0.06);">
+                    <div style="font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Your Message</div>
+                    <p style="margin: 0; font-size: 15px; color: rgba(255,255,255,0.8); line-height: 1.6;">${data.message}</p>
+                  </div>
+
+                  ${data.project_type && formatProjectType(data.project_type) ? `
+                  <!-- Package Interest -->
+                  <div style="margin-top: 20px; display: flex; align-items: center;">
+                    <span style="font-size: 13px; color: rgba(255,255,255,0.5);">Interested in:</span>
+                    <span style="margin-left: 8px; font-size: 13px; font-weight: 500; color: #a78bfa;">${formatProjectType(data.project_type)}</span>
+                  </div>
+                  ` : ''}
+                </td>
+              </tr>
+
+              <!-- What's Next -->
+              <tr>
+                <td style="padding: 0 40px 40px;">
+                  <div style="background: linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(99,102,241,0.1) 100%); border-radius: 12px; padding: 24px; border: 1px solid rgba(139,92,246,0.2);">
+                    <div style="font-size: 14px; font-weight: 600; color: #a78bfa; margin-bottom: 16px;">What happens next?</div>
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="padding-bottom: 12px;">
+                          <table role="presentation" cellspacing="0" cellpadding="0">
+                            <tr>
+                              <td style="width: 24px; height: 24px; background: rgba(139,92,246,0.2); border-radius: 50%; text-align: center; font-size: 12px; font-weight: 600; color: #a78bfa; vertical-align: middle;">1</td>
+                              <td style="padding-left: 12px; font-size: 14px; color: rgba(255,255,255,0.7);">We'll review your inquiry</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding-bottom: 12px;">
+                          <table role="presentation" cellspacing="0" cellpadding="0">
+                            <tr>
+                              <td style="width: 24px; height: 24px; background: rgba(139,92,246,0.2); border-radius: 50%; text-align: center; font-size: 12px; font-weight: 600; color: #a78bfa; vertical-align: middle;">2</td>
+                              <td style="padding-left: 12px; font-size: 14px; color: rgba(255,255,255,0.7);">Schedule a quick discovery call</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <table role="presentation" cellspacing="0" cellpadding="0">
+                            <tr>
+                              <td style="width: 24px; height: 24px; background: rgba(139,92,246,0.2); border-radius: 50%; text-align: center; font-size: 12px; font-weight: 600; color: #a78bfa; vertical-align: middle;">3</td>
+                              <td style="padding-left: 12px; font-size: 14px; color: rgba(255,255,255,0.7);">Get a custom proposal</td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 24px 40px; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.06);">
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td style="text-align: center;">
+                        <div style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 8px;">
+                          <a href="mailto:support@luxwebstudio.dev" style="color: #a78bfa; text-decoration: none;">support@luxwebstudio.dev</a>
+                        </div>
+                        <div style="font-size: 12px; color: rgba(255,255,255,0.3);">
+                          © ${new Date().getFullYear()} LuxWeb Studio
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+      </table>
     </body>
     </html>
   `
@@ -266,8 +168,8 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
   try {
     const result = await resend.emails.send({
       from: fromEmail,
-      to: [emailTo],
-      subject: 'Thank you for your project inquiry - LuxWeb Studio',
+      to: [data.email],
+      subject: 'We received your message - LuxWeb Studio',
       html: emailHtml,
     })
     console.log('Client email sent successfully:', result.data?.id)
@@ -278,6 +180,118 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
   }
 }
 
+// Admin notification email - clean, actionable design
+export const sendAdminNotificationEmail = async (data: EmailData) => {
+  const emailHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New Inquiry from ${data.name}</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc;">
+        <tr>
+          <td align="center" style="padding: 40px 20px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 520px; background: #ffffff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden;">
+
+              <!-- Header -->
+              <tr>
+                <td style="padding: 24px 32px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td>
+                        <div style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">New Inquiry</div>
+                        <div style="font-size: 20px; font-weight: 600; color: #ffffff; margin-top: 4px;">${data.name}</div>
+                      </td>
+                      <td style="text-align: right;">
+                        <div style="font-size: 12px; color: rgba(255,255,255,0.7);">${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+                        <div style="font-size: 12px; color: rgba(255,255,255,0.7);">${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Contact Info -->
+              <tr>
+                <td style="padding: 24px 32px; border-bottom: 1px solid #e5e7eb;">
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td style="padding-bottom: 12px;">
+                        <div style="font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">Email</div>
+                        <a href="mailto:${data.email}" style="font-size: 15px; color: #6366f1; text-decoration: none; font-weight: 500;">${data.email}</a>
+                      </td>
+                    </tr>
+                    ${data.phone ? `
+                    <tr>
+                      <td style="padding-bottom: 12px;">
+                        <div style="font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">Phone</div>
+                        <a href="tel:${data.phone}" style="font-size: 15px; color: #374151; text-decoration: none;">${data.phone}</a>
+                      </td>
+                    </tr>
+                    ` : ''}
+                    ${data.company ? `
+                    <tr>
+                      <td>
+                        <div style="font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">Company</div>
+                        <div style="font-size: 15px; color: #374151;">${data.company}</div>
+                      </td>
+                    </tr>
+                    ` : ''}
+                  </table>
+                </td>
+              </tr>
+
+              <!-- Message -->
+              <tr>
+                <td style="padding: 24px 32px;">
+                  <div style="font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Message</div>
+                  <div style="font-size: 15px; color: #374151; line-height: 1.6; white-space: pre-wrap;">${data.message}</div>
+
+                  ${data.project_type && formatProjectType(data.project_type) ? `
+                  <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                    <div style="font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Package Interest</div>
+                    <div style="display: inline-block; font-size: 13px; font-weight: 500; color: #6366f1; background: #eef2ff; padding: 4px 12px; border-radius: 16px;">${formatProjectType(data.project_type)}</div>
+                  </div>
+                  ` : ''}
+                </td>
+              </tr>
+
+              <!-- Action Button -->
+              <tr>
+                <td style="padding: 0 32px 32px;">
+                  <a href="mailto:${data.email}?subject=Re: Your inquiry to LuxWeb Studio&body=Hi ${data.name},%0D%0A%0D%0AThank you for reaching out! I'd love to learn more about your project.%0D%0A%0D%0AWould you be available for a quick call this week?%0D%0A%0D%0ABest,%0D%0ALuxWeb Studio" style="display: block; text-align: center; background: #6366f1; color: #ffffff; padding: 14px 24px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600;">
+                    Reply to ${data.name.split(' ')[0]}
+                  </a>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+      </table>
+    </body>
+    </html>
+  `
+
+  try {
+    const result = await resend.emails.send({
+      from: fromEmail,
+      to: [finalAdminEmail],
+      subject: `New inquiry from ${data.name}`,
+      html: emailHtml,
+    })
+    console.log('Admin email sent successfully:', result.data?.id)
+    return { success: true, data: result }
+  } catch (error) {
+    console.error('Error sending admin email:', error)
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
+  }
+}
+
+// Client invitation email (keeping for portal functionality)
 export interface ClientInvitationData {
   client_name: string
   client_email: string
@@ -296,232 +310,89 @@ export const sendClientInvitationEmail = async (data: ClientInvitationData) => {
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Welcome to LuxWeb Studio - Client Portal Access</title>
-      <style>
-        body { 
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          line-height: 1.6;
-          color: #333;
-          background: #f8fafc;
-          margin: 0;
-          padding: 20px;
-        }
-        .container {
-          max-width: 600px;
-          margin: 0 auto;
-          background: white;
-          border-radius: 12px;
-          overflow: hidden;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-          color: white;
-          padding: 40px 30px;
-          text-align: center;
-        }
-        .logo {
-          font-size: 28px;
-          font-weight: bold;
-          margin-bottom: 10px;
-        }
-        .content {
-          padding: 40px 30px;
-        }
-        .greeting {
-          font-size: 24px;
-          font-weight: 600;
-          color: #1f2937;
-          margin-bottom: 20px;
-        }
-        .message {
-          font-size: 16px;
-          color: #4b5563;
-          margin-bottom: 30px;
-        }
-        .credentials-box {
-          background: #f0f9ff;
-          border-radius: 8px;
-          padding: 25px;
-          margin: 30px 0;
-          border-left: 4px solid #0ea5e9;
-        }
-        .credential-row {
-          display: flex;
-          margin-bottom: 12px;
-          align-items: center;
-        }
-        .credential-label {
-          font-weight: 600;
-          color: #374151;
-          min-width: 120px;
-          flex-shrink: 0;
-        }
-        .credential-value {
-          background: white;
-          padding: 8px 12px;
-          border-radius: 4px;
-          font-family: 'Monaco', 'Menlo', monospace;
-          color: #1f2937;
-          border: 1px solid #e5e7eb;
-          flex: 1;
-        }
-        .cta-button {
-          background: #6366f1;
-          color: white;
-          padding: 15px 30px;
-          border-radius: 8px;
-          text-decoration: none;
-          font-weight: 600;
-          display: inline-block;
-          margin: 25px 0;
-          text-align: center;
-        }
-        .security-notice {
-          background: #fef3f2;
-          border-radius: 8px;
-          padding: 20px;
-          margin: 30px 0;
-          border-left: 4px solid #ef4444;
-        }
-        .features-list {
-          background: #f8fafc;
-          border-radius: 8px;
-          padding: 25px;
-          margin: 30px 0;
-        }
-        .feature-item {
-          display: flex;
-          align-items: center;
-          margin-bottom: 12px;
-        }
-        .feature-icon {
-          color: #10b981;
-          margin-right: 12px;
-        }
-        .footer {
-          background: #1f2937;
-          color: #9ca3af;
-          padding: 30px;
-          text-align: center;
-          font-size: 14px;
-        }
-        .footer-link {
-          color: #6366f1;
-          text-decoration: none;
-        }
-        .personal-message {
-          background: #f9fafb;
-          border-radius: 8px;
-          padding: 20px;
-          margin: 30px 0;
-          border-left: 4px solid #6366f1;
-          font-style: italic;
-        }
-      </style>
+      <title>Your Client Portal Access - LuxWeb Studio</title>
     </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <div class="logo">LuxWeb Studio</div>
-          <div>Welcome to Your Client Portal</div>
-        </div>
-        
-        <div class="content">
-          <div class="greeting">Welcome, ${data.client_name}!</div>
-          
-          ${data.personal_message ? `
-          <div class="personal-message">
-            <div style="white-space: pre-line;">${data.personal_message}</div>
-          </div>
-          ` : ''}
-          
-          <div class="message">
-            Your client portal has been set up! This secure portal allows you to track your project progress, 
-            review deliverables, manage invoices, and communicate directly with our team.
-          </div>
-          
-          <div class="credentials-box">
-            <h3 style="margin-top: 0; color: #1f2937; margin-bottom: 20px;">🔐 Your Login Credentials</h3>
-            <div class="credential-row">
-              <div class="credential-label">Portal URL:</div>
-              <div class="credential-value">${data.login_url}</div>
-            </div>
-            <div class="credential-row">
-              <div class="credential-label">Email:</div>
-              <div class="credential-value">${data.client_email}</div>
-            </div>
-            <div class="credential-row">
-              <div class="credential-label">Temporary Password:</div>
-              <div class="credential-value">${data.temporary_password}</div>
-            </div>
-          </div>
-          
-          <div style="text-align: center;">
-            <a href="${data.login_url}" class="cta-button">
-              🚀 Access Your Portal
-            </a>
-          </div>
-          
-          <div class="features-list">
-            <h3 style="margin-top: 0; color: #1f2937;">What you can do in your portal:</h3>
-            <div class="feature-item">
-              <span class="feature-icon">✅</span>
-              <span>Track project progress and milestones in real-time</span>
-            </div>
-            <div class="feature-item">
-              <span class="feature-icon">📁</span>
-              <span>Access and download project files and deliverables</span>
-            </div>
-            <div class="feature-item">
-              <span class="feature-icon">💰</span>
-              <span>View and pay invoices securely online</span>
-            </div>
-            <div class="feature-item">
-              <span class="feature-icon">💬</span>
-              <span>Communicate directly with your development team</span>
-            </div>
-            <div class="feature-item">
-              <span class="feature-icon">📊</span>
-              <span>Review project updates and status reports</span>
-            </div>
-          </div>
-          
-          <div class="security-notice">
-            <h3 style="margin-top: 0; color: #dc2626;">🔒 Important Security Note</h3>
-            <p style="margin-bottom: 0;">
-              For your security, please log in and change your password immediately. 
-              Never share your login credentials with anyone.
-            </p>
-          </div>
-          
-          ${data.project_name ? `
-          <div class="message">
-            <strong>Your Project:</strong> ${data.project_name}
-            ${data.project_type ? `<br><strong>Package:</strong> ${formatProjectType(data.project_type)}` : ''}
-          </div>
-          ` : ''}
-          
-          <div class="message">
-            If you have any questions or need assistance accessing your portal, 
-            please don't hesitate to reach out. We're here to help!
-          </div>
-        </div>
-        
-        <div class="footer">
-          <div style="margin-bottom: 15px;">
-            <strong>LuxWeb Studio</strong><br>
-            Professional Web Development Services
-          </div>
-          <div>
-            <a href="mailto:support@luxwebstudio.dev" class="footer-link">support@luxwebstudio.dev</a> | 
-            <a href="tel:+17186350736" class="footer-link">(718) 635-0736</a>
-          </div>
-          <div style="margin-top: 15px; font-size: 12px;">
-            This email was sent because an account was created for you. If you believe this was sent in error, please contact us immediately.
-          </div>
-        </div>
-      </div>
+    <body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0a0a0a;">
+        <tr>
+          <td align="center" style="padding: 40px 20px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 520px; background: linear-gradient(180deg, #111111 0%, #0d0d0d 100%); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden;">
+
+              <!-- Header -->
+              <tr>
+                <td style="padding: 48px 40px 32px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                  <div style="font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">LuxWeb Studio</div>
+                  <div style="font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; letter-spacing: 0.5px;">CLIENT PORTAL</div>
+                </td>
+              </tr>
+
+              <!-- Main Content -->
+              <tr>
+                <td style="padding: 40px;">
+                  <h1 style="margin: 0 0 16px; font-size: 28px; font-weight: 600; color: #ffffff; line-height: 1.3;">
+                    Welcome, ${data.client_name}!
+                  </h1>
+                  <p style="margin: 0 0 32px; font-size: 16px; color: rgba(255,255,255,0.7); line-height: 1.6;">
+                    Your client portal is ready. Track your project progress, access files, and communicate with our team.
+                  </p>
+
+                  ${data.personal_message ? `
+                  <div style="background: rgba(139,92,246,0.1); border-radius: 12px; padding: 20px; margin-bottom: 24px; border: 1px solid rgba(139,92,246,0.2);">
+                    <p style="margin: 0; font-size: 15px; color: rgba(255,255,255,0.8); line-height: 1.6; font-style: italic;">${data.personal_message}</p>
+                  </div>
+                  ` : ''}
+
+                  <!-- Credentials -->
+                  <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 24px; border: 1px solid rgba(255,255,255,0.06);">
+                    <div style="font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;">Login Credentials</div>
+
+                    <div style="margin-bottom: 16px;">
+                      <div style="font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 4px;">Email</div>
+                      <div style="font-size: 15px; color: #ffffff; font-family: 'Monaco', 'Menlo', monospace;">${data.client_email}</div>
+                    </div>
+
+                    <div>
+                      <div style="font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 4px;">Temporary Password</div>
+                      <div style="font-size: 15px; color: #ffffff; font-family: 'Monaco', 'Menlo', monospace; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 6px; display: inline-block;">${data.temporary_password}</div>
+                    </div>
+                  </div>
+
+                  <!-- CTA Button -->
+                  <div style="margin-top: 24px; text-align: center;">
+                    <a href="${data.login_url}" style="display: inline-block; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: #ffffff; padding: 16px 32px; border-radius: 10px; text-decoration: none; font-size: 15px; font-weight: 600;">
+                      Access Your Portal
+                    </a>
+                  </div>
+
+                  <!-- Security Note -->
+                  <p style="margin: 24px 0 0; font-size: 13px; color: rgba(255,255,255,0.4); text-align: center;">
+                    Please change your password after your first login.
+                  </p>
+                </td>
+              </tr>
+
+              <!-- Footer -->
+              <tr>
+                <td style="padding: 24px 40px; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.06);">
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td style="text-align: center;">
+                        <div style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 8px;">
+                          <a href="mailto:support@luxwebstudio.dev" style="color: #a78bfa; text-decoration: none;">support@luxwebstudio.dev</a>
+                        </div>
+                        <div style="font-size: 12px; color: rgba(255,255,255,0.3);">
+                          © ${new Date().getFullYear()} LuxWeb Studio
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+
+            </table>
+          </td>
+        </tr>
+      </table>
     </body>
     </html>
   `
@@ -530,210 +401,13 @@ export const sendClientInvitationEmail = async (data: ClientInvitationData) => {
     const result = await resend.emails.send({
       from: fromEmail,
       to: [data.client_email],
-      subject: 'Welcome to LuxWeb Studio - Your Client Portal is Ready!',
+      subject: 'Your Client Portal Access - LuxWeb Studio',
       html: emailHtml,
     })
     console.log('Client invitation email sent successfully:', result.data?.id)
     return { success: true, data: result }
   } catch (error) {
     console.error('Error sending client invitation email:', error)
-    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
-  }
-}
-
-export const sendAdminNotificationEmail = async (data: EmailData) => {
-  const emailHtml = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>New Project Inquiry - LuxWeb Studio</title>
-      <style>
-        body { 
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          line-height: 1.6;
-          color: #333;
-          background: #f8fafc;
-          margin: 0;
-          padding: 20px;
-        }
-        .container {
-          max-width: 600px;
-          margin: 0 auto;
-          background: white;
-          border-radius: 12px;
-          overflow: hidden;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-          background: linear-gradient(135deg, #dc2626 0%, #ea580c 100%);
-          color: white;
-          padding: 40px 30px;
-          text-align: center;
-        }
-        .alert-badge {
-          background: rgba(255, 255, 255, 0.2);
-          padding: 8px 16px;
-          border-radius: 20px;
-          font-size: 14px;
-          font-weight: 600;
-          margin-bottom: 15px;
-          display: inline-block;
-        }
-        .content {
-          padding: 40px 30px;
-        }
-        .client-info {
-          background: #fef3f2;
-          border-radius: 8px;
-          padding: 25px;
-          margin: 30px 0;
-          border-left: 4px solid #dc2626;
-        }
-        .project-info {
-          background: #f0f9ff;
-          border-radius: 8px;
-          padding: 25px;
-          margin: 30px 0;
-          border-left: 4px solid #0ea5e9;
-        }
-        .detail-row {
-          display: flex;
-          margin-bottom: 12px;
-          align-items: flex-start;
-        }
-        .detail-label {
-          font-weight: 600;
-          color: #374151;
-          min-width: 140px;
-          flex-shrink: 0;
-        }
-        .detail-value {
-          color: #6b7280;
-          flex: 1;
-        }
-        .priority-high {
-          background: #fef2f2;
-          border: 1px solid #fecaca;
-          color: #dc2626;
-          padding: 8px 16px;
-          border-radius: 6px;
-          font-weight: 600;
-          display: inline-block;
-          margin: 15px 0;
-        }
-        .action-required {
-          background: #fffbeb;
-          border-radius: 8px;
-          padding: 25px;
-          margin: 30px 0;
-          border-left: 4px solid #f59e0b;
-        }
-        .cta-button {
-          background: #6366f1;
-          color: white;
-          padding: 12px 24px;
-          border-radius: 6px;
-          text-decoration: none;
-          font-weight: 600;
-          display: inline-block;
-          margin: 20px 0;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <div class="alert-badge">🚨 NEW INQUIRY</div>
-          <h1 style="margin: 0; font-size: 24px;">New Project Inquiry</h1>
-          <div>LuxWeb Studio Admin Panel</div>
-        </div>
-        
-        <div class="content">
-          <div class="priority-high">⚡ Action Required - Respond within 24 hours</div>
-          
-          <div class="client-info">
-            <h3 style="margin-top: 0; color: #1f2937;">👤 Client Information</h3>
-            <div class="detail-row">
-              <div class="detail-label">Name:</div>
-              <div class="detail-value"><strong>${data.name}</strong></div>
-            </div>
-            <div class="detail-row">
-              <div class="detail-label">Email:</div>
-              <div class="detail-value"><a href="mailto:${data.email}">${data.email}</a></div>
-            </div>
-            ${data.phone ? `
-            <div class="detail-row">
-              <div class="detail-label">Phone:</div>
-              <div class="detail-value"><a href="tel:${data.phone}">${data.phone}</a></div>
-            </div>
-            ` : ''}
-            ${data.company ? `
-            <div class="detail-row">
-              <div class="detail-label">Company:</div>
-              <div class="detail-value">${data.company}</div>
-            </div>
-            ` : ''}
-          </div>
-          
-          <div class="project-info">
-            <h3 style="margin-top: 0; color: #1f2937;">🚀 Project Details</h3>
-            <div class="detail-row">
-              <div class="detail-label">Package Interest:</div>
-              <div class="detail-value"><strong>${formatProjectType(data.project_type)}</strong></div>
-            </div>
-            <div class="detail-row">
-              <div class="detail-label">Budget Range:</div>
-              <div class="detail-value"><strong>${formatBudgetRange(data.budget_range)}</strong></div>
-            </div>
-            <div class="detail-row">
-              <div class="detail-label">Project Goals:</div>
-              <div class="detail-value">${data.project_goals}</div>
-            </div>
-            ${data.message ? `
-            <div class="detail-row">
-              <div class="detail-label">Additional Details:</div>
-              <div class="detail-value">${data.message}</div>
-            </div>
-            ` : ''}
-          </div>
-          
-          <div class="action-required">
-            <h3 style="margin-top: 0; color: #1f2937;">📋 Recommended Next Steps</h3>
-            <ul style="margin: 15px 0; padding-left: 20px;">
-              <li>Review project requirements and budget alignment</li>
-              <li>Send personalized follow-up email within 24 hours</li>
-              <li>Schedule discovery call if project is a good fit</li>
-              <li>Add to CRM/project management system</li>
-            </ul>
-            
-            <a href="mailto:${data.email}?subject=Re: Your Project Inquiry - Let's Schedule a Call&body=Hi ${data.name},%0D%0A%0D%0AThank you for reaching out about your ${formatProjectType(data.project_type).toLowerCase()} project. I've reviewed your requirements and would love to discuss how we can help bring your vision to life.%0D%0A%0D%0AWould you be available for a quick 15-minute call this week to discuss your project in more detail?%0D%0A%0D%0ABest regards,%0D%0A[Your Name]%0D%0ALuxWeb Studio" class="cta-button">
-              📧 Reply to Client
-            </a>
-          </div>
-          
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 14px; color: #6b7280;">
-            <strong>Submission Time:</strong> ${new Date().toLocaleString()}<br>
-            <strong>Source:</strong> Website Contact Form
-          </div>
-        </div>
-      </div>
-    </body>
-    </html>
-  `
-
-  try {
-    const result = await resend.emails.send({
-      from: fromEmail,
-      to: [finalAdminEmail],
-      subject: `🚨 New Project Inquiry from ${data.name} - ${formatProjectType(data.project_type)}`,
-      html: emailHtml,
-    })
-    console.log('Admin email sent successfully:', result.data?.id)
-    return { success: true, data: result }
-  } catch (error) {
-    console.error('Error sending admin email:', error)
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }

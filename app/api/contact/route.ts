@@ -79,16 +79,14 @@ export async function POST(request: NextRequest) {
 
     console.log('Successfully saved to database:', submissionResult?.id)
 
-    // Prepare email data
+    // Prepare email data (simplified to match new form)
     const emailData: EmailData = {
       name: submissionData.name,
       email: submissionData.email,
+      message: message.trim(),
       phone: submissionData.phone || undefined,
       company: submissionData.company || undefined,
-      project_type: submissionData.project_type || 'Not specified',
-      project_goals: submissionData.project_goals,
-      budget_range: submissionData.budget_range || 'Not specified',
-      message: message.trim()
+      project_type: submissionData.project_type || undefined
     }
 
     console.log('Email data prepared, sending emails in background...')
