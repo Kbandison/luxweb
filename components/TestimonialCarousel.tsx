@@ -136,8 +136,9 @@ export default function TestimonialCarousel() {
       className="py-20 px-6 relative"
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true, amount: 0.05 }}
       variants={containerVariants}
+      style={{ opacity: 1 }} // CSS fallback for visibility
     >
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">

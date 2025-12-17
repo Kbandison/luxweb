@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Send, CheckCircle, AlertCircle, Clock, Users, Zap, HelpCircle } from "lucide-react"
+import { Send, CheckCircle, AlertCircle, Clock, Users, Zap } from "lucide-react"
 import { motion } from "framer-motion"
 import ScrollReveal from "./ScrollReveal"
 
@@ -17,15 +17,12 @@ export default function Contact() {
     phone: '',
     company: '',
     project_type: '',
-    project_goals: '',
-    budget_range: '',
     message: ''
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [showTooltip, setShowTooltip] = useState(false)
-  const [showBudgetTooltip, setShowBudgetTooltip] = useState(false)
+  const [showMoreFields, setShowMoreFields] = useState(false)
 
   // Auto-populate package from URL parameter
   useEffect(() => {
@@ -34,11 +31,11 @@ export default function Contact() {
       // Map package names to form values
       const packageMap: Record<string, string> = {
         'Starter Package': 'starter',
-        'Growth Package': 'growth', 
+        'Growth Package': 'growth',
         'Complete Package': 'complete',
         'Enterprise Package': 'enterprise'
       }
-      
+
       const mappedValue = packageMap[packageParam]
       if (mappedValue) {
         setFormData(prev => ({ ...prev, project_type: mappedValue }))
@@ -48,13 +45,11 @@ export default function Contact() {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
-    
+
     if (!formData.name.trim()) newErrors.name = 'Name is required'
     if (!formData.email.trim()) newErrors.email = 'Email is required'
-    if (!formData.project_type) newErrors.project_type = 'Project type is required'
-    if (!formData.budget_range) newErrors.budget_range = 'Budget range is required'
-    if (!formData.project_goals.trim()) newErrors.project_goals = 'Project goals are required'
-    
+    if (!formData.message.trim()) newErrors.message = 'Please tell us about your project'
+
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (formData.email && !emailRegex.test(formData.email)) {
@@ -95,10 +90,9 @@ export default function Contact() {
         phone: '',
         company: '',
         project_type: '',
-        project_goals: '',
-        budget_range: '',
         message: ''
       })
+      setShowMoreFields(false)
     } catch (error) {
       console.error('Error submitting form:', error)
       setSubmitStatus('error')
@@ -171,6 +165,7 @@ export default function Contact() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Essential Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
@@ -182,7 +177,7 @@ export default function Contact() {
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
                   className="glass-card bg-white/5 border-white/20 text-white placeholder-gray-400"
-                  placeholder="Your full name"
+                  placeholder="Your name"
                 />
                 {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
               </div>
@@ -203,130 +198,9 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">
-                  Phone
-                </label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  className="glass-card bg-white/5 border-white/20 text-white placeholder-gray-400"
-                  placeholder="(555) 123-4567"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">
-                  Company
-                </label>
-                <Input
-                  id="company"
-                  type="text"
-                  value={formData.company}
-                  onChange={(e) => handleInputChange('company', e.target.value)}
-                  className="glass-card bg-white/5 border-white/20 text-white placeholder-gray-400"
-                  placeholder="Your company name"
-                />
-              </div>
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <label htmlFor="project_type" className="block text-sm font-medium text-gray-300">
-                  Project Type *
-                </label>
-                <div className="relative">
-                  <button
-                    type="button"
-                    onMouseEnter={() => setShowTooltip(true)}
-                    onMouseLeave={() => setShowTooltip(false)}
-                    className="text-gray-400 hover:text-purple-400 transition-colors duration-200"
-                  >
-                    <HelpCircle className="w-4 h-4" />
-                  </button>
-                  {showTooltip && (
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-black/90 border border-purple-400/30 rounded-lg p-3 text-xs text-gray-300 z-50">
-                      <div className="text-purple-400 font-medium mb-1">Don't worry about choosing the wrong package!</div>
-                      <div>Just pick the one that most aligns with your needs. We'll discuss the perfect fit for your project during our consultation.</div>
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-purple-400/30"></div>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <select
-                value={formData.project_type}
-                onChange={(e) => handleInputChange('project_type', e.target.value)}
-                className="glass-card bg-white/5 border-white/20 text-white w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
-              >
-                <option value="" className="bg-black text-white">Select your package</option>
-                <option value="starter" className="bg-black text-white">Starter Package</option>
-                <option value="growth" className="bg-black text-white">Growth Package</option>
-                <option value="complete" className="bg-black text-white">Complete Package</option>
-                <option value="enterprise" className="bg-black text-white">Enterprise Package</option>
-              </select>
-              {errors.project_type && <p className="text-red-400 text-sm mt-1">{errors.project_type}</p>}
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <label htmlFor="budget_range" className="block text-sm font-medium text-gray-300">
-                  Budget Range *
-                </label>
-                <div className="relative">
-                  <button
-                    type="button"
-                    onMouseEnter={() => setShowBudgetTooltip(true)}
-                    onMouseLeave={() => setShowBudgetTooltip(false)}
-                    className="text-gray-400 hover:text-purple-400 transition-colors duration-200"
-                  >
-                    <HelpCircle className="w-4 h-4" />
-                  </button>
-                  {showBudgetTooltip && (
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-black/90 border border-purple-400/30 rounded-lg p-3 text-xs text-gray-300 z-50">
-                      <div className="text-purple-400 font-medium mb-1">A guess is totally fine!</div>
-                      <div>We understand budgets can be flexible. Just give us a rough idea - no judgment, and we'll work with you to find the best solution.</div>
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-purple-400/30"></div>
-                    </div>
-                  )}
-                </div>
-              </div>
-              <select
-                value={formData.budget_range}
-                onChange={(e) => handleInputChange('budget_range', e.target.value)}
-                className="glass-card bg-white/5 border-white/20 text-white w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
-              >
-                <option value="" className="bg-black text-white">Select your budget range</option>
-                <option value="under-1k" className="bg-black text-white">Under $1,000</option>
-                <option value="1k-3k" className="bg-black text-white">$1,000 - $3,000</option>
-                <option value="3k-5k" className="bg-black text-white">$3,000 - $5,000</option>
-                <option value="5k-10k" className="bg-black text-white">$5,000 - $10,000</option>
-                <option value="10k-plus" className="bg-black text-white">$10,000+</option>
-                <option value="discuss" className="bg-black text-white">Let's discuss</option>
-              </select>
-              {errors.budget_range && <p className="text-red-400 text-sm mt-1">{errors.budget_range}</p>}
-            </div>
-
-            <div>
-              <label htmlFor="project_goals" className="block text-sm font-medium text-gray-300 mb-2">
-                Project Goals *
-              </label>
-              <Textarea
-                id="project_goals"
-                value={formData.project_goals}
-                onChange={(e) => handleInputChange('project_goals', e.target.value)}
-                rows={4}
-                className="glass-card bg-white/5 border-white/20 text-white placeholder-gray-400"
-                placeholder="What do you hope to achieve with this website? (e.g., increase sales, generate leads, improve brand presence...)"
-              />
-              {errors.project_goals && <p className="text-red-400 text-sm mt-1">{errors.project_goals}</p>}
-            </div>
-
             <div>
               <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                Additional Details
+                Tell us about your project *
               </label>
               <Textarea
                 id="message"
@@ -334,10 +208,72 @@ export default function Contact() {
                 onChange={(e) => handleInputChange('message', e.target.value)}
                 rows={4}
                 className="glass-card bg-white/5 border-white/20 text-white placeholder-gray-400"
-                placeholder="Any additional information about your project, timeline, or specific requirements..."
+                placeholder="What kind of website do you need? What are your goals?"
               />
               {errors.message && <p className="text-red-400 text-sm mt-1">{errors.message}</p>}
             </div>
+
+            {/* Optional Fields Toggle */}
+            <button
+              type="button"
+              onClick={() => setShowMoreFields(!showMoreFields)}
+              className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors duration-200 flex items-center gap-2"
+            >
+              {showMoreFields ? '− Hide optional details' : '+ Add more details (optional)'}
+            </button>
+
+            {/* Optional Fields */}
+            {showMoreFields && (
+              <div className="space-y-6 pt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">
+                      Phone
+                    </label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
+                      className="glass-card bg-white/5 border-white/20 text-white placeholder-gray-400"
+                      placeholder="(555) 123-4567"
+                    />
+                  </div>
+
+                  <div>
+                    <label htmlFor="company" className="block text-sm font-medium text-gray-300 mb-2">
+                      Company
+                    </label>
+                    <Input
+                      id="company"
+                      type="text"
+                      value={formData.company}
+                      onChange={(e) => handleInputChange('company', e.target.value)}
+                      className="glass-card bg-white/5 border-white/20 text-white placeholder-gray-400"
+                      placeholder="Your company name"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="project_type" className="block text-sm font-medium text-gray-300 mb-2">
+                    Interested Package
+                  </label>
+                  <select
+                    value={formData.project_type}
+                    onChange={(e) => handleInputChange('project_type', e.target.value)}
+                    className="glass-card bg-white/5 border-white/20 text-white w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                  >
+                    <option value="" className="bg-black text-white">Not sure yet</option>
+                    <option value="starter" className="bg-black text-white">Starter Package</option>
+                    <option value="growth" className="bg-black text-white">Growth Package</option>
+                    <option value="complete" className="bg-black text-white">Complete Package</option>
+                    <option value="enterprise" className="bg-black text-white">Enterprise Package</option>
+                  </select>
+                  <p className="text-gray-500 text-xs mt-1">Don't worry if unsure - we'll discuss the best fit during consultation</p>
+                </div>
+              </div>
+            )}
 
             <Button 
               type="submit" 

@@ -66,18 +66,19 @@ export default function ProcessSection() {
             
             return (
               <StaggerItem key={index}>
-                <motion.div 
+                <motion.div
                   className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-8 lg:gap-16`}
-                  whileInView={{ 
+                  whileInView={{
                     opacity: 1,
                     y: 0
                   }}
-                  initial={{ 
+                  initial={{
                     opacity: 0,
                     y: 50
                   }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, amount: 0.05 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
+                  style={{ opacity: 1 }} // CSS fallback for visibility
                 >
                   {/* Content Side */}
                   <div className="flex-1 text-center lg:text-left">

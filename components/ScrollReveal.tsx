@@ -57,19 +57,19 @@ export default function ScrollReveal({
 }
 
 // Stagger container for multiple child animations
-export function StaggerContainer({ 
-  children, 
+export function StaggerContainer({
+  children,
   staggerChildren = 0.1,
-  className = '' 
-}: { 
+  className = ''
+}: {
   children: ReactNode
   staggerChildren?: number
-  className?: string 
+  className?: string
 }) {
   const reduceMotion = shouldReduceMotion()
-  
+
   const containerVariants = {
-    hidden: { opacity: 0 },
+    hidden: { opacity: reduceMotion ? 1 : 0 },
     visible: {
       opacity: 1,
       transition: {
@@ -81,11 +81,12 @@ export function StaggerContainer({
 
   return (
     <motion.div
-      initial="hidden"
+      initial={reduceMotion ? "visible" : "hidden"}
       whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
+      viewport={{ once: true, amount: 0.05 }}
       variants={containerVariants}
       className={className}
+      style={{ opacity: 1 }} // CSS fallback
     >
       {children}
     </motion.div>
@@ -93,22 +94,22 @@ export function StaggerContainer({
 }
 
 // Item for use within StaggerContainer
-export function StaggerItem({ 
-  children, 
+export function StaggerItem({
+  children,
   direction = 'up',
-  className = '' 
-}: { 
+  className = ''
+}: {
   children: ReactNode
   direction?: 'up' | 'down' | 'left' | 'right'
-  className?: string 
+  className?: string
 }) {
   const reduceMotion = shouldReduceMotion()
-  
+
   const directionVariants = {
-    up: { opacity: 0, y: reduceMotion ? 0 : 30 },
-    down: { opacity: 0, y: reduceMotion ? 0 : -30 },
-    left: { opacity: 0, x: reduceMotion ? 0 : -30 },
-    right: { opacity: 0, x: reduceMotion ? 0 : 30 }
+    up: { opacity: reduceMotion ? 1 : 0, y: reduceMotion ? 0 : 30 },
+    down: { opacity: reduceMotion ? 1 : 0, y: reduceMotion ? 0 : -30 },
+    left: { opacity: reduceMotion ? 1 : 0, x: reduceMotion ? 0 : -30 },
+    right: { opacity: reduceMotion ? 1 : 0, x: reduceMotion ? 0 : 30 }
   }
 
   const variants = {
@@ -127,6 +128,7 @@ export function StaggerItem({
     <motion.div
       variants={variants}
       className={className}
+      style={{ opacity: 1 }} // CSS fallback for visibility
     >
       {children}
     </motion.div>

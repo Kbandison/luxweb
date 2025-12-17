@@ -5,11 +5,11 @@ import { sendClientConfirmationEmail, sendAdminNotificationEmail, EmailData } fr
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
-    // Validate required fields
-    const { name, email, project_type, project_goals, budget_range, message } = body
-    
-    if (!name || !email || !project_type || !project_goals || !budget_range) {
+
+    // Validate required fields (simplified: only name, email, message)
+    const { name, email, message } = body
+
+    if (!name || !email || !message) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -25,16 +25,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Prepare data for database
+    // Prepare data for database (optional fields handled gracefully)
     const submissionData = {
       name: name.trim(),
       email: email.toLowerCase().trim(),
       phone: body.phone?.trim() || null,
       company: body.company?.trim() || null,
-      project_type,
-      project_goals: project_goals.trim(),
-      budget_range,
-      additional_details: message?.trim() || '',
+      project_type: body.project_type || null,
+      project_goals: message.trim(), // Use message as project_goals for DB compatibility
+      budget_range: null,
+      additional_details: '',
       status: 'new' as const
     }
 
@@ -59,10 +59,10 @@ export async function POST(request: NextRequest) {
       email: submissionData.email,
       phone: submissionData.phone || undefined,
       company: submissionData.company || undefined,
-      project_type: submissionData.project_type,
+      project_type: submissionData.project_type || 'Not specified',
       project_goals: submissionData.project_goals,
-      budget_range: submissionData.budget_range,
-      message: submissionData.additional_details || undefined
+      budget_range: submissionData.budget_range || 'Not specified',
+      message: message.trim()
     }
 
     // Send emails in background without blocking the response

@@ -239,3 +239,20 @@ html {
   scrollbar-width: auto;
   scrollbar-color: rgb(45, 27, 105) rgba(10, 10, 10, 0.8);
 }
+
+/* Animation Fallbacks - Ensure content is visible even if animations fail */
+/* For users who prefer reduced motion, show content immediately */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Ensure framer-motion animated elements don't stay invisible */
+/* This provides a fallback if JS fails to load or animations don't trigger */
+.motion-safe-visible {
+  opacity: 1 !important;
+  transform: none !important;
+}
