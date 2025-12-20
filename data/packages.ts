@@ -14,7 +14,7 @@ export const packages: Package[] = [
   {
     name: "Starter Package",
     description: "Perfect for new businesses getting online",
-    price: "$800+",
+    price: "$1,200+",
     originalPrice: "$1,800",
     features: [
       "Professional single-page website",
@@ -27,12 +27,12 @@ export const packages: Package[] = [
     idealFor: "New businesses, personal brands, service providers",
     cta: "Get Your Quote",
     popular: false,
-    badge: "Save $1,000"
+    badge: "Save $600"
   },
   {
     name: "Growth Package",
     description: "Ideal for established businesses ready to scale",
-    price: "$1,200+",
+    price: "$1,600+",
     originalPrice: "$2,200",
     features: [
       "2 - 10 page custom website",
@@ -46,12 +46,12 @@ export const packages: Package[] = [
     idealFor: "Growing businesses, professional services",
     cta: "Start Your Project",
     popular: true,
-    badge: "Save $1,000"
+    badge: "Save $600"
   },
   {
     name: "Complete Package",
     description: "Full-service solution for serious growth",
-    price: "$1,600+",
+    price: "$2,000+",
     originalPrice: "$2,600",
     features: [
       "10-30 Pages",
@@ -65,12 +65,12 @@ export const packages: Package[] = [
     idealFor: "Established businesses, complex requirements, E-commerce sites",
     cta: "Let's Discuss",
     popular: false,
-    badge: "Save $1,000"
+    badge: "Save $600"
   },
   {
     name: "Enterprise Package",
     description: "Premium solution for maximum results",
-    price: "$2,200+",
+    price: "$2,600+",
     originalPrice: "$3,200",
     features: [
       "Custom enterprise web application",
@@ -86,6 +86,6 @@ export const packages: Package[] = [
     idealFor: "Large businesses, complex enterprise needs",
     cta: "Contact Sales",
     popular: false,
-    badge: "Save $1,000"
+    badge: "Save $600"
   }
 ]
