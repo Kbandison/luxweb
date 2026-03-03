@@ -1,47 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ScrollReveal from './ScrollReveal'
+import { faqData } from '@/data/faq'
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
-  const faqs = [
-    {
-      question: "How long does it take to build my website?",
-      answer: "Most websites are completed within 1-3 weeks depending on the package. Starter packages take about 1 week, Growth packages 2 weeks, and Complete/Enterprise packages 2-3+ weeks. We'll give you a specific timeline during our consultation."
-    },
-    {
-      question: "Do you provide ongoing support after launch?",
-      answer: "Yes! All packages include post-launch support ranging from 30 days (Starter) to 6 months (Enterprise). This includes bug fixes, minor updates, and technical support. We also offer ongoing maintenance plans for long-term support."
-    },
-    {
-      question: "Can I make changes during the development process?",
-      answer: "Absolutely! We encourage feedback throughout the process. Minor changes and refinements are included in all packages. Major scope changes may require timeline and cost adjustments, which we'll discuss upfront."
-    },
-    {
-      question: "What if I'm not satisfied with the final result?",
-      answer: "Your satisfaction is our priority. We work closely with you throughout the process to ensure the website meets your expectations. We offer revisions during development and will work with you to address any concerns."
-    },
-    {
-      question: "Do you build mobile-responsive websites?",
-      answer: "Yes, every website we build is fully responsive and optimized for mobile devices. We follow a mobile-first approach to ensure your site looks and works perfectly on all screen sizes."
-    },
-    {
-      question: "What's included in SEO optimization?",
-      answer: "Our SEO optimization includes proper HTML structure, meta tags, fast loading speeds, mobile optimization, and basic on-page SEO. Growth and higher packages include more advanced SEO setup and analytics integration."
-    },
-    {
-      question: "Do I own the website after it's completed?",
-      answer: "Yes, you own your website completely. We'll provide you with all the files, source code, and any necessary login credentials. You're free to host it anywhere or make future changes as needed."
-    },
-    {
-      question: "What payment methods do you accept?",
-      answer: "We accept all major credit cards, PayPal, and bank transfers. For larger projects, we offer payment plans with 50% upfront and 50% upon completion. We'll discuss payment options during our consultation."
-    }
-  ]
+  const faqs = faqData
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)

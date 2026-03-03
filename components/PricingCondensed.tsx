@@ -5,52 +5,15 @@ import { Check, ArrowRight, Star } from "lucide-react"
 import { motion } from "framer-motion"
 import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
 import Link from "next/link"
+import { packages as allPackages } from "@/data/packages"
 
 export default function PricingCondensed() {
-  const packages = [
-    {
-      name: "Starter Package",
-      price: "$1,100",
-      originalPrice: "$1,400",
-      description: "Perfect for new businesses getting online",
-      features: [
-        "Professional single-page website",
-        "Mobile-responsive design",
-        "Basic SEO optimization",
-        "1 week delivery"
-      ],
-      popular: false,
-      badge: "Save $300"
-    },
-    {
-      name: "Growth Package",
-      price: "$1,300",
-      originalPrice: "$1,700",
-      description: "Ideal for established businesses ready to scale",
-      features: [
-        "Multi-page custom website",
-        "Advanced SEO setup",
-        "Analytics integration",
-        "2 weeks delivery"
-      ],
-      popular: true,
-      badge: "Save $400"
-    },
-    {
-      name: "Complete Package",
-      price: "$1,500",
-      originalPrice: "$2,000",
-      description: "Full-service solution for serious growth",
-      features: [
-        "Custom web application",
-        "Database integration",
-        "Payment processing",
-        "2+ weeks delivery"
-      ],
-      popular: false,
-      badge: "Save $500"
-    }
-  ]
+  // Show first 3 packages (Starter, Growth, Complete) as a homepage preview
+  const packages = allPackages.slice(0, 3).map(pkg => ({
+    ...pkg,
+    // Show first 4 features as a condensed preview
+    features: pkg.features.slice(0, 4),
+  }))
 
   return (
     <section className="py-20 px-6">

@@ -1,80 +1,51 @@
-import { Users, FolderOpen, CheckCircle, TrendingUp, UserPlus, DollarSign, FileText } from 'lucide-react'
+import { Mail, AlertCircle, Calendar, TrendingUp } from 'lucide-react'
 
 interface DashboardStatsProps {
-  clientsCount: number
-  leadsCount: number
-  activeClientsCount: number
-  activeProjectsCount: number
-  completedThisMonth: number
-  revenueThisMonth: number
-  pendingInvoices: number
+  totalSubmissions: number
+  newSubmissions: number
+  thisMonthSubmissions: number
+  conversionRate: number
 }
 
-export function DashboardStats({ 
-  clientsCount,
-  leadsCount,
-  activeClientsCount,
-  activeProjectsCount, 
-  completedThisMonth,
-  revenueThisMonth,
-  pendingInvoices
+export function DashboardStats({
+  totalSubmissions,
+  newSubmissions,
+  thisMonthSubmissions,
+  conversionRate
 }: DashboardStatsProps) {
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount)
-  }
-
   const stats = [
     {
-      name: 'Total Clients',
-      value: clientsCount,
-      icon: Users,
-      change: `${leadsCount} leads, ${activeClientsCount} active`,
-      changeType: 'neutral' as const,
+      name: 'Total Submissions',
+      value: totalSubmissions,
+      icon: Mail,
+      description: 'All time',
+      type: 'neutral' as const,
     },
     {
-      name: 'Active Projects',
-      value: activeProjectsCount,
-      icon: FolderOpen,
-      change: 'In progress',
-      changeType: 'positive' as const,
+      name: 'New / Unread',
+      value: newSubmissions,
+      icon: AlertCircle,
+      description: 'Awaiting response',
+      type: newSubmissions > 0 ? 'warning' as const : 'positive' as const,
     },
     {
-      name: 'Completed This Month',
-      value: completedThisMonth,
-      icon: CheckCircle,
-      change: 'Projects finished',
-      changeType: 'positive' as const,
+      name: 'This Month',
+      value: thisMonthSubmissions,
+      icon: Calendar,
+      description: 'Submissions received',
+      type: 'neutral' as const,
     },
     {
-      name: 'Revenue This Month',
-      value: formatCurrency(revenueThisMonth),
+      name: 'Conversion Rate',
+      value: `${conversionRate}%`,
       icon: TrendingUp,
-      change: 'From completed projects',
-      changeType: 'positive' as const,
-    },
-    {
-      name: 'New Leads',
-      value: leadsCount,
-      icon: UserPlus,
-      change: 'Awaiting contracts',
-      changeType: 'neutral' as const,
-    },
-    {
-      name: 'Pending Invoices',
-      value: pendingInvoices,
-      icon: FileText,
-      change: 'Need attention',
-      changeType: pendingInvoices > 0 ? 'warning' as const : 'positive' as const,
+      description: 'Leads converted',
+      type: 'positive' as const,
     },
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {stats.map((stat) => (
         <div
           key={stat.name}
@@ -94,14 +65,14 @@ export function DashboardStats({
           <div className="mt-6">
             <span
               className={`text-sm font-medium ${
-                stat.changeType === 'positive' 
-                  ? 'text-green-400' 
-                  : stat.changeType === 'warning'
+                stat.type === 'positive'
+                  ? 'text-green-400'
+                  : stat.type === 'warning'
                   ? 'text-yellow-400'
                   : 'text-gray-400'
               }`}
             >
-              {stat.change}
+              {stat.description}
             </span>
           </div>
         </div>

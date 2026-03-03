@@ -4,32 +4,13 @@ import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ScrollReveal from './ScrollReveal'
+import { faqData } from '@/data/faq'
 
 export default function FAQCondensed() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
-  const faqs = [
-    {
-      question: "How long does it take to build my website?",
-      answer: "Most websites are completed within 1-3 weeks depending on the package. We'll give you a specific timeline during our consultation."
-    },
-    {
-      question: "Do you build mobile-responsive websites?",
-      answer: "Yes, every website we build is fully responsive and optimized for mobile devices. We follow a mobile-first approach to ensure your site works perfectly on all screen sizes."
-    },
-    {
-      question: "What's included in your packages?",
-      answer: "Our packages range from simple single-page sites to complex web applications with databases and payment processing. Each includes professional design, SEO optimization, and post-launch support."
-    },
-    {
-      question: "Do you provide support after launch?",
-      answer: "Yes! All packages include post-launch support ranging from 30 days to 6 months depending on your package. This includes bug fixes, minor updates, and technical support."
-    },
-    {
-      question: "Do I own the website after it's completed?",
-      answer: "Absolutely! You own your website completely. We'll provide you with all files, source code, and login credentials. You're free to host it anywhere or make future changes."
-    }
-  ]
+  // Show first 5 FAQs as a homepage preview
+  const faqs = faqData.slice(0, 5)
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)

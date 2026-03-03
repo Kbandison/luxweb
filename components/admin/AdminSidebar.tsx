@@ -1,29 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
-import { 
-  LayoutDashboard, 
-  Users, 
-  FolderOpen, 
-  FileText, 
-  Calendar,
+import {
+  LayoutDashboard,
   Mail,
-  Settings,
-  DollarSign
+  Calendar
 } from 'lucide-react'
 
 const navigation = [
-  { name: 'Overview', icon: LayoutDashboard, href: '/admin/dashboard' },
-  { name: 'Clients', icon: Users, href: '/admin/clients' },
-  { name: 'Projects', icon: FolderOpen, href: '/admin/projects' },
-  { name: 'Invoices', icon: DollarSign, href: '/admin/invoices' },
-  { name: 'Communications', icon: Mail, href: '/admin/communications' },
+  { name: 'Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' },
+  { name: 'Submissions', icon: Mail, href: '/admin/submissions' },
   { name: 'Calendar', icon: Calendar, href: '/admin/calendar' },
-  { name: 'Templates', icon: FileText, href: '/admin/templates' },
-  { name: 'Settings', icon: Settings, href: '/admin/settings' },
 ]
 
 interface AdminSidebarProps {
@@ -32,8 +20,6 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ user }: AdminSidebarProps) {
   const pathname = usePathname()
-  
-  // Component only renders when user exists (checked in layout)
 
   return (
     <aside className="fixed left-0 top-[136px] bottom-0 z-20 w-64 bg-glass-primary backdrop-blur-xl border-r border-white/20">
