@@ -14,11 +14,13 @@ export default function ProjectsGrid() {
   const [lightboxImages, setLightboxImages] = useState<string[]>([])
   const [lightboxIndex, setLightboxIndex] = useState(0)
   const [lightboxTitle, setLightboxTitle] = useState('')
+  const [lightboxLink, setLightboxLink] = useState<string | undefined>(undefined)
 
-  const openLightbox = (images: string[], index: number, title: string) => {
+  const openLightbox = (images: string[], index: number, title: string, liveLink?: string) => {
     setLightboxImages(images)
     setLightboxIndex(index)
     setLightboxTitle(title)
+    setLightboxLink(liveLink)
     setLightboxOpen(true)
   }
 
@@ -112,7 +114,7 @@ export default function ProjectsGrid() {
                 {/* Current Image - Clickable */}
                 <div
                   className={`h-full bg-gradient-to-br ${project.color} relative transition-all duration-500 cursor-pointer`}
-                  onClick={() => openLightbox(project.images, currentImageIndex[index] || 0, project.title)}
+                  onClick={() => openLightbox(project.images, currentImageIndex[index] || 0, project.title, project.links?.live)}
                 >
                   {project.images.length > 0 && (
                     <img
@@ -266,6 +268,7 @@ export default function ProjectsGrid() {
         isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}
         projectTitle={lightboxTitle}
+        liveLink={lightboxLink}
       />
     </div>
   )

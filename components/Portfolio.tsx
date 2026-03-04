@@ -14,11 +14,13 @@ export default function Portfolio() {
   const [lightboxImages, setLightboxImages] = useState<string[]>([])
   const [lightboxIndex, setLightboxIndex] = useState(0)
   const [lightboxTitle, setLightboxTitle] = useState('')
+  const [lightboxLink, setLightboxLink] = useState<string | undefined>(undefined)
 
-  const openLightbox = (images: string[], index: number, title: string) => {
+  const openLightbox = (images: string[], index: number, title: string, liveLink?: string) => {
     setLightboxImages(images)
     setLightboxIndex(index)
     setLightboxTitle(title)
+    setLightboxLink(liveLink)
     setLightboxOpen(true)
   }
 
@@ -101,6 +103,7 @@ export default function Portfolio() {
         isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}
         projectTitle={lightboxTitle}
+        liveLink={lightboxLink}
       />
     </section>
   )
@@ -112,7 +115,7 @@ function PortfolioCard({
   className = '',
 }: {
   project: typeof projects[0]
-  onOpenLightbox: (images: string[], index: number, title: string) => void
+  onOpenLightbox: (images: string[], index: number, title: string, liveLink?: string) => void
   className?: string
 }) {
   return (
@@ -120,7 +123,7 @@ function PortfolioCard({
       className={`relative rounded-2xl overflow-hidden group cursor-pointer ${className}`}
       whileHover={{ scale: 1.01 }}
       transition={{ duration: 0.3 }}
-      onClick={() => onOpenLightbox(project.images, 0, project.title)}
+      onClick={() => onOpenLightbox(project.images, 0, project.title, project.links?.live)}
     >
       {/* Background Image */}
       <Image

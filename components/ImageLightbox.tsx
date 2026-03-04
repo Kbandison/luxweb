@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { X, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 
@@ -11,6 +11,7 @@ interface ImageLightboxProps {
   isOpen: boolean
   onClose: () => void
   projectTitle?: string
+  liveLink?: string
 }
 
 export default function ImageLightbox({
@@ -18,7 +19,8 @@ export default function ImageLightbox({
   initialIndex,
   isOpen,
   onClose,
-  projectTitle
+  projectTitle,
+  liveLink
 }: ImageLightboxProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex)
 
@@ -74,30 +76,45 @@ export default function ImageLightbox({
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm"
         onClick={onClose}
       >
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors duration-200 backdrop-blur-md border border-white/20"
-          aria-label="Close lightbox"
-        >
-          <X className="w-6 h-6 text-white" />
-        </button>
-
-        {/* Image Counter */}
-        <div className="absolute top-4 left-4 z-10 px-4 py-2 bg-black/50 rounded-full backdrop-blur-md border border-white/20">
-          <span className="text-white font-medium">
-            {currentIndex + 1} / {images.length}
-          </span>
-        </div>
-
-        {/* Project Title */}
-        {projectTitle && (
-          <div className="absolute top-16 left-4 z-10 px-4 py-2 bg-black/50 rounded-lg backdrop-blur-md border border-white/20">
-            <span className="text-white font-semibold text-lg">
-              {projectTitle}
+        {/* Top Bar: counter, title, live link, close */}
+        <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/80 to-transparent">
+          <div className="flex items-center gap-4">
+            {/* Image Counter */}
+            <span className="text-white/70 text-sm font-medium">
+              {currentIndex + 1} / {images.length}
             </span>
+
+            {/* Project Title */}
+            {projectTitle && (
+              <span className="text-white font-semibold text-base hidden sm:inline">
+                {projectTitle}
+              </span>
+            )}
+
+            {/* Live Site Link */}
+            {liveLink && (
+              <a
+                href={liveLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/20 hover:bg-purple-500/30 rounded-full border border-purple-400/30 text-purple-300 text-sm font-medium transition-colors"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                Visit Site
+              </a>
+            )}
           </div>
-        )}
+
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors duration-200 backdrop-blur-md border border-white/20"
+            aria-label="Close lightbox"
+          >
+            <X className="w-5 h-5 text-white" />
+          </button>
+        </div>
 
         {/* Main Image Container */}
         <motion.div
