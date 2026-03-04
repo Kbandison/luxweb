@@ -77,7 +77,10 @@ export default function ImageLightbox({
         onClick={onClose}
       >
         {/* Top Bar: counter, title, live link, close */}
-        <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/80 to-transparent">
+        <div
+          className="absolute top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 py-4 bg-gradient-to-b from-black/90 via-black/60 to-transparent"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="flex items-center gap-4">
             {/* Image Counter */}
             <span className="text-white/70 text-sm font-medium">
@@ -97,10 +100,9 @@ export default function ImageLightbox({
                 href={liveLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-500/20 hover:bg-purple-500/30 rounded-full border border-purple-400/30 text-purple-300 text-sm font-medium transition-colors"
+                className="flex items-center gap-1.5 px-4 py-2 bg-purple-500/30 hover:bg-purple-500/40 rounded-full border border-purple-400/40 text-purple-200 text-sm font-medium transition-colors"
               >
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="w-4 h-4" />
                 Visit Site
               </a>
             )}
@@ -109,10 +111,10 @@ export default function ImageLightbox({
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors duration-200 backdrop-blur-md border border-white/20"
+            className="w-12 h-12 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center transition-colors duration-200 backdrop-blur-md border border-white/25"
             aria-label="Close lightbox"
           >
-            <X className="w-5 h-5 text-white" />
+            <X className="w-6 h-6 text-white" />
           </button>
         </div>
 
@@ -123,7 +125,7 @@ export default function ImageLightbox({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
           transition={{ duration: 0.3 }}
-          className="relative w-full h-full flex items-center justify-center p-4 md:p-20"
+          className="relative w-full h-full flex items-center justify-center p-4 pt-16 md:p-20 md:pt-20"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="relative w-full h-full max-w-7xl max-h-full">
