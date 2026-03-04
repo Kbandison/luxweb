@@ -73,50 +73,53 @@ export default function ImageLightbox({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm"
+        className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm"
         onClick={onClose}
       >
-        {/* Top Bar: counter, title, live link, close */}
+        {/* ===== CLOSE BUTTON — top right, always visible ===== */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation()
+            onClose()
+          }}
+          className="fixed top-4 right-4 z-[70] w-14 h-14 bg-white/20 hover:bg-white/30 active:bg-white/40 rounded-full flex items-center justify-center transition-colors backdrop-blur-md border-2 border-white/30"
+          aria-label="Close lightbox"
+        >
+          <X className="w-7 h-7 text-white" />
+        </button>
+
+        {/* ===== TOP LEFT INFO: counter + title ===== */}
         <div
-          className="absolute top-0 left-0 right-0 z-[60] flex items-center justify-between px-4 py-4 bg-gradient-to-b from-black/90 via-black/60 to-transparent"
+          className="fixed top-4 left-4 z-[70] flex items-center gap-3"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex items-center gap-4">
-            {/* Image Counter */}
-            <span className="text-white/70 text-sm font-medium">
-              {currentIndex + 1} / {images.length}
+          <span className="px-3 py-2 bg-black/70 rounded-lg backdrop-blur-md border border-white/20 text-white text-sm font-medium">
+            {currentIndex + 1} / {images.length}
+          </span>
+          {projectTitle && (
+            <span className="px-3 py-2 bg-black/70 rounded-lg backdrop-blur-md border border-white/20 text-white font-semibold text-sm hidden sm:inline-block">
+              {projectTitle}
             </span>
-
-            {/* Project Title */}
-            {projectTitle && (
-              <span className="text-white font-semibold text-base hidden sm:inline">
-                {projectTitle}
-              </span>
-            )}
-
-            {/* Live Site Link */}
-            {liveLink && (
-              <a
-                href={liveLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-4 py-2 bg-purple-500/30 hover:bg-purple-500/40 rounded-full border border-purple-400/40 text-purple-200 text-sm font-medium transition-colors"
-              >
-                <ExternalLink className="w-4 h-4" />
-                Visit Site
-              </a>
-            )}
-          </div>
-
-          {/* Close Button */}
-          <button
-            onClick={onClose}
-            className="w-12 h-12 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center transition-colors duration-200 backdrop-blur-md border border-white/25"
-            aria-label="Close lightbox"
-          >
-            <X className="w-6 h-6 text-white" />
-          </button>
+          )}
         </div>
+
+        {/* ===== VISIT SITE LINK — top center, always visible ===== */}
+        {liveLink && (
+          <div
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-[70]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <a
+              href={liveLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-5 py-2.5 bg-purple-600 hover:bg-purple-500 rounded-full text-white text-sm font-semibold transition-colors shadow-lg shadow-purple-500/30"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Visit Live Site
+            </a>
+          </div>
+        )}
 
         {/* Main Image Container */}
         <motion.div
@@ -125,7 +128,7 @@ export default function ImageLightbox({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
           transition={{ duration: 0.3 }}
-          className="relative w-full h-full flex items-center justify-center p-4 pt-16 md:p-20 md:pt-20"
+          className="absolute inset-0 flex items-center justify-center px-4 py-20 md:px-20"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="relative w-full h-full max-w-7xl max-h-full">
@@ -147,7 +150,7 @@ export default function ImageLightbox({
                 e.stopPropagation()
                 goToPrevious()
               }}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-14 h-14 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors duration-200 backdrop-blur-md border border-white/20"
+              className="fixed left-4 top-1/2 -translate-y-1/2 z-[70] w-14 h-14 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors backdrop-blur-md border border-white/20"
               aria-label="Previous image"
             >
               <ChevronLeft className="w-8 h-8 text-white" />
@@ -157,7 +160,7 @@ export default function ImageLightbox({
                 e.stopPropagation()
                 goToNext()
               }}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-14 h-14 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors duration-200 backdrop-blur-md border border-white/20"
+              className="fixed right-4 top-1/2 -translate-y-1/2 z-[70] w-14 h-14 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors backdrop-blur-md border border-white/20"
               aria-label="Next image"
             >
               <ChevronRight className="w-8 h-8 text-white" />
@@ -167,7 +170,10 @@ export default function ImageLightbox({
 
         {/* Thumbnail Navigation */}
         {images.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 px-4 py-3 bg-black/50 rounded-full backdrop-blur-md border border-white/20 max-w-full overflow-x-auto">
+          <div
+            className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[70] flex gap-2 px-4 py-3 bg-black/70 rounded-full backdrop-blur-md border border-white/20 max-w-[90vw] overflow-x-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
             {images.map((image, index) => (
               <button
                 key={index}
@@ -193,7 +199,7 @@ export default function ImageLightbox({
         )}
 
         {/* Mobile swipe hint */}
-        <div className="absolute bottom-24 left-1/2 transform -translate-x-1/2 text-white/60 text-sm md:hidden">
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[70] text-white/60 text-sm md:hidden">
           Swipe or use arrows to navigate
         </div>
       </motion.div>
