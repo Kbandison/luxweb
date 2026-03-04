@@ -1,241 +1,144 @@
 'use client'
 
 import { motion } from "framer-motion"
-import { MessageCircle, Palette, Code, Rocket, CheckCircle, Timer, Users, Zap } from "lucide-react"
-import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
+import { MessageCircle, Palette, Code, Rocket, ArrowRight } from "lucide-react"
+import ScrollReveal from "./ScrollReveal"
+import Link from "next/link"
+
+const steps = [
+  {
+    number: "01",
+    title: "Discovery",
+    description: "We learn about your business, goals, and audience in a free 30-minute call.",
+    icon: MessageCircle,
+  },
+  {
+    number: "02",
+    title: "Design",
+    description: "Custom mockups tailored to your brand. You approve before we build.",
+    icon: Palette,
+  },
+  {
+    number: "03",
+    title: "Build",
+    description: "Modern, clean code with regular progress updates and your feedback.",
+    icon: Code,
+  },
+  {
+    number: "04",
+    title: "Launch",
+    description: "Your site goes live. Training, support, and optimization included.",
+    icon: Rocket,
+  },
+]
 
 export default function ProcessSection() {
-  const steps = [
-    {
-      number: "01",
-      title: "Discovery Call",
-      subtitle: "Understanding Your Vision",
-      description: "We start with a free 30-minute consultation to understand your business goals, target audience, and specific requirements. No sales pressure - just genuine conversation about your vision.",
-      icon: MessageCircle,
-      color: "from-blue-500 to-cyan-500",
-      features: ["Free consultation", "Goal assessment", "Requirements gathering", "Timeline discussion"]
-    },
-    {
-      number: "02", 
-      title: "Strategy & Design",
-      subtitle: "Crafting Your Digital Identity",
-      description: "Our team creates a custom strategy and stunning design mockups tailored to your brand. You'll see exactly how your website will look before we write a single line of code.",
-      icon: Palette,
-      color: "from-purple-500 to-violet-500",
-      features: ["Custom design mockups", "Brand integration", "User experience planning", "Mobile-first approach"]
-    },
-    {
-      number: "03",
-      title: "Development & Testing",
-      subtitle: "Building Your Digital Masterpiece", 
-      description: "We bring your design to life with clean, modern code. Throughout development, we keep you updated with progress and gather your feedback to ensure everything exceeds expectations.",
-      icon: Code,
-      color: "from-green-500 to-emerald-500",
-      features: ["Modern development", "Regular updates", "Quality testing", "Performance optimization"]
-    },
-    {
-      number: "04",
-      title: "Launch & Growth",
-      subtitle: "Watch Your Business Soar",
-      description: "Your website goes live and starts attracting customers immediately! We provide training, ongoing support, and optimization recommendations to help you maximize your ROI and dominate your market.",
-      icon: Rocket,
-      color: "from-orange-500 to-red-500",
-      features: ["Smooth launch", "Training included", "Ongoing support", "Growth optimization"],
-      isExciting: true
-    }
-  ]
-
   return (
-    <section className="py-20 px-6 relative">
-      <div className="container mx-auto max-w-7xl">
+    <section className="py-20 lg:py-28 px-6">
+      <div className="container mx-auto max-w-6xl">
         <ScrollReveal>
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
-              Our Proven <span className="bg-gradient-to-r from-purple-400 to-violet-500 bg-clip-text text-transparent">4-Step Process</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
+              How It Works
             </h2>
-            <p className="text-lg text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              From initial consultation to launch and beyond, we guide you through every step to ensure your website not only looks amazing but drives real business results.
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+              A simple, proven process from first call to launch day.
             </p>
           </div>
         </ScrollReveal>
 
-        <StaggerContainer className="space-y-16">
-          {steps.map((step, index) => {
-            const IconComponent = step.icon
-            const isEven = index % 2 === 0
-            
-            return (
-              <StaggerItem key={index}>
+        {/* Desktop: Horizontal Timeline */}
+        <ScrollReveal>
+          <div className="hidden md:block">
+            <div className="grid grid-cols-4 gap-8 relative">
+              {/* Connecting Line */}
+              <div className="absolute top-[52px] left-[12.5%] right-[12.5%] h-px">
                 <motion.div
-                  className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-8 lg:gap-16`}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0
-                  }}
-                  initial={{
-                    opacity: 0,
-                    y: 50
-                  }}
-                  viewport={{ once: true, amount: 0.05 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  style={{ opacity: 1 }} // CSS fallback for visibility
-                >
-                  {/* Content Side */}
-                  <div className="flex-1 text-center lg:text-left">
-                    <div className="inline-flex items-center gap-3 mb-4">
-                      <span className="text-6xl font-black bg-gradient-to-r from-purple-400 to-violet-500 bg-clip-text text-transparent">
-                        {step.number}
-                      </span>
-                      <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${step.color} flex items-center justify-center`}>
-                        <IconComponent className="w-6 h-6 text-white" />
-                      </div>
-                    </div>
-                    
-                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                      {step.title}
-                    </h3>
-                    <p className="text-lg text-purple-400 font-medium mb-4">
-                      {step.subtitle}
-                    </p>
-                    <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                      {step.description}
-                    </p>
+                  className="h-full bg-gradient-to-r from-purple-500/50 via-violet-500/50 to-purple-500/50 origin-left"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true, amount: 0.5 }}
+                  transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
+                />
+              </div>
 
-                    {/* Features List */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {step.features.map((feature, featureIndex) => (
-                        <div key={featureIndex} className="flex items-center gap-2">
-                          <CheckCircle className={`w-5 h-5 ${step.isExciting ? 'text-orange-400' : 'text-green-400'}`} />
-                          <span className="text-gray-300">{feature}</span>
-                        </div>
-                      ))}
+              {steps.map((step, index) => {
+                const Icon = step.icon
+                return (
+                  <motion.div
+                    key={step.number}
+                    className="text-center relative"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.2 + index * 0.15, duration: 0.5 }}
+                  >
+                    {/* Icon Circle */}
+                    <div className="relative mx-auto mb-6">
+                      <div className="w-14 h-14 rounded-full bg-white/[0.03] border border-white/10 flex items-center justify-center mx-auto">
+                        <Icon className="w-6 h-6 text-purple-400" />
+                      </div>
+                      {/* Dot on timeline */}
+                      <motion.div
+                        className="absolute -bottom-[13px] left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-purple-500 border-2 border-[rgb(1,4,9)]"
+                        initial={{ scale: 0 }}
+                        whileInView={{ scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.4 + index * 0.15, duration: 0.3 }}
+                      />
                     </div>
 
-                    {step.isExciting && (
-                      <motion.div 
-                        className="mt-6 p-4 bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/20 rounded-lg"
-                        animate={{ 
-                          boxShadow: [
-                            '0 0 20px rgba(251, 146, 60, 0.3)',
-                            '0 0 30px rgba(251, 146, 60, 0.5)', 
-                            '0 0 20px rgba(251, 146, 60, 0.3)'
-                          ]
-                        }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
-                        <div className="flex items-center gap-2 text-orange-400 font-semibold">
-                          <Zap className="w-5 h-5" />
-                          Ready to dominate your competition?
-                        </div>
-                      </motion.div>
-                    )}
-                  </div>
+                    <div className="text-xs text-purple-400 font-mono mb-2">{step.number}</div>
+                    <h3 className="text-lg font-semibold text-white mb-2">{step.title}</h3>
+                    <p className="text-sm text-gray-400 leading-relaxed">{step.description}</p>
+                  </motion.div>
+                )
+              })}
+            </div>
+          </div>
+        </ScrollReveal>
 
-                  {/* Visual Side */}
-                  <div className="flex-1 flex justify-center">
-                    <motion.div 
-                      className={`relative w-80 h-80 rounded-2xl bg-gradient-to-br ${step.color} p-1`}
-                      whileHover={{ 
-                        scale: 1.05,
-                        rotate: isEven ? 2 : -2
-                      }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="w-full h-full bg-[rgb(1,4,9)] rounded-xl flex flex-col items-center justify-center relative overflow-hidden">
-                        {/* Background Pattern */}
-                        <div className="absolute inset-0 opacity-10">
-                          <div className="grid grid-cols-8 grid-rows-8 h-full w-full">
-                            {Array.from({ length: 64 }).map((_, i) => (
-                              <motion.div
-                                key={i}
-                                className={`border border-gradient-to-r ${step.color}`}
-                                animate={{ opacity: [0.1, 0.3, 0.1] }}
-                                transition={{ 
-                                  duration: 2, 
-                                  repeat: Infinity, 
-                                  delay: i * 0.05 
-                                }}
-                              />
-                            ))}
-                          </div>
-                        </div>
+        {/* Mobile: Vertical Timeline */}
+        <div className="md:hidden">
+          <div className="relative pl-8">
+            {/* Vertical line */}
+            <div className="absolute left-[11px] top-2 bottom-2 w-px bg-white/10" />
 
-                        {/* Main Icon */}
-                        <motion.div 
-                          className={`w-24 h-24 rounded-full bg-gradient-to-r ${step.color} flex items-center justify-center mb-6 relative z-10`}
-                          animate={{ 
-                            y: [0, -10, 0],
-                            rotate: [0, 5, -5, 0]
-                          }}
-                          transition={{ 
-                            duration: 3, 
-                            repeat: Infinity,
-                            repeatType: "reverse"
-                          }}
-                        >
-                          <IconComponent className="w-12 h-12 text-white" />
-                        </motion.div>
-
-                        {/* Step Number */}
-                        <div className="text-6xl font-black text-white/20 absolute bottom-4 right-4">
-                          {step.number}
-                        </div>
-
-                        {/* Floating Elements */}
-                        {step.isExciting && (
-                          <>
-                            <motion.div
-                              className="absolute top-6 left-6 w-3 h-3 bg-orange-400 rounded-full"
-                              animate={{ 
-                                scale: [1, 1.5, 1],
-                                opacity: [0.7, 1, 0.7]
-                              }}
-                              transition={{ duration: 1.5, repeat: Infinity }}
-                            />
-                            <motion.div
-                              className="absolute top-12 right-8 w-2 h-2 bg-red-400 rounded-full"
-                              animate={{ 
-                                scale: [1, 1.3, 1],
-                                opacity: [0.5, 1, 0.5]
-                              }}
-                              transition={{ duration: 1.8, repeat: Infinity, delay: 0.3 }}
-                            />
-                            <motion.div
-                              className="absolute bottom-12 left-8 w-4 h-4 bg-yellow-400 rounded-full"
-                              animate={{ 
-                                scale: [1, 1.2, 1],
-                                opacity: [0.6, 1, 0.6]
-                              }}
-                              transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
-                            />
-                          </>
-                        )}
+            <div className="space-y-10">
+              {steps.map((step, index) => {
+                const Icon = step.icon
+                return (
+                  <ScrollReveal key={step.number} delay={index * 0.1}>
+                    <div className="relative">
+                      {/* Dot */}
+                      <div className="absolute -left-8 top-1 w-[23px] h-[23px] rounded-full bg-purple-500/20 border border-purple-500/50 flex items-center justify-center">
+                        <div className="w-2.5 h-2.5 rounded-full bg-purple-500" />
                       </div>
-                    </motion.div>
-                  </div>
-                </motion.div>
-              </StaggerItem>
-            )
-          })}
-        </StaggerContainer>
+
+                      <div className="text-xs text-purple-400 font-mono mb-1">{step.number}</div>
+                      <h3 className="text-lg font-semibold text-white mb-1.5 flex items-center gap-2">
+                        <Icon className="w-4 h-4 text-purple-400" />
+                        {step.title}
+                      </h3>
+                      <p className="text-sm text-gray-400 leading-relaxed">{step.description}</p>
+                    </div>
+                  </ScrollReveal>
+                )
+              })}
+            </div>
+          </div>
+        </div>
 
         {/* Bottom CTA */}
-        <ScrollReveal delay={0.6}>
+        <ScrollReveal delay={0.3}>
           <div className="text-center mt-16">
-            <motion.div 
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-purple-500/10 to-violet-500/10 border border-purple-500/20 rounded-full px-6 py-3 mb-6"
-              animate={{ 
-                borderColor: [
-                  'rgba(139, 92, 246, 0.2)',
-                  'rgba(139, 92, 246, 0.4)',
-                  'rgba(139, 92, 246, 0.2)'
-                ]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
+            <Link
+              href="/contact"
+              className="text-purple-400 hover:text-purple-300 font-medium text-sm inline-flex items-center gap-1.5 transition-colors"
             >
-              <Timer className="w-5 h-5 text-purple-400" />
-              <span className="text-purple-400 font-medium">Most projects completed in 1-3 weeks</span>
-            </motion.div>
+              Start With a Free Call
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </ScrollReveal>
       </div>

@@ -4,44 +4,36 @@ import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ScrollReveal from './ScrollReveal'
+import Link from 'next/link'
 import { faqData } from '@/data/faq'
 
 export default function FAQCondensed() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
-  // Show first 5 FAQs as a homepage preview
-  const faqs = faqData.slice(0, 5)
-
-  const toggleFAQ = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index)
-  }
+  // Show first 4 FAQs
+  const faqs = faqData.slice(0, 4)
 
   return (
-    <section className="py-20 px-6">
-      <div className="container mx-auto max-w-4xl">
+    <section className="py-20 lg:py-28 px-6">
+      <div className="container mx-auto max-w-3xl">
         <ScrollReveal>
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-              Common <span className="text-purple-400">Questions</span>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
+              Questions? <span className="text-gradient-purple">Answers.</span>
             </h2>
-            <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              Get quick answers to the most important questions about our web development services.
-            </p>
           </div>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.2}>
-          <div className="space-y-4 mb-12">
+        <ScrollReveal delay={0.1}>
+          <div className="space-y-3 mb-10">
             {faqs.map((faq, index) => (
-              <motion.div
+              <div
                 key={index}
-                className="modern-card p-6 cursor-pointer hover:border-purple-400/50 transition-all duration-200"
-                onClick={() => toggleFAQ(index)}
-                whileHover={{ scale: 1.01 }}
-                transition={{ duration: 0.2 }}
+                className="glass-card-subtle p-5 cursor-pointer hover:border-white/10 transition-colors"
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-white pr-4">
+                  <h3 className="text-base font-medium text-white pr-4">
                     {faq.question}
                   </h3>
                   <motion.div
@@ -49,51 +41,40 @@ export default function FAQCondensed() {
                     transition={{ duration: 0.2 }}
                     className="flex-shrink-0"
                   >
-                    <ChevronDown className="w-5 h-5 text-purple-400" />
+                    <ChevronDown className="w-4 h-4 text-gray-500" />
                   </motion.div>
                 </div>
-                
+
                 <AnimatePresence>
                   {openIndex === index && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                      transition={{ duration: 0.25, ease: 'easeInOut' }}
                       className="overflow-hidden"
                     >
-                      <div className="pt-4 border-t border-white/10 mt-4">
-                        <p className="text-gray-300 leading-relaxed">
+                      <div className="pt-3 mt-3 border-t border-white/5">
+                        <p className="text-gray-400 text-sm leading-relaxed">
                           {faq.answer}
                         </p>
                       </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </div>
             ))}
           </div>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.4}>
+        <ScrollReveal delay={0.2}>
           <div className="text-center">
-            <p className="text-gray-400 mb-4">
-              Have more questions? Check out our complete FAQ or get in touch!
+            <p className="text-gray-500 text-sm">
+              Have more questions?{' '}
+              <Link href="/contact" className="text-purple-400 hover:text-purple-300 transition-colors font-medium">
+                Book a free call
+              </Link>
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a 
-                href="/pricing#faq" 
-                className="text-purple-400 hover:text-purple-300 font-medium transition-colors duration-200"
-              >
-                View All FAQs →
-              </a>
-              <a 
-                href="/contact" 
-                className="text-green-400 hover:text-green-300 font-medium transition-colors duration-200"
-              >
-                Contact Us →
-              </a>
-            </div>
           </div>
         </ScrollReveal>
       </div>

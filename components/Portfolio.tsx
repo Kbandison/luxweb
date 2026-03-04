@@ -1,10 +1,9 @@
 'use client'
 
-import { ExternalLink, TrendingUp, Code, Users, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
-import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
-import { projects, portfolioStats } from "@/data/projects"
+import ScrollReveal from "./ScrollReveal"
+import { projects } from "@/data/projects"
 import Link from "next/link"
 import Image from "next/image"
 import ImageLightbox from "./ImageLightbox"
@@ -23,162 +22,79 @@ export default function Portfolio() {
     setLightboxOpen(true)
   }
 
-  const scrollToContact = () => {
-    const element = document.getElementById('contact')
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
-  // Icon mapping for stats
-  const iconMap = {
-    Code,
-    Users,
-    TrendingUp
-  }
-
-  const getColorClasses = (color: string) => {
-    const colorMap = {
-      green: "bg-green-400/20 text-green-400",
-      blue: "bg-blue-400/20 text-blue-400", 
-      amber: "bg-amber-400/20 text-amber-400"
-    }
-    return colorMap[color as keyof typeof colorMap] || "bg-gray-400/20 text-gray-400"
-  }
+  // First 4 projects for bento grid, plus a CTA card
+  const featured = projects[0]
+  const gridProjects = projects.slice(1, 4)
 
   return (
-    <section id="portfolio" className="py-20 px-4 relative">
-      <div className="container mx-auto max-w-7xl">
+    <section id="portfolio" className="py-20 lg:py-28 px-4">
+      <div className="container mx-auto max-w-6xl">
         <ScrollReveal>
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              Real <span className="bg-gradient-to-r from-purple-400 to-violet-500 bg-clip-text text-transparent">
-                Results
-              </span> for Real Businesses
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
+              Real Results for{' '}
+              <span className="text-gradient-purple">Real Businesses</span>
             </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              See how we've helped businesses just like yours grow with professional, conversion-focused websites.
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+              See how we&apos;ve helped businesses grow with professional, conversion-focused websites.
             </p>
           </div>
         </ScrollReveal>
 
-        <StaggerContainer className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-          {projects.slice(0, 3).map((project, index) => (
-            <StaggerItem key={index}>
-              <motion.div 
-                className="glass-card rounded-2xl overflow-hidden glass-hover group"
-                whileHover={{ 
-                  y: -8,
-                  transition: { duration: 0.3 }
-                }}
-              >
-              {/* Project Image */}
-              <div
-                className="h-48 relative overflow-hidden cursor-pointer"
-                onClick={() => openLightbox(project.images, 0, project.title)}
-              >
-                <Image
-                  src={project.images[0]}
-                  alt={project.title}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                  <div className="text-white/80 text-sm font-medium px-3 py-1 bg-black/30 rounded-full">
-                    {project.category}
-                  </div>
-                </div>
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <ExternalLink className="w-5 h-5 text-white" />
-                </div>
-              </div>
-
-              {/* Project Content */}
-              <div className="p-6">
-                <h3 className="text-xl font-bold text-white mb-3">{project.title}</h3>
-                <p className="text-gray-300 mb-4">{project.description}</p>
-
-                {/* Tech Stack */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tech.map((tech, techIndex) => (
-                    <span 
-                      key={techIndex}
-                      className="px-3 py-1 bg-white/10 rounded-full text-sm text-gray-300 border border-white/20"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Result */}
-                <div className="flex items-center gap-2 p-3 bg-green-400/10 rounded-lg border border-green-400/20 mb-4">
-                  <TrendingUp className="w-4 h-4 text-green-400" />
-                  <span className="text-green-400 font-medium text-sm">{project.result}</span>
-                </div>
-
-                {/* Action Button */}
-                {project.links?.live && (
-                  <a 
-                    href={project.links.live} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-full"
-                  >
-                    <Button className="w-full modern-btn-primary text-white py-2 text-sm font-medium">
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      View Site
-                    </Button>
-                  </a>
-                )}
-              </div>
-            </motion.div>
-          </StaggerItem>
-          ))}
-        </StaggerContainer>
-
-        {/* View More Projects Button - Only show if there are more than 3 projects */}
-        {projects.length > 3 && (
-          <ScrollReveal delay={0.3}>
-            <div className="text-center mb-16">
-              <Link href="/projects">
-                <Button className="modern-btn-outline text-white px-8 py-4 text-lg font-semibold">
-                  View More Projects
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-            </div>
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+          {/* Featured: large card - 2x2 */}
+          <ScrollReveal className="lg:col-span-2 lg:row-span-2">
+            <PortfolioCard
+              project={featured}
+              onOpenLightbox={openLightbox}
+              className="h-full min-h-[300px] lg:min-h-full"
+            />
           </ScrollReveal>
-        )}
 
-        {/* Portfolio Stats */}
-        <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16" staggerChildren={0.2}>
-          {portfolioStats.map((stat, index) => {
-            const IconComponent = iconMap[stat.icon as keyof typeof iconMap]
-            const colorClasses = getColorClasses(stat.color)
-            
-            return (
-              <StaggerItem key={index}>
-                <motion.div 
-                  className="glass-card p-8 rounded-2xl text-center"
-                  whileHover={{ 
-                    y: -5,
-                    transition: { duration: 0.2 }
-                  }}
-                >
-                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${colorClasses.split(' ')[0]}`}>
-                    <IconComponent className={`w-8 h-8 ${colorClasses.split(' ')[1]}`} />
-                  </div>
-                  <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
-                  <div className="text-gray-300">{stat.label}</div>
-                </motion.div>
-              </StaggerItem>
-            )
-          })}
-        </StaggerContainer>
+          {/* Project 2 */}
+          <ScrollReveal delay={0.1} className="lg:col-span-2">
+            <PortfolioCard
+              project={gridProjects[0]}
+              onOpenLightbox={openLightbox}
+              className="h-full min-h-[220px]"
+            />
+          </ScrollReveal>
 
+          {/* Project 3 */}
+          <ScrollReveal delay={0.15} className="lg:col-span-2">
+            <PortfolioCard
+              project={gridProjects[1]}
+              onOpenLightbox={openLightbox}
+              className="h-full min-h-[220px]"
+            />
+          </ScrollReveal>
+
+          {/* Project 4 */}
+          <ScrollReveal delay={0.2} className="lg:col-span-2">
+            <PortfolioCard
+              project={gridProjects[2]}
+              onOpenLightbox={openLightbox}
+              className="h-full min-h-[220px]"
+            />
+          </ScrollReveal>
+
+          {/* CTA Card */}
+          <ScrollReveal delay={0.25} className="lg:col-span-2">
+            <Link href="/projects" className="block h-full">
+              <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-purple-500/10 to-violet-500/5 h-full min-h-[220px] flex flex-col items-center justify-center p-8 group hover:border-purple-500/30 transition-all duration-300">
+                <div className="text-3xl font-bold text-white mb-2">{projects.length}+</div>
+                <div className="text-gray-400 mb-4">Projects Delivered</div>
+                <div className="text-purple-400 font-medium text-sm flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-300">
+                  View All Projects
+                  <ArrowRight className="w-4 h-4" />
+                </div>
+              </div>
+            </Link>
+          </ScrollReveal>
+        </div>
       </div>
 
-      {/* Image Lightbox */}
       <ImageLightbox
         images={lightboxImages}
         initialIndex={lightboxIndex}
@@ -187,5 +103,70 @@ export default function Portfolio() {
         projectTitle={lightboxTitle}
       />
     </section>
+  )
+}
+
+function PortfolioCard({
+  project,
+  onOpenLightbox,
+  className = '',
+}: {
+  project: typeof projects[0]
+  onOpenLightbox: (images: string[], index: number, title: string) => void
+  className?: string
+}) {
+  return (
+    <motion.div
+      className={`relative rounded-2xl overflow-hidden group cursor-pointer ${className}`}
+      whileHover={{ scale: 1.01 }}
+      transition={{ duration: 0.3 }}
+      onClick={() => onOpenLightbox(project.images, 0, project.title)}
+    >
+      {/* Background Image */}
+      <Image
+        src={project.images[0]}
+        alt={project.title}
+        fill
+        className="object-cover transition-transform duration-500 group-hover:scale-105"
+      />
+
+      {/* Overlay gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+      {/* Hover overlay */}
+      <div className="absolute inset-0 bg-purple-500/0 group-hover:bg-purple-500/5 transition-colors duration-300" />
+
+      {/* Content at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 p-5 lg:p-6">
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {project.tech.slice(0, 2).map((tech) => (
+            <span key={tech} className="text-[10px] uppercase tracking-wider text-gray-400 bg-white/10 px-2 py-0.5 rounded">
+              {tech}
+            </span>
+          ))}
+        </div>
+        <h3 className="text-lg font-semibold text-white mb-1">{project.title}</h3>
+        <p className="text-sm text-gray-400">{project.result}</p>
+
+        {/* View Project link on hover */}
+        <div className="mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          {project.links?.live ? (
+            <a
+              href={project.links.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="text-purple-400 text-sm font-medium inline-flex items-center gap-1"
+            >
+              View Project <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+          ) : (
+            <span className="text-purple-400 text-sm font-medium inline-flex items-center gap-1">
+              View Details <ArrowRight className="w-3.5 h-3.5" />
+            </span>
+          )}
+        </div>
+      </div>
+    </motion.div>
   )
 }

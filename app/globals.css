@@ -214,30 +214,63 @@ a, button, [role="button"] {
   background: rgba(255, 255, 255, 0.5);
 }
 
+/* Subtle Glass Card */
+.glass-card-subtle {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.glass-card-subtle:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Text Gradient Purple */
+.text-gradient-purple {
+  background: linear-gradient(135deg, #a78bfa, #818cf8, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtle Glow Animation */
+@keyframes subtle-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.15), 0 0 40px rgba(139, 92, 246, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.3), 0 0 60px rgba(139, 92, 246, 0.1);
+  }
+}
+
+.animate-subtle-glow {
+  animation: subtle-glow 3s ease-in-out infinite;
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 20px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(10, 10, 10, 0.8);
+  background: rgba(10, 10, 10, 0.5);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, rgb(45, 27, 105), rgb(28, 3, 60));
-  border-radius: 4px;
-  border: 1px solid #1de1ff;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, rgb(55, 37, 115), rgb(38, 13, 70));
-  box-shadow: 0 0 8px rgba(45, 27, 105, 0.5);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 /* Firefox scrollbar */
 html {
-  scrollbar-width: auto;
-  scrollbar-color: rgb(45, 27, 105) rgba(10, 10, 10, 0.8);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) rgba(10, 10, 10, 0.5);
 }
 
 /* Animation Fallbacks - Ensure content is visible even if animations fail */
