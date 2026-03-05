@@ -48,8 +48,11 @@ const formatProjectType = (type?: string) => {
   return typeMap[type] || null
 }
 
-// Client confirmation email - sleek, professional design
+// Client confirmation email — dark, premium, matches site aesthetic
 export const sendClientConfirmationEmail = async (data: EmailData) => {
+  const packageName = formatProjectType(data.project_type)
+  const year = new Date().getFullYear()
+
   const emailHtml = `
     <!DOCTYPE html>
     <html>
@@ -58,102 +61,111 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>We received your message - LuxWeb Studio</title>
     </head>
-    <body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;">
-      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0a0a0a;">
+    <body style="margin: 0; padding: 0; background-color: #010409; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; -webkit-font-smoothing: antialiased;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #010409;">
         <tr>
-          <td align="center" style="padding: 40px 20px;">
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 520px; background: linear-gradient(180deg, #111111 0%, #0d0d0d 100%); border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); overflow: hidden;">
+          <td align="center" style="padding: 48px 16px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 540px;">
 
-              <!-- Header -->
+              <!-- Logo -->
               <tr>
-                <td style="padding: 48px 40px 32px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.06);">
-                  <div style="font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">LuxWeb Studio</div>
-                  <div style="font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; letter-spacing: 0.5px;">WEB DEVELOPMENT</div>
+                <td style="text-align: center; padding-bottom: 40px;">
+                  <div style="font-size: 22px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">LuxWeb Studio</div>
                 </td>
               </tr>
 
-              <!-- Main Content -->
+              <!-- Main Card -->
               <tr>
-                <td style="padding: 40px;">
-                  <h1 style="margin: 0 0 16px; font-size: 28px; font-weight: 600; color: #ffffff; line-height: 1.3;">
-                    Thanks, ${data.name}!
-                  </h1>
-                  <p style="margin: 0 0 32px; font-size: 16px; color: rgba(255,255,255,0.7); line-height: 1.6;">
-                    We've received your message and will get back to you within 24 hours.
-                  </p>
+                <td style="background: #0d0d0f; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06); overflow: hidden;">
 
-                  <!-- Message Box -->
-                  <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 24px; border: 1px solid rgba(255,255,255,0.06);">
-                    <div style="font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Your Message</div>
-                    <p style="margin: 0; font-size: 15px; color: rgba(255,255,255,0.8); line-height: 1.6;">${data.message}</p>
+                  <!-- Purple accent bar -->
+                  <div style="height: 3px; background: linear-gradient(90deg, #7c3aed, #6366f1, #8b5cf6);"></div>
+
+                  <!-- Greeting -->
+                  <div style="padding: 40px 36px 0;">
+                    <h1 style="margin: 0 0 8px; font-size: 26px; font-weight: 600; color: #ffffff; line-height: 1.3;">
+                      Hey ${data.name.split(' ')[0]},
+                    </h1>
+                    <p style="margin: 0; font-size: 16px; color: #9ca3af; line-height: 1.6;">
+                      Thanks for reaching out. We&rsquo;ve got your message and will be in touch within 24 hours.
+                    </p>
                   </div>
 
-                  ${data.project_type && formatProjectType(data.project_type) ? `
-                  <!-- Package Interest -->
-                  <div style="margin-top: 20px; display: flex; align-items: center;">
-                    <span style="font-size: 13px; color: rgba(255,255,255,0.5);">Interested in:</span>
-                    <span style="margin-left: 8px; font-size: 13px; font-weight: 500; color: #a78bfa;">${formatProjectType(data.project_type)}</span>
-                  </div>
-                  ` : ''}
-                </td>
-              </tr>
+                  <!-- Message recap -->
+                  <div style="padding: 28px 36px;">
+                    <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 20px 24px;">
+                      <div style="font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Your message</div>
+                      <p style="margin: 0; font-size: 14px; color: #d1d5db; line-height: 1.7;">${data.message}</p>
+                    </div>
 
-              <!-- What's Next -->
-              <tr>
-                <td style="padding: 0 40px 40px;">
-                  <div style="background: linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(99,102,241,0.1) 100%); border-radius: 12px; padding: 24px; border: 1px solid rgba(139,92,246,0.2);">
-                    <div style="font-size: 14px; font-weight: 600; color: #a78bfa; margin-bottom: 16px;">What happens next?</div>
+                    ${packageName ? `
+                    <div style="margin-top: 16px;">
+                      <span style="font-size: 12px; color: #6b7280;">Interested in: </span>
+                      <span style="font-size: 12px; font-weight: 600; color: #a78bfa;">${packageName}</span>
+                    </div>
+                    ` : ''}
+                  </div>
+
+                  <!-- Divider -->
+                  <div style="margin: 0 36px; height: 1px; background: rgba(255,255,255,0.06);"></div>
+
+                  <!-- Next Steps -->
+                  <div style="padding: 28px 36px;">
+                    <div style="font-size: 15px; font-weight: 600; color: #ffffff; margin-bottom: 20px;">What happens next</div>
                     <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
                       <tr>
-                        <td style="padding-bottom: 12px;">
-                          <table role="presentation" cellspacing="0" cellpadding="0">
-                            <tr>
-                              <td style="width: 24px; height: 24px; background: rgba(139,92,246,0.2); border-radius: 50%; text-align: center; font-size: 12px; font-weight: 600; color: #a78bfa; vertical-align: middle;">1</td>
-                              <td style="padding-left: 12px; font-size: 14px; color: rgba(255,255,255,0.7);">We'll review your inquiry</td>
-                            </tr>
-                          </table>
+                        <td style="padding-bottom: 16px; vertical-align: top; width: 36px;">
+                          <div style="width: 28px; height: 28px; background: rgba(139,92,246,0.15); border-radius: 8px; text-align: center; line-height: 28px; font-size: 13px; font-weight: 700; color: #a78bfa;">1</div>
+                        </td>
+                        <td style="padding-bottom: 16px; padding-left: 12px; vertical-align: top;">
+                          <div style="font-size: 14px; font-weight: 500; color: #e5e7eb;">We review your project details</div>
+                          <div style="font-size: 13px; color: #6b7280; margin-top: 2px;">Understanding your goals and needs</div>
                         </td>
                       </tr>
                       <tr>
-                        <td style="padding-bottom: 12px;">
-                          <table role="presentation" cellspacing="0" cellpadding="0">
-                            <tr>
-                              <td style="width: 24px; height: 24px; background: rgba(139,92,246,0.2); border-radius: 50%; text-align: center; font-size: 12px; font-weight: 600; color: #a78bfa; vertical-align: middle;">2</td>
-                              <td style="padding-left: 12px; font-size: 14px; color: rgba(255,255,255,0.7);">Schedule a quick discovery call</td>
-                            </tr>
-                          </table>
+                        <td style="padding-bottom: 16px; vertical-align: top; width: 36px;">
+                          <div style="width: 28px; height: 28px; background: rgba(139,92,246,0.15); border-radius: 8px; text-align: center; line-height: 28px; font-size: 13px; font-weight: 700; color: #a78bfa;">2</div>
+                        </td>
+                        <td style="padding-bottom: 16px; padding-left: 12px; vertical-align: top;">
+                          <div style="font-size: 14px; font-weight: 500; color: #e5e7eb;">Free discovery call</div>
+                          <div style="font-size: 13px; color: #6b7280; margin-top: 2px;">30 minutes, no pressure, no obligation</div>
                         </td>
                       </tr>
                       <tr>
-                        <td>
-                          <table role="presentation" cellspacing="0" cellpadding="0">
-                            <tr>
-                              <td style="width: 24px; height: 24px; background: rgba(139,92,246,0.2); border-radius: 50%; text-align: center; font-size: 12px; font-weight: 600; color: #a78bfa; vertical-align: middle;">3</td>
-                              <td style="padding-left: 12px; font-size: 14px; color: rgba(255,255,255,0.7);">Get a custom proposal</td>
-                            </tr>
-                          </table>
+                        <td style="vertical-align: top; width: 36px;">
+                          <div style="width: 28px; height: 28px; background: rgba(139,92,246,0.15); border-radius: 8px; text-align: center; line-height: 28px; font-size: 13px; font-weight: 700; color: #a78bfa;">3</div>
+                        </td>
+                        <td style="padding-left: 12px; vertical-align: top;">
+                          <div style="font-size: 14px; font-weight: 500; color: #e5e7eb;">Custom proposal</div>
+                          <div style="font-size: 13px; color: #6b7280; margin-top: 2px;">Tailored plan with timeline and pricing</div>
                         </td>
                       </tr>
                     </table>
                   </div>
+
+                  <!-- Divider -->
+                  <div style="margin: 0 36px; height: 1px; background: rgba(255,255,255,0.06);"></div>
+
+                  <!-- Questions prompt -->
+                  <div style="padding: 24px 36px;">
+                    <p style="margin: 0; font-size: 14px; color: #6b7280; line-height: 1.6;">
+                      Have questions in the meantime? Just reply to this email or reach us at
+                      <a href="mailto:support@luxwebstudio.dev" style="color: #a78bfa; text-decoration: none; font-weight: 500;">support@luxwebstudio.dev</a>
+                    </p>
+                  </div>
+
                 </td>
               </tr>
 
               <!-- Footer -->
               <tr>
-                <td style="padding: 24px 40px; background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.06);">
-                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                    <tr>
-                      <td style="text-align: center;">
-                        <div style="font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 8px;">
-                          <a href="mailto:support@luxwebstudio.dev" style="color: #a78bfa; text-decoration: none;">support@luxwebstudio.dev</a>
-                        </div>
-                        <div style="font-size: 12px; color: rgba(255,255,255,0.3);">
-                          © ${new Date().getFullYear()} LuxWeb Studio
-                        </div>
-                      </td>
-                    </tr>
-                  </table>
+                <td style="padding: 32px 36px; text-align: center;">
+                  <div style="font-size: 12px; color: #4b5563;">
+                    &copy; ${year} LuxWeb Studio &middot; Professional Web Development
+                  </div>
+                  <div style="margin-top: 8px;">
+                    <a href="https://luxwebstudio.dev" style="font-size: 12px; color: #6b7280; text-decoration: none;">luxwebstudio.dev</a>
+                  </div>
                 </td>
               </tr>
 
@@ -169,7 +181,7 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
     const result = await resend.emails.send({
       from: fromEmail,
       to: [data.email],
-      subject: 'We received your message - LuxWeb Studio',
+      subject: `Thanks for reaching out, ${data.name.split(' ')[0]} — LuxWeb Studio`,
       html: emailHtml,
     })
     console.log('Client email sent successfully:', result.data?.id)
@@ -180,91 +192,126 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
   }
 }
 
-// Admin notification email - clean, actionable design
+// Admin notification email — dark theme, matches site, quick-action focused
 export const sendAdminNotificationEmail = async (data: EmailData) => {
+  const packageName = formatProjectType(data.project_type)
+  const now = new Date()
+  const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
+  const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+
   const emailHtml = `
     <!DOCTYPE html>
     <html>
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>New Inquiry from ${data.name}</title>
+      <title>New Inquiry — ${data.name}</title>
     </head>
-    <body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;">
-      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc;">
+    <body style="margin: 0; padding: 0; background-color: #010409; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; -webkit-font-smoothing: antialiased;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #010409;">
         <tr>
-          <td align="center" style="padding: 40px 20px;">
-            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 520px; background: #ffffff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden;">
+          <td align="center" style="padding: 48px 16px;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 540px;">
 
-              <!-- Header -->
+              <!-- Header label -->
               <tr>
-                <td style="padding: 24px 32px; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+                <td style="padding-bottom: 24px;">
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
                     <tr>
                       <td>
-                        <div style="font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px;">New Inquiry</div>
-                        <div style="font-size: 20px; font-weight: 600; color: #ffffff; margin-top: 4px;">${data.name}</div>
+                        <span style="font-size: 11px; font-weight: 700; color: #a78bfa; text-transform: uppercase; letter-spacing: 1.5px; background: rgba(139,92,246,0.1); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(139,92,246,0.2);">New Lead</span>
                       </td>
                       <td style="text-align: right;">
-                        <div style="font-size: 12px; color: rgba(255,255,255,0.7);">${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
-                        <div style="font-size: 12px; color: rgba(255,255,255,0.7);">${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</div>
+                        <span style="font-size: 12px; color: #6b7280;">${dateStr} &middot; ${timeStr}</span>
                       </td>
                     </tr>
                   </table>
                 </td>
               </tr>
 
-              <!-- Contact Info -->
+              <!-- Main Card -->
               <tr>
-                <td style="padding: 24px 32px; border-bottom: 1px solid #e5e7eb;">
-                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
-                    <tr>
-                      <td style="padding-bottom: 12px;">
-                        <div style="font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">Email</div>
-                        <a href="mailto:${data.email}" style="font-size: 15px; color: #6366f1; text-decoration: none; font-weight: 500;">${data.email}</a>
-                      </td>
-                    </tr>
-                    ${data.phone ? `
-                    <tr>
-                      <td style="padding-bottom: 12px;">
-                        <div style="font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">Phone</div>
-                        <a href="tel:${data.phone}" style="font-size: 15px; color: #374151; text-decoration: none;">${data.phone}</a>
-                      </td>
-                    </tr>
-                    ` : ''}
-                    ${data.company ? `
-                    <tr>
-                      <td>
-                        <div style="font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">Company</div>
-                        <div style="font-size: 15px; color: #374151;">${data.company}</div>
-                      </td>
-                    </tr>
-                    ` : ''}
-                  </table>
-                </td>
-              </tr>
+                <td style="background: #0d0d0f; border-radius: 16px; border: 1px solid rgba(255,255,255,0.06); overflow: hidden;">
 
-              <!-- Message -->
-              <tr>
-                <td style="padding: 24px 32px;">
-                  <div style="font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Message</div>
-                  <div style="font-size: 15px; color: #374151; line-height: 1.6; white-space: pre-wrap;">${data.message}</div>
-
-                  ${data.project_type && formatProjectType(data.project_type) ? `
-                  <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                    <div style="font-size: 11px; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Package Interest</div>
-                    <div style="display: inline-block; font-size: 13px; font-weight: 500; color: #6366f1; background: #eef2ff; padding: 4px 12px; border-radius: 16px;">${formatProjectType(data.project_type)}</div>
+                  <!-- Name + Package header -->
+                  <div style="padding: 32px 36px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 600; color: #ffffff; line-height: 1.3;">${data.name}</h1>
+                    ${packageName ? `
+                    <div style="margin-top: 10px;">
+                      <span style="font-size: 12px; font-weight: 600; color: #a78bfa; background: rgba(139,92,246,0.12); padding: 4px 10px; border-radius: 6px;">${packageName}</span>
+                    </div>
+                    ` : ''}
                   </div>
-                  ` : ''}
+
+                  <!-- Contact details grid -->
+                  <div style="padding: 24px 36px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="padding-bottom: ${data.phone || data.company ? '14px' : '0'}; vertical-align: top;">
+                          <div style="font-size: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Email</div>
+                          <a href="mailto:${data.email}" style="font-size: 15px; color: #a78bfa; text-decoration: none; font-weight: 500;">${data.email}</a>
+                        </td>
+                      </tr>
+                      ${data.phone ? `
+                      <tr>
+                        <td style="padding-bottom: ${data.company ? '14px' : '0'}; vertical-align: top;">
+                          <div style="font-size: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Phone</div>
+                          <a href="tel:${data.phone}" style="font-size: 15px; color: #d1d5db; text-decoration: none;">${data.phone}</a>
+                        </td>
+                      </tr>
+                      ` : ''}
+                      ${data.company ? `
+                      <tr>
+                        <td style="vertical-align: top;">
+                          <div style="font-size: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Company</div>
+                          <div style="font-size: 15px; color: #d1d5db;">${data.company}</div>
+                        </td>
+                      </tr>
+                      ` : ''}
+                    </table>
+                  </div>
+
+                  <!-- Message -->
+                  <div style="padding: 24px 36px;">
+                    <div style="font-size: 10px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Message</div>
+                    <div style="font-size: 15px; color: #d1d5db; line-height: 1.7; white-space: pre-wrap;">${data.message}</div>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div style="padding: 0 36px 32px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="padding-right: 8px; width: 50%;">
+                          <a href="mailto:${data.email}?subject=Re: Your inquiry to LuxWeb Studio&body=Hi ${encodeURIComponent(data.name.split(' ')[0])},%0D%0A%0D%0AThanks for reaching out! I'd love to learn more about your project.%0D%0A%0D%0AWould you be available for a quick call this week?%0D%0A%0D%0ABest,%0D%0ALuxWeb Studio" style="display: block; text-align: center; background: linear-gradient(135deg, #7c3aed, #6366f1); color: #ffffff; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600;">
+                            Reply to ${data.name.split(' ')[0]}
+                          </a>
+                        </td>
+                        ${data.phone ? `
+                        <td style="padding-left: 8px; width: 50%;">
+                          <a href="tel:${data.phone}" style="display: block; text-align: center; background: rgba(255,255,255,0.05); color: #d1d5db; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; border: 1px solid rgba(255,255,255,0.1);">
+                            Call ${data.name.split(' ')[0]}
+                          </a>
+                        </td>
+                        ` : `
+                        <td style="padding-left: 8px; width: 50%;">
+                          <a href="https://luxwebstudio.dev/admin/submissions" style="display: block; text-align: center; background: rgba(255,255,255,0.05); color: #d1d5db; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; border: 1px solid rgba(255,255,255,0.1);">
+                            View in Dashboard
+                          </a>
+                        </td>
+                        `}
+                      </tr>
+                    </table>
+                  </div>
+
                 </td>
               </tr>
 
-              <!-- Action Button -->
+              <!-- Footer -->
               <tr>
-                <td style="padding: 0 32px 32px;">
-                  <a href="mailto:${data.email}?subject=Re: Your inquiry to LuxWeb Studio&body=Hi ${data.name},%0D%0A%0D%0AThank you for reaching out! I'd love to learn more about your project.%0D%0A%0D%0AWould you be available for a quick call this week?%0D%0A%0D%0ABest,%0D%0ALuxWeb Studio" style="display: block; text-align: center; background: #6366f1; color: #ffffff; padding: 14px 24px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600;">
-                    Reply to ${data.name.split(' ')[0]}
-                  </a>
+                <td style="padding: 24px 36px; text-align: center;">
+                  <div style="font-size: 12px; color: #4b5563;">
+                    LuxWeb Studio &middot; Admin Notification
+                  </div>
                 </td>
               </tr>
 
@@ -280,7 +327,7 @@ export const sendAdminNotificationEmail = async (data: EmailData) => {
     const result = await resend.emails.send({
       from: fromEmail,
       to: [finalAdminEmail],
-      subject: `New inquiry from ${data.name}`,
+      subject: `New inquiry from ${data.name}${packageName ? ` — ${packageName}` : ''}`,
       html: emailHtml,
     })
     console.log('Admin email sent successfully:', result.data?.id)
@@ -290,4 +337,3 @@ export const sendAdminNotificationEmail = async (data: EmailData) => {
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
-
