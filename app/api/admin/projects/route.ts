@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdminAuth } from '@/lib/auth'
+import { getAdminUser } from '@/lib/auth'
 import fs from 'fs'
 import path from 'path'
 
@@ -87,9 +87,8 @@ export const portfolioStats: PortfolioStat[] = [
 }
 
 export async function GET() {
-  try {
-    await requireAdminAuth()
-  } catch {
+  const user = await getAdminUser()
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -102,9 +101,8 @@ export async function GET() {
 }
 
 export async function PUT(request: NextRequest) {
-  try {
-    await requireAdminAuth()
-  } catch {
+  const putUser = await getAdminUser()
+  if (!putUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

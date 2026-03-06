@@ -395,13 +395,17 @@ export default function SubmissionsPage() {
                             <Pencil className="w-3 h-3" /> Edit
                           </button>
 
-                          <a
-                            href={`mailto:${sub.email}?subject=Re: Your inquiry to LuxWeb Studio&body=Hi ${sub.name.split(' ')[0]},%0D%0A%0D%0AThank you for reaching out! I'd love to learn more about your project.%0D%0A%0D%0AWould you be available for a quick call this week?%0D%0A%0D%0ABest,%0D%0ALuxWeb Studio`}
-                            onClick={(e) => e.stopPropagation()}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              const subject = encodeURIComponent('Re: Your inquiry to LuxWeb Studio')
+                              const body = encodeURIComponent(`Hi ${sub.name.split(' ')[0]},\n\nThank you for reaching out! I'd love to learn more about your project.\n\nWould you be available for a quick call this week?\n\nBest,\nLuxWeb Studio`)
+                              window.location.href = `mailto:${sub.email}?subject=${subject}&body=${body}`
+                            }}
                             className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs text-purple-400 hover:text-purple-300 bg-purple-500/10 hover:bg-purple-500/20 rounded-lg transition-colors"
                           >
                             <Mail className="w-3 h-3" /> Reply
-                          </a>
+                          </button>
 
                           {isDeleting ? (
                             <div className="inline-flex items-center gap-2 ml-auto">

@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdminAuth } from '@/lib/auth'
+import { getAdminUser } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabase-server'
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    await requireAdminAuth()
-  } catch {
+  const user = await getAdminUser()
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -46,9 +45,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    await requireAdminAuth()
-  } catch {
+  const deleteUser = await getAdminUser()
+  if (!deleteUser) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
