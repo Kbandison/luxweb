@@ -1,7 +1,5 @@
 import { getAdminUser } from '@/lib/auth'
-import { AdminHeader } from '@/components/admin/AdminHeader'
-import { AdminSidebar } from '@/components/admin/AdminSidebar'
-import { AdminContent } from '@/components/admin/AdminContent'
+import { AdminShell } from '@/components/admin/AdminShell'
 
 export default async function AdminLayout({
   children,
@@ -10,22 +8,18 @@ export default async function AdminLayout({
 }) {
   const user = await getAdminUser()
 
-  return (
-    <div className="min-h-screen bg-black">
-      {user && (
-        <>
-          {/* Admin Header - sits under main navigation, only shows if authenticated */}
-          <AdminHeader user={user} />
-          
-          {/* Admin Sidebar - sits under admin header, only shows if authenticated */}
-          <AdminSidebar user={user} />
-        </>
-      )}
-      
-      {/* Main Content - responsive to authentication state */}
-      <AdminContent user={user}>
+  if (!user) {
+    // Not authenticated — render children directly (login page)
+    return (
+      <div className="min-h-screen bg-black">
         {children}
-      </AdminContent>
-    </div>
+      </div>
+    )
+  }
+
+  return (
+    <AdminShell user={user}>
+      {children}
+    </AdminShell>
   )
 }

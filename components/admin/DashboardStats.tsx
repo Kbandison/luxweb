@@ -45,26 +45,26 @@ export function DashboardStats({
   ]
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       {stats.map((stat) => (
         <div
           key={stat.name}
-          className="bg-glass-primary backdrop-blur-xl border border-white/20 rounded-xl p-8 hover:bg-white/10 transition-all duration-200"
+          className="bg-white/[0.03] border border-white/10 rounded-xl p-4 sm:p-6 hover:bg-white/[0.05] transition-all duration-200"
         >
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-400">{stat.name}</p>
-              <p className="text-2xl font-bold text-white mt-2">
+            <div className="min-w-0">
+              <p className="text-xs sm:text-sm font-medium text-gray-400 truncate">{stat.name}</p>
+              <p className="text-xl sm:text-2xl font-bold text-white mt-1">
                 {stat.value}
               </p>
             </div>
-            <div className="p-3 bg-primary-light/20 rounded-lg">
-              <stat.icon className="h-6 w-6 text-primary-light" />
+            <div className="p-2 sm:p-3 bg-purple-600/10 rounded-lg flex-shrink-0">
+              <stat.icon className="h-4 w-4 sm:h-5 sm:w-5 text-purple-400" />
             </div>
           </div>
-          <div className="mt-6">
+          <div className="mt-3 sm:mt-4">
             <span
-              className={`text-sm font-medium ${
+              className={`text-xs sm:text-sm font-medium ${
                 stat.type === 'positive'
                   ? 'text-green-400'
                   : stat.type === 'warning'
