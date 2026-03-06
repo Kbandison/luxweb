@@ -7,12 +7,27 @@ const PROJECTS_FILE = path.join(process.cwd(), 'data', 'projects.ts')
 
 function readProjectsFile() {
   const content = fs.readFileSync(PROJECTS_FILE, 'utf-8')
-  // Extract the projects array from the TypeScript file
-  const match = content.match(/export const projects:\s*Project\[\]\s*=\s*(\[[\s\S]*?\n\])/m)
-  if (!match) throw new Error('Could not parse projects array from file')
-  // Use Function constructor to evaluate the array literal
-  // Replace single-line comments that could break parsing
-  const cleaned = match[1].replace(/\/\/.*$/gm, '')
+  // Find the start of the projects array, then bracket-match to find the end
+  const marker = content.indexOf('export const projects: Project[] =')
+  if (marker === -1) throw new Error('Could not find projects array in file')
+  const arrayStart = content.indexOf('[', marker)
+  if (arrayStart === -1) throw new Error('Could not find opening bracket')
+
+  // Walk through brackets to find the matching close bracket
+  let depth = 0
+  let arrayEnd = -1
+  for (let i = arrayStart; i < content.length; i++) {
+    if (content[i] === '[') depth++
+    else if (content[i] === ']') {
+      depth--
+      if (depth === 0) { arrayEnd = i + 1; break }
+    }
+  }
+  if (arrayEnd === -1) throw new Error('Could not find closing bracket')
+
+  const arrayStr = content.slice(arrayStart, arrayEnd)
+  // Remove single-line comments that could break parsing
+  const cleaned = arrayStr.replace(/\/\/.*$/gm, '')
   const fn = new Function(`return ${cleaned}`)
   return fn()
 }

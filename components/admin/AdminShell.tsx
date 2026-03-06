@@ -85,9 +85,9 @@ export function AdminShell({ children, user }: AdminShellProps) {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar — sits below the public navbar (h-10 mobile / h-12 desktop) */}
       <aside
-        className={`fixed top-0 left-0 bottom-0 z-50 w-64 bg-gray-950/95 backdrop-blur-xl border-r border-white/10 transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed top-10 lg:top-12 left-0 bottom-0 z-40 w-64 bg-gray-950/95 backdrop-blur-xl border-r border-white/10 transition-transform duration-300 lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -141,8 +141,8 @@ export function AdminShell({ children, user }: AdminShellProps) {
         </div>
       </aside>
 
-      {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-30 h-16 bg-gray-950/90 backdrop-blur-xl border-b border-white/10 lg:pl-64">
+      {/* Header — sits below the public navbar */}
+      <header className="fixed top-10 lg:top-12 left-0 right-0 z-30 h-14 bg-gray-950/90 backdrop-blur-xl border-b border-white/10 lg:pl-64">
         <div className="flex items-center justify-between h-full px-4 sm:px-6">
           {/* Left: hamburger + page title */}
           <div className="flex items-center gap-3">
@@ -193,8 +193,8 @@ export function AdminShell({ children, user }: AdminShellProps) {
         </div>
       </header>
 
-      {/* Main content */}
-      <main className="pt-16 lg:pl-64">
+      {/* Main content — offset for navbar (h-10/h-12) + admin header (h-14) */}
+      <main className="pt-24 lg:pt-[104px] lg:pl-64">
         <div className="p-4 sm:p-6">
           {children}
         </div>

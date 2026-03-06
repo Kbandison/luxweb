@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
 import {
   Mail, Search, ChevronDown, ChevronUp, Pencil, Trash2, X, Check
 } from 'lucide-react'
@@ -47,11 +46,15 @@ export default function SubmissionsPage() {
 
   const fetchSubmissions = async () => {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('contact_submissions')
-      .select('*')
-      .order('created_at', { ascending: false })
-    if (!error && data) setSubmissions(data)
+    try {
+      const res = await fetch('/api/admin/submissions')
+      if (res.ok) {
+        const data = await res.json()
+        setSubmissions(data)
+      }
+    } catch (err) {
+      console.error('Failed to fetch submissions:', err)
+    }
     setLoading(false)
   }
 
