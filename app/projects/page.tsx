@@ -1,6 +1,6 @@
 import { Metadata } from "next"
-import { projects, portfolioStats } from "@/data/projects"
 import ProjectsGrid from "@/components/ProjectsGrid"
+import { getProjects } from "@/lib/projects"
 
 export const metadata: Metadata = {
   title: "Projects - LuxWeb Studio | Our Portfolio & Case Studies",
@@ -13,7 +13,9 @@ export const metadata: Metadata = {
   },
 }
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  const projects = await getProjects()
+
   return (
     <main className="min-h-screen pt-20">
       <div className="container mx-auto max-w-7xl px-6 py-20">
@@ -25,8 +27,8 @@ export default function ProjectsPage() {
             Discover how we've transformed businesses across industries with custom web solutions that drive real results and growth.
           </p>
         </div>
-        
-        <ProjectsGrid />
+
+        <ProjectsGrid projects={projects} />
       </div>
     </main>
   )

@@ -5,10 +5,10 @@ import { ArrowRight, Zap, Clock, MessageCircle } from "lucide-react"
 import { motion, useMotionValue, useTransform } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
-import { projects } from "@/data/projects"
+import type { Project } from "@/data/projects"
 import { useEffect, useState } from "react"
 
-export default function Hero() {
+export default function Hero({ projects }: { projects: Project[] }) {
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
   const [isMobile, setIsMobile] = useState(true)

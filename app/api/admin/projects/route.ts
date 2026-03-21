@@ -1,62 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAdminUser } from '@/lib/auth'
-import { projects as projectsData } from '@/data/projects'
-import fs from 'fs'
-import path from 'path'
-
-const PROJECTS_FILE = path.join(process.cwd(), 'data', 'projects.ts')
-
-function writeProjectsFile(projects: any[]) {
-  const projectsJson = JSON.stringify(projects, null, 2)
-    .replace(/"(\w+)":/g, '$1:')
-
-  const content = `export interface Project {
-  title: string
-  description: string
-  tech: string[]
-  result: string
-  category: string
-  images: string[]
-  color: string
-  links?: {
-    live?: string
-  }
-}
-
-export const projects: Project[] = ${projectsJson}
-
-// Portfolio stats (easily editable)
-export interface PortfolioStat {
-  icon: string
-  value: string
-  label: string
-  color: string
-}
-
-export const portfolioStats: PortfolioStat[] = [
-  {
-    icon: "Code",
-    value: "50+",
-    label: "Websites Delivered",
-    color: "green"
-  },
-  {
-    icon: "Users",
-    value: "100%",
-    label: "Client Satisfaction",
-    color: "blue"
-  },
-  {
-    icon: "TrendingUp",
-    value: "3x",
-    label: "Average ROI Increase",
-    color: "amber"
-  }
-]
-`
-
-  fs.writeFileSync(PROJECTS_FILE, content, 'utf-8')
-}
+import { supabaseAdmin } from '@/lib/supabase-server'
 
 export async function GET() {
   const user = await getAdminUser()
@@ -64,22 +8,57 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  return NextResponse.json(projectsData)
+  const { data, error } = await supabaseAdmin
+    .from('demo_projects')
+    .select('*')
+    .order('sort_order', { ascending: true })
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+
+  return NextResponse.json(data)
 }
 
-export async function PUT(request: NextRequest) {
-  const putUser = await getAdminUser()
-  if (!putUser) {
+export async function POST(request: NextRequest) {
+  const user = await getAdminUser()
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   try {
-    const projects = await request.json()
-    if (!Array.isArray(projects)) {
-      return NextResponse.json({ error: 'Expected array of projects' }, { status: 400 })
+    const body = await request.json()
+
+    // Get max sort_order to append at end
+    const { data: existing } = await supabaseAdmin
+      .from('demo_projects')
+      .select('sort_order')
+      .order('sort_order', { ascending: false })
+      .limit(1)
+
+    const nextOrder = existing && existing.length > 0 ? existing[0].sort_order + 1 : 0
+
+    const { data, error } = await supabaseAdmin
+      .from('demo_projects')
+      .insert({
+        title: body.title,
+        description: body.description || '',
+        tech: body.tech || [],
+        result: body.result || '',
+        category: body.category || '',
+        images: body.images || [],
+        color: body.color || 'from-purple-500 to-pink-500',
+        live_link: body.live_link || null,
+        sort_order: nextOrder,
+      })
+      .select()
+      .single()
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 })
     }
-    writeProjectsFile(projects)
-    return NextResponse.json({ success: true, count: projects.length })
+
+    return NextResponse.json(data, { status: 201 })
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 })
   }

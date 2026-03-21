@@ -5,10 +5,11 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
-import { projects, portfolioStats } from "@/data/projects"
+import type { Project } from "@/data/projects"
+import { portfolioStats } from "@/data/projects"
 import ImageLightbox from "./ImageLightbox"
 
-export default function ProjectsGrid() {
+export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   const [currentImageIndex, setCurrentImageIndex] = useState<Record<number, number>>({})
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxImages, setLightboxImages] = useState<string[]>([])

@@ -9,6 +9,7 @@ import {
   Mail,
   Calendar,
   FolderOpen,
+  FileText,
   Menu,
   X,
   User,
@@ -20,6 +21,7 @@ const navigation = [
   { name: 'Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' },
   { name: 'Submissions', icon: Mail, href: '/admin/submissions' },
   { name: 'Projects', icon: FolderOpen, href: '/admin/projects' },
+  { name: 'Documents', icon: FileText, href: '/admin/documents' },
   { name: 'Calendar', icon: Calendar, href: '/admin/calendar' },
 ]
 
@@ -70,6 +72,7 @@ export function AdminShell({ children, user }: AdminShellProps) {
       dashboard: 'Dashboard',
       submissions: 'Submissions',
       projects: 'Projects',
+      documents: 'Documents',
       calendar: 'Calendar',
     }
     return titles[segment || ''] || 'Admin'

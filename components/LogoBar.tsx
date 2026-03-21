@@ -1,8 +1,8 @@
 'use client'
 
-import { projects } from '@/data/projects'
+import type { Project } from '@/data/projects'
 
-export default function LogoBar() {
+export default function LogoBar({ projects }: { projects: Project[] }) {
   // Use project names as "logos"
   const names = projects.map(p => p.title)
   // Duplicate for seamless loop

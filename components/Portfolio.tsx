@@ -3,13 +3,13 @@
 import { ArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
 import ScrollReveal from "./ScrollReveal"
-import { projects } from "@/data/projects"
+import type { Project } from "@/data/projects"
 import Link from "next/link"
 import Image from "next/image"
 import ImageLightbox from "./ImageLightbox"
 import { useState } from "react"
 
-export default function Portfolio() {
+export default function Portfolio({ projects }: { projects: Project[] }) {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxImages, setLightboxImages] = useState<string[]>([])
   const [lightboxIndex, setLightboxIndex] = useState(0)
@@ -114,7 +114,7 @@ function PortfolioCard({
   onOpenLightbox,
   className = '',
 }: {
-  project: typeof projects[0]
+  project: Project
   onOpenLightbox: (images: string[], index: number, title: string, liveLink?: string) => void
   className?: string
 }) {

@@ -9,8 +9,11 @@ import TestimonialCarousel from "@/components/TestimonialCarousel"
 import FAQCondensed from "@/components/FAQCondensed"
 import CTASection from "@/components/CTASection"
 import FloatingCTA from "@/components/FloatingCTA"
+import { getProjects } from "@/lib/projects"
 
-export default function Home() {
+export default async function Home() {
+  const projects = await getProjects()
+
   return (
     <main className="min-h-screen relative">
       {/* Unified Background */}
@@ -30,10 +33,10 @@ export default function Home() {
       </div>
 
       <div className="relative z-10">
-        <Hero />
-        <LogoBar />
+        <Hero projects={projects} />
+        <LogoBar projects={projects} />
         <ProblemSolution />
-        <Portfolio />
+        <Portfolio projects={projects} />
         <SocialProofStrip />
         <ProcessSection />
         <PricingCondensed />
