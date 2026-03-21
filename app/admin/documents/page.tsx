@@ -13,17 +13,25 @@ interface FormData {
   clientEmail: string
   effectiveDate: string
   pageCount: string
+  deliverables: string
   durationWeeks: string
   targetLaunchDate: string
   totalAmount: string
   phone: string
 }
 
+const DEFAULT_DELIVERABLES = `Custom design with two (2) revision rounds per phase
+Migration of existing page/content
+Industry-standard security hardening
+Conversion-rate optimization best practices
+Three (3) months of post-launch support ("Support Period")`
+
 const INITIAL_FORM: FormData = {
   clientName: '',
   clientEmail: '',
   effectiveDate: new Date().toISOString().split('T')[0],
   pageCount: '',
+  deliverables: DEFAULT_DELIVERABLES,
   durationWeeks: '',
   targetLaunchDate: '',
   totalAmount: '',
@@ -71,11 +79,7 @@ LuxWeb Studio, contact: support@luxwebstudio.dev ("Contractor")
 1.1 Deliverables
 Contractor will design and develop a custom website ("Project") that includes:
 • Up to ${f.pageCount || '[PAGE COUNT]'} pages
-• Custom design with two (2) revision rounds per phase (one revision round is a single collection of exchanges submitted at one time)
-• Migration of existing page/content
-• Industry-standard security hardening
-• Conversion-rate optimization best practices
-• Three (3) months of post-launch support ("Support Period")
+${f.deliverables.split('\n').filter(l => l.trim()).map(l => `• ${l.trim()}`).join('\n')}
 
 1.2 Out-of-Scope / Maintenance
 After the Support Period ends, any additional work—new pages, change requests, DNS help, etc.—will be billed at $100 per hour, Net 7, subject to prior written approval by Client.
@@ -302,14 +306,8 @@ You need a website that looks sharp, loads fast, and converts visitors into cust
 
 3. Scope & Deliverables
 
-Item                  | Details
-Pages                 | Up to ${f.pageCount || '[PAGE COUNT]'} fully designed pages
-Design                | Custom UI/UX, two (2) revision rounds per phase
-Content Migration     | Port existing copy & imagery
-Integrations          | Active Campaign email capture, Google Analytics, basic SEO setup
-Security              | HTTPS, best-practice hardening, critical updates applied pre-launch
-Performance           | Image optimization, lazy-loading, lighthouse >90% targets
-Post-Launch Support   | Bug-fixes & "how-do-I?" help for three (3) months
+• Up to ${f.pageCount || '[PAGE COUNT]'} fully designed pages
+${f.deliverables.split('\n').filter(l => l.trim()).map(l => `• ${l.trim()}`).join('\n')}
 
 Anything not listed above (e-commerce, custom app features, ongoing hosting, etc.) is out-of-scope and can be quoted separately.
 
@@ -546,6 +544,16 @@ export default function DocumentsPage() {
                   onChange={e => update('pageCount', e.target.value)}
                   className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/40"
                   placeholder="5"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-xs text-gray-400 mb-1 block">Deliverables (one per line)</label>
+                <textarea
+                  rows={5}
+                  value={form.deliverables}
+                  onChange={e => update('deliverables', e.target.value)}
+                  className="w-full px-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/40 resize-none"
+                  placeholder="Custom design with two (2) revision rounds per phase&#10;Migration of existing page/content&#10;Industry-standard security hardening"
                 />
               </div>
               <div>
