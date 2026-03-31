@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getAdminUser } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabase-server'
 
@@ -38,6 +39,8 @@ export async function PATCH(
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
+    revalidatePath('/')
+    revalidatePath('/projects')
     return NextResponse.json(data)
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 })
@@ -88,6 +91,8 @@ export async function DELETE(
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
+    revalidatePath('/')
+    revalidatePath('/projects')
     return NextResponse.json({ success: true })
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 })

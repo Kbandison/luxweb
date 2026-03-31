@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { getAdminUser } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabase-server'
 
@@ -25,6 +26,8 @@ export async function PUT(request: NextRequest) {
 
     await Promise.all(updates)
 
+    revalidatePath('/')
+    revalidatePath('/projects')
     return NextResponse.json({ success: true })
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 })

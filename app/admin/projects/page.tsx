@@ -1,10 +1,27 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import {
-  Plus, Trash2, ChevronUp, ChevronDown, X, Check,
-  ExternalLink, Image as ImageIcon, Upload, Loader2
+  Plus, Trash2, X, Check,
+  ExternalLink, Image as ImageIcon, Upload, Loader2, GripVertical
 } from 'lucide-react'
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 interface ProjectRow {
   id: string
@@ -40,6 +57,12 @@ export default function ProjectsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [techInput, setTechInput] = useState('')
   const [uploading, setUploading] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  )
 
   useEffect(() => {
     fetchProjects()
@@ -60,14 +83,15 @@ export default function ProjectsPage() {
   }
 
   const startAdd = () => {
-    setEditForm({ ...EMPTY_PROJECT })
+    setEditForm({ ...EMPTY_PROJECT, live_link: '' })
     setTechInput('')
     setEditId('new')
     setIsNew(true)
+    setModalOpen(true)
   }
 
   const startEdit = (project: ProjectRow) => {
-    if (editId !== null || deletingId !== null) return
+    if (deletingId !== null) return
     setEditForm({
       title: project.title,
       description: project.description,
@@ -81,9 +105,11 @@ export default function ProjectsPage() {
     setTechInput((project.tech || []).join(', '))
     setEditId(project.id)
     setIsNew(false)
+    setModalOpen(true)
   }
 
-  const cancelEdit = () => {
+  const closeModal = () => {
+    setModalOpen(false)
     setEditId(null)
     setIsNew(false)
     setEditForm(EMPTY_PROJECT)
@@ -125,8 +151,7 @@ export default function ProjectsPage() {
     }
 
     setSaving(false)
-    setEditId(null)
-    setIsNew(false)
+    closeModal()
   }
 
   const deleteProject = async (id: string) => {
@@ -141,19 +166,17 @@ export default function ProjectsPage() {
     setDeletingId(null)
   }
 
-  const moveProject = async (index: number, direction: 'up' | 'down') => {
-    const newIndex = direction === 'up' ? index - 1 : index + 1
-    if (newIndex < 0 || newIndex >= projects.length) return
+  const handleDragEnd = useCallback(async (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
 
-    const updated = [...projects]
-    const temp = updated[index]
-    updated[index] = updated[newIndex]
-    updated[newIndex] = temp
+    const oldIndex = projects.findIndex(p => p.id === active.id)
+    const newIndex = projects.findIndex(p => p.id === over.id)
+    const updated = arrayMove(projects, oldIndex, newIndex)
 
-    // Optimistically update UI
+    // Optimistic update
     setProjects(updated)
 
-    // Send reorder request
     const reorderPayload = updated.map((p, i) => ({ id: p.id, sort_order: i }))
     try {
       await fetch('/api/admin/projects/reorder', {
@@ -163,9 +186,9 @@ export default function ProjectsPage() {
       })
     } catch (err) {
       console.error('Failed to reorder:', err)
-      await fetchProjects() // Revert on failure
+      await fetchProjects()
     }
-  }
+  }, [projects])
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -173,7 +196,6 @@ export default function ProjectsPage() {
 
     setUploading(true)
     try {
-      // Upload all selected files in parallel
       const uploads = Array.from(files).map(async (file) => {
         const formData = new FormData()
         formData.append('file', file)
@@ -201,7 +223,6 @@ export default function ProjectsPage() {
       console.error('Upload failed:', err)
     }
     setUploading(false)
-    // Reset input so the same files can be selected again
     e.target.value = ''
   }
 
@@ -217,12 +238,11 @@ export default function ProjectsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">Projects</h1>
-          <p className="text-gray-400 text-sm">Manage portfolio projects. Click a row to edit.</p>
+          <p className="text-gray-400 text-sm">Drag to reorder. Click a row to edit.</p>
         </div>
         <button
           onClick={startAdd}
-          disabled={editId !== null}
-          className="inline-flex items-center gap-1.5 px-3 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm rounded-lg transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 px-3 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm rounded-lg transition-colors"
         >
           <Plus className="w-4 h-4" /> Add Project
         </button>
@@ -231,151 +251,58 @@ export default function ProjectsPage() {
       {loading ? (
         <div className="text-center text-gray-400 py-12">Loading projects...</div>
       ) : (
-        <div className="space-y-3">
-          {projects.map((project, index) => {
-            const isEditing = editId === project.id && !isNew
-            const isDeleting = deletingId === project.id
-
-            return (
-              <div
-                key={project.id}
-                className="bg-white/[0.03] border border-white/10 rounded-xl overflow-hidden"
-              >
-                {isEditing ? (
-                  <ProjectForm
-                    form={editForm}
-                    setForm={setEditForm}
-                    techInput={techInput}
-                    setTechInput={setTechInput}
-                    onSave={saveEdit}
-                    onCancel={cancelEdit}
-                    saving={saving}
-                    uploading={uploading}
-                    onImageUpload={handleImageUpload}
-                    onRemoveImage={removeImage}
-                  />
-                ) : (
-                  <div
-                    className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-white/[0.02] transition-colors"
-                    onClick={() => startEdit(project)}
-                  >
-                    {/* Thumbnail */}
-                    <div className="w-12 h-12 rounded-lg bg-gradient-to-br flex-shrink-0 overflow-hidden flex items-center justify-center">
-                      {project.images[0] ? (
-                        <img
-                          src={project.images[0]}
-                          alt={project.title}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                      ) : (
-                        <ImageIcon className="w-5 h-5 text-gray-500" />
-                      )}
-                    </div>
-
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-white truncate">{project.title}</span>
-                        <span className="text-xs text-gray-500 hidden sm:inline">{project.category}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                        {(project.tech || []).slice(0, 3).map(t => (
-                          <span key={t} className="text-[10px] px-1.5 py-0.5 bg-white/5 text-gray-400 rounded">
-                            {t}
-                          </span>
-                        ))}
-                        {(project.tech || []).length > 3 && (
-                          <span className="text-[10px] text-gray-500">+{project.tech.length - 3}</span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center gap-1 flex-shrink-0" onClick={e => e.stopPropagation()}>
-                      <button
-                        onClick={() => moveProject(index, 'up')}
-                        disabled={index === 0 || editId !== null}
-                        className="p-1.5 text-gray-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors disabled:opacity-30"
-                        title="Move up"
-                      >
-                        <ChevronUp className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => moveProject(index, 'down')}
-                        disabled={index === projects.length - 1 || editId !== null}
-                        className="p-1.5 text-gray-500 hover:text-white hover:bg-white/10 rounded-lg transition-colors disabled:opacity-30"
-                        title="Move down"
-                      >
-                        <ChevronDown className="w-4 h-4" />
-                      </button>
-
-                      {project.live_link && (
-                        <a
-                          href={project.live_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 text-gray-500 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-colors"
-                          title="View live"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </a>
-                      )}
-
-                      {isDeleting ? (
-                        <div className="flex items-center gap-1">
-                          <button
-                            onClick={() => deleteProject(project.id)}
-                            className="px-2 py-1 text-xs text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-colors"
-                          >
-                            Confirm
-                          </button>
-                          <button
-                            onClick={() => setDeletingId(null)}
-                            className="px-2 py-1 text-xs text-gray-400 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={() => setDeletingId(project.id)}
-                          disabled={editId !== null}
-                          className="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-30"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          })}
-
-          {/* New project form */}
-          {isNew && editId === 'new' && (
-            <div className="bg-white/[0.03] border border-purple-500/20 rounded-xl overflow-hidden">
-              <ProjectForm
-                form={editForm}
-                setForm={setEditForm}
-                techInput={techInput}
-                setTechInput={setTechInput}
-                onSave={saveEdit}
-                onCancel={cancelEdit}
-                saving={saving}
-                uploading={uploading}
-                onImageUpload={handleImageUpload}
-                onRemoveImage={removeImage}
-                isNew
-              />
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext items={projects.map(p => p.id)} strategy={verticalListSortingStrategy}>
+            <div className="space-y-2">
+              {projects.map((project) => (
+                <SortableProjectRow
+                  key={project.id}
+                  project={project}
+                  deletingId={deletingId}
+                  onEdit={() => startEdit(project)}
+                  onDelete={() => deleteProject(project.id)}
+                  onStartDelete={() => setDeletingId(project.id)}
+                  onCancelDelete={() => setDeletingId(null)}
+                />
+              ))}
             </div>
-          )}
+          </SortableContext>
+        </DndContext>
+      )}
+
+      {/* Edit/Add Modal */}
+      {modalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          onClick={closeModal}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
+          {/* Modal content */}
+          <div
+            className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-gray-950 border border-white/10 rounded-2xl shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <ProjectForm
+              form={editForm}
+              setForm={setEditForm}
+              techInput={techInput}
+              setTechInput={setTechInput}
+              onSave={saveEdit}
+              onCancel={closeModal}
+              saving={saving}
+              uploading={uploading}
+              onImageUpload={handleImageUpload}
+              onRemoveImage={removeImage}
+              isNew={isNew}
+            />
+          </div>
         </div>
       )}
 
       {saving && (
-        <div className="fixed bottom-4 right-4 bg-purple-600 text-white text-sm px-4 py-2 rounded-lg shadow-lg">
+        <div className="fixed bottom-4 right-4 bg-purple-600 text-white text-sm px-4 py-2 rounded-lg shadow-lg z-50">
           Saving changes...
         </div>
       )}
@@ -383,7 +310,141 @@ export default function ProjectsPage() {
   )
 }
 
-/* Reusable form for add/edit */
+/* ── Sortable row component ── */
+
+function SortableProjectRow({
+  project,
+  deletingId,
+  onEdit,
+  onDelete,
+  onStartDelete,
+  onCancelDelete,
+}: {
+  project: ProjectRow
+  deletingId: string | null
+  onEdit: () => void
+  onDelete: () => void
+  onStartDelete: () => void
+  onCancelDelete: () => void
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: project.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 10 : undefined,
+  }
+
+  const isDeleting = deletingId === project.id
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="bg-white/[0.03] border border-white/10 rounded-xl overflow-hidden"
+    >
+      <div className="flex items-center gap-2 px-2 py-3 sm:px-4">
+        {/* Drag handle */}
+        <button
+          {...attributes}
+          {...listeners}
+          className="p-1 text-gray-600 hover:text-gray-400 cursor-grab active:cursor-grabbing touch-none flex-shrink-0"
+          title="Drag to reorder"
+        >
+          <GripVertical className="w-4 h-4" />
+        </button>
+
+        {/* Clickable row content */}
+        <div
+          className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer"
+          onClick={onEdit}
+        >
+          {/* Thumbnail */}
+          <div className="w-12 h-12 rounded-lg bg-gradient-to-br flex-shrink-0 overflow-hidden flex items-center justify-center">
+            {project.images[0] ? (
+              <img
+                src={project.images[0]}
+                alt={project.title}
+                className="w-full h-full object-cover rounded-lg"
+              />
+            ) : (
+              <ImageIcon className="w-5 h-5 text-gray-500" />
+            )}
+          </div>
+
+          {/* Info */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-white truncate">{project.title}</span>
+              <span className="text-xs text-gray-500 hidden sm:inline">{project.category}</span>
+            </div>
+            <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+              {(project.tech || []).slice(0, 3).map(t => (
+                <span key={t} className="text-[10px] px-1.5 py-0.5 bg-white/5 text-gray-400 rounded">
+                  {t}
+                </span>
+              ))}
+              {(project.tech || []).length > 3 && (
+                <span className="text-[10px] text-gray-500">+{project.tech.length - 3}</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-1 flex-shrink-0">
+          {project.live_link && (
+            <a
+              href={project.live_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1.5 text-gray-500 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-colors"
+              title="View live"
+            >
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          )}
+
+          {isDeleting ? (
+            <div className="flex items-center gap-1">
+              <button
+                onClick={onDelete}
+                className="px-2 py-1 text-xs text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-colors"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={onCancelDelete}
+                className="px-2 py-1 text-xs text-gray-400 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={onStartDelete}
+              className="p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
+              title="Delete"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/* ── Reusable form for add/edit (rendered inside modal) ── */
+
 function ProjectForm({
   form,
   setForm,
@@ -412,10 +473,19 @@ function ProjectForm({
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   return (
-    <div className="px-4 py-4 space-y-3">
-      <h3 className="text-sm font-medium text-white">
-        {isNew ? 'Add New Project' : 'Edit Project'}
-      </h3>
+    <div className="p-5 sm:p-6 space-y-4">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-white">
+          {isNew ? 'Add New Project' : 'Edit Project'}
+        </h3>
+        <button
+          onClick={onCancel}
+          className="p-1.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
@@ -534,20 +604,20 @@ function ProjectForm({
         </div>
       </div>
 
-      <div className="flex items-center gap-2 pt-1">
+      {/* Footer actions */}
+      <div className="flex items-center gap-2 pt-2 border-t border-white/10">
         <button
           onClick={onSave}
           disabled={saving || !form.title.trim()}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-sm rounded-lg transition-colors disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-sm rounded-lg transition-colors disabled:opacity-50"
         >
           <Check className="w-3.5 h-3.5" />
-          {saving ? 'Saving...' : isNew ? 'Add Project' : 'Save'}
+          {saving ? 'Saving...' : isNew ? 'Add Project' : 'Save Changes'}
         </button>
         <button
           onClick={onCancel}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 text-gray-300 text-sm rounded-lg transition-colors"
+          className="inline-flex items-center gap-1.5 px-4 py-2 bg-white/5 hover:bg-white/10 text-gray-300 text-sm rounded-lg transition-colors"
         >
-          <X className="w-3.5 h-3.5" />
           Cancel
         </button>
       </div>

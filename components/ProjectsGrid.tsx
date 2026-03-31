@@ -8,6 +8,7 @@ import ScrollReveal, { StaggerContainer, StaggerItem } from "./ScrollReveal"
 import type { Project } from "@/data/projects"
 import { portfolioStats } from "@/data/projects"
 import ImageLightbox from "./ImageLightbox"
+import Image from "next/image"
 
 export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   const [currentImageIndex, setCurrentImageIndex] = useState<Record<number, number>>({})
@@ -118,10 +119,12 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                   onClick={() => openLightbox(project.images, currentImageIndex[index] || 0, project.title, project.links?.live)}
                 >
                   {project.images.length > 0 && (
-                    <img
+                    <Image
                       src={project.images[currentImageIndex[index] || 0]}
                       alt={`${project.title} - Image ${(currentImageIndex[index] || 0) + 1}`}
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      className="object-cover"
                     />
                   )}
                   <div className="absolute inset-0 bg-black/20 flex items-center justify-center pointer-events-none">
