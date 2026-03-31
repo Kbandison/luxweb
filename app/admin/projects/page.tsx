@@ -168,30 +168,41 @@ export default function ProjectsPage() {
   }
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const files = e.target.files
+    if (!files || files.length === 0) return
 
     setUploading(true)
     try {
-      const formData = new FormData()
-      formData.append('file', file)
+      // Upload all selected files in parallel
+      const uploads = Array.from(files).map(async (file) => {
+        const formData = new FormData()
+        formData.append('file', file)
 
-      const res = await fetch('/api/admin/projects/upload', {
-        method: 'POST',
-        body: formData,
+        const res = await fetch('/api/admin/projects/upload', {
+          method: 'POST',
+          body: formData,
+        })
+
+        if (res.ok) {
+          const { url } = await res.json()
+          return url as string
+        } else {
+          const { error } = await res.json()
+          console.error('Upload failed:', error)
+          return null
+        }
       })
 
-      if (res.ok) {
-        const { url } = await res.json()
-        setEditForm(prev => ({ ...prev, images: [...prev.images, url] }))
-      } else {
-        const { error } = await res.json()
-        console.error('Upload failed:', error)
+      const urls = (await Promise.all(uploads)).filter(Boolean) as string[]
+      if (urls.length > 0) {
+        setEditForm(prev => ({ ...prev, images: [...prev.images, ...urls] }))
       }
     } catch (err) {
       console.error('Upload failed:', err)
     }
     setUploading(false)
+    // Reset input so the same files can be selected again
+    e.target.value = ''
   }
 
   const removeImage = (index: number) => {
@@ -499,6 +510,7 @@ function ProjectForm({
             ref={fileInputRef}
             type="file"
             accept="image/*"
+            multiple
             onChange={onImageUpload}
             className="hidden"
           />
@@ -515,7 +527,7 @@ function ProjectForm({
             ) : (
               <>
                 <Upload className="w-3.5 h-3.5" />
-                Upload Image
+                Upload Images
               </>
             )}
           </button>
