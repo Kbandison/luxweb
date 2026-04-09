@@ -3,12 +3,12 @@ import FAQ from "@/components/FAQ"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Pricing - LuxWeb Studio | Professional Web Development Packages",
-  description: "Choose the perfect web development package for your business. Transparent pricing starting at $1,497, no hidden fees, and packages designed to convert visitors into customers. Get your custom website in 1-2 weeks.",
-  keywords: ["web development pricing", "website cost", "web design packages", "professional website pricing", "custom website development cost", "LuxWeb Studio pricing"],
+  title: "Pricing - LuxWeb Studio | The Signature Site Starting at $4,500",
+  description: "Professional custom websites starting at $4,500. Mobile-first design, lead capture, local SEO, delivered in 2-3 weeks. No hidden fees, no confusing tiers.",
+  keywords: ["web development pricing", "website cost", "custom website pricing", "professional website development", "local business website cost", "LuxWeb Studio pricing"],
   openGraph: {
-    title: "LuxWeb Studio Pricing - Professional Web Development Packages",
-    description: "Choose the perfect web development package for your business. Transparent pricing, no hidden fees, and packages designed to convert visitors into customers.",
+    title: "LuxWeb Studio Pricing - The Signature Site",
+    description: "Professional custom websites starting at $4,500. Mobile-first design, lead capture, local SEO, delivered in 2-3 weeks.",
     url: "/pricing",
   },
 }

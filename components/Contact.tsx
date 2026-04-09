@@ -30,16 +30,11 @@ export default function Contact() {
     if (packageParam) {
       // Map package names to form values
       const packageMap: Record<string, string> = {
-        'Starter Package': 'starter',
-        'Growth Package': 'growth',
-        'Complete Package': 'complete',
-        'Enterprise Package': 'enterprise'
+        'The Signature Site': 'signature',
       }
 
-      const mappedValue = packageMap[packageParam]
-      if (mappedValue) {
-        setFormData(prev => ({ ...prev, project_type: mappedValue }))
-      }
+      const mappedValue = packageMap[packageParam] || 'signature'
+      setFormData(prev => ({ ...prev, project_type: mappedValue }))
     }
   }, [searchParams])
 
@@ -265,10 +260,8 @@ export default function Contact() {
                     className="glass-card bg-white/5 border-white/20 text-white w-full p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
                   >
                     <option value="" className="bg-black text-white">Not sure yet</option>
-                    <option value="starter" className="bg-black text-white">Starter Package</option>
-                    <option value="growth" className="bg-black text-white">Growth Package</option>
-                    <option value="complete" className="bg-black text-white">Complete Package</option>
-                    <option value="enterprise" className="bg-black text-white">Enterprise Package</option>
+                    <option value="signature" className="bg-black text-white">The Signature Site</option>
+                    <option value="custom" className="bg-black text-white">Custom Project</option>
                   </select>
                   <p className="text-gray-500 text-xs mt-1">Don't worry if unsure - we'll discuss the best fit during consultation</p>
                 </div>

@@ -2,90 +2,32 @@ export interface Package {
   name: string
   description: string
   price: string
-  originalPrice?: string
   features: string[]
   idealFor: string
   cta: string
-  popular: boolean
-  badge?: string
 }
 
-export const packages: Package[] = [
-  {
-    name: "Starter Package",
-    description: "Perfect for new businesses getting online",
-    price: "$1,200+",
-    originalPrice: "$1,800",
-    features: [
-      "Professional single-page website",
-      "Mobile-responsive design",
-      "Basic SEO optimization",
-      "Contact form integration",
-      "1 week delivery",
-      "30-day support"
-    ],
-    idealFor: "New businesses, personal brands, service providers",
-    cta: "Get Your Quote",
-    popular: false,
-    badge: "Save $600"
-  },
-  {
-    name: "Growth Package",
-    description: "Ideal for established businesses ready to scale",
-    price: "$1,600+",
-    originalPrice: "$2,200",
-    features: [
-      "2 - 10 page custom website",
-      "Advanced SEO setup",
-      "Analytics integration",
-      "Social media integration",
-      "Blog setup (optional)",
-      "2 weeks delivery",
-      "60-day support"
-    ],
-    idealFor: "Growing businesses, professional services",
-    cta: "Start Your Project",
-    popular: true,
-    badge: "Save $600"
-  },
-  {
-    name: "Complete Package",
-    description: "Full-service solution for serious growth",
-    price: "$2,000+",
-    originalPrice: "$2,600",
-    features: [
-      "10-30 Pages",
-      "Database integration",
-      "User authentication",
-      "Payment processing",
-      "Advanced functionality",
-      "2+ weeks delivery",
-      "90-day support"
-    ],
-    idealFor: "Established businesses, complex requirements, E-commerce sites",
-    cta: "Let's Discuss",
-    popular: false,
-    badge: "Save $600"
-  },
-  {
-    name: "Enterprise Package",
-    description: "Premium solution for maximum results",
-    price: "$2,600+",
-    originalPrice: "$3,200",
-    features: [
-      "Custom enterprise web application",
-      "Advanced database architecture",
-      "Multi-user authentication system",
-      "Payment gateway integration",
-      "Advanced analytics dashboard",
-      "API development",
-      "Priority support",
-      "3+ weeks delivery",
-      "6-month support"
-    ],
-    idealFor: "Large businesses, complex enterprise needs",
-    cta: "Contact Sales",
-    popular: false,
-    badge: "Save $600"
-  }
+export const signatureSite: Package = {
+  name: "The Signature Site",
+  description: "A custom-designed, mobile-first website built to generate leads and grow your business.",
+  price: "Starting at $4,500",
+  features: [
+    "Up to 7 custom-designed pages",
+    "Mobile-first, responsive build",
+    "Lead capture forms with notifications",
+    "Local SEO & Google Business optimization",
+    "Analytics integration",
+    "Performance-optimized (Next.js)",
+    "1 round of revisions",
+    "Delivered in 2-3 weeks",
+    "30-day post-launch support",
+  ],
+  idealFor: "Local service businesses, contractors, professional services, and growing brands ready for a website that actually converts",
+  cta: "Get Your Free Quote",
+}
+
+export const addOns = [
+  { name: "Additional Pages", price: "+$400/page" },
+  { name: "Copywriting", price: "+$850" },
+  { name: "Care Plan", price: "$175/mo", description: "Hosting, updates, small edits, monthly analytics review, priority support" },
 ]
