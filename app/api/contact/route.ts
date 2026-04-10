@@ -89,34 +89,27 @@ export async function POST(request: NextRequest) {
       project_type: submissionData.project_type || undefined
     }
 
-    console.log('Email data prepared, sending emails in background...')
+    console.log('Sending emails...')
 
-    // Send emails in background without blocking the response
-    setImmediate(async () => {
-      try {
-        console.log('Background email sending started...')
-        const [clientResult, adminResult] = await Promise.allSettled([
-          sendClientConfirmationEmail(emailData),
-          sendAdminNotificationEmail(emailData)
-        ])
+    // Await emails before responding — setImmediate doesn't run reliably
+    // on Vercel serverless functions (the function freezes after response)
+    const [clientResult, adminResult] = await Promise.allSettled([
+      sendClientConfirmationEmail(emailData),
+      sendAdminNotificationEmail(emailData)
+    ])
 
-        if (clientResult.status === 'rejected' || (clientResult.status === 'fulfilled' && !clientResult.value.success)) {
-          console.error('Failed to send client email:', clientResult.status === 'rejected' ? clientResult.reason : clientResult.value.error)
-        } else {
-          console.log('Client email sent successfully')
-        }
+    if (clientResult.status === 'rejected' || (clientResult.status === 'fulfilled' && !clientResult.value.success)) {
+      console.error('Failed to send client email:', clientResult.status === 'rejected' ? clientResult.reason : clientResult.value.error)
+    } else {
+      console.log('Client email sent successfully')
+    }
 
-        if (adminResult.status === 'rejected' || (adminResult.status === 'fulfilled' && !adminResult.value.success)) {
-          console.error('Failed to send admin email:', adminResult.status === 'rejected' ? adminResult.reason : adminResult.value.error)
-        } else {
-          console.log('Admin email sent successfully')
-        }
-      } catch (error) {
-        console.error('Email sending process failed:', error)
-      }
-    })
+    if (adminResult.status === 'rejected' || (adminResult.status === 'fulfilled' && !adminResult.value.success)) {
+      console.error('Failed to send admin email:', adminResult.status === 'rejected' ? adminResult.reason : adminResult.value.error)
+    } else {
+      console.log('Admin email sent successfully')
+    }
 
-    // Return success immediately
     console.log('=== Contact Form Submission Completed Successfully ===')
     return NextResponse.json({
       success: true,
