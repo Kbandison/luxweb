@@ -1,14 +1,13 @@
-import Services from "@/components/Services"
-import FAQ from "@/components/FAQ"
 import { Metadata } from "next"
+import PricingPageContent from "@/components/PricingPageContent"
 
 export const metadata: Metadata = {
-  title: "Pricing - LuxWeb Studio | The Signature Site Starting at $4,500",
-  description: "Professional custom websites starting at $4,500. Mobile-first design, lead capture, local SEO, delivered in 2-3 weeks. No hidden fees, no confusing tiers.",
-  keywords: ["web development pricing", "website cost", "custom website pricing", "professional website development", "local business website cost", "LuxWeb Studio pricing"],
+  title: "Pricing - LuxWeb Studio | The Signature Site at $4,500",
+  description: "A website that actually brings you customers. Custom-designed, mobile-first websites for local service businesses. The Signature Site — $4,500, delivered in 2-3 weeks.",
+  keywords: ["web development pricing", "custom website", "local service business website", "LuxWeb Studio pricing"],
   openGraph: {
     title: "LuxWeb Studio Pricing - The Signature Site",
-    description: "Professional custom websites starting at $4,500. Mobile-first design, lead capture, local SEO, delivered in 2-3 weeks.",
+    description: "A website that actually brings you customers. Custom-designed, mobile-first websites built to turn visitors into leads.",
     url: "/pricing",
   },
 }
@@ -16,8 +15,7 @@ export const metadata: Metadata = {
 export default function PricingPage() {
   return (
     <main className="min-h-screen pt-20">
-      <Services />
-      <FAQ />
+      <PricingPageContent />
     </main>
   )
 }
