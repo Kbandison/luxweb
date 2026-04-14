@@ -4,7 +4,6 @@ import PricingPageContent from "@/components/PricingPageContent"
 export const metadata: Metadata = {
   title: "Pricing - LuxWeb Studio | The Signature Site at $4,500",
   description: "A website that actually brings you customers. Custom-designed, mobile-first websites for local service businesses. The Signature Site — $4,500, delivered in 2-3 weeks.",
-  keywords: ["web development pricing", "custom website", "local service business website", "LuxWeb Studio pricing"],
   openGraph: {
     title: "LuxWeb Studio Pricing - The Signature Site",
     description: "A website that actually brings you customers. Custom-designed, mobile-first websites built to turn visitors into leads.",
