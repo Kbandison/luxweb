@@ -11,8 +11,8 @@ import ScrollReveal from '@/components/ScrollReveal'
 
 const BENEFITS: { title: string; body: string }[] = [
   {
-    title: '24/7 AI chat assistant.',
-    body: 'Answers questions and qualifies leads automatically — so you never lose a customer to whoever replied faster.',
+    title: 'AI Lead Assistant.',
+    body: "A 24/7 chatbot that answers customer questions, a smart contact form that summarizes and prioritizes inquiries for you, and AI-written replies that go out instantly so leads don't go cold.",
   },
   {
     title: 'Custom design that matches your brand.',
@@ -326,12 +326,12 @@ export default function PricingPageContent() {
               <span className="text-gradient-purple">works as hard as you do?</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-8 leading-relaxed">
-              Start with a free 20-minute call. We'll talk through your business, your goals, and
-              whether the Signature Site is the right fit.
+              Tell us about your business and your goals. We'll reply within 24 hours to set up a
+              free 20-minute call and see if the Signature Site is the right fit.
             </p>
             <Link href="/contact">
               <Button className="modern-btn-primary text-white px-10 py-4 text-base font-semibold h-auto">
-                Book Your Free Call
+                Start the Conversation
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </Link>

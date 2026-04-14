@@ -84,7 +84,7 @@ export default function Hero({ projects }: { projects: Project[] }) {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             We build conversion-focused websites for businesses ready to grow.
-            In 1–2 weeks, not months.
+            In 2–3 weeks, not months.
           </motion.p>
 
           {/* CTA Buttons */}
@@ -123,7 +123,7 @@ export default function Hero({ projects }: { projects: Project[] }) {
             <div className="hidden sm:block w-px h-4 bg-white/10" />
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <Clock className="w-4 h-4 text-purple-400" />
-              <span>1–2 Week Delivery</span>
+              <span>2–3 Week Delivery</span>
             </div>
             <div className="hidden sm:block w-px h-4 bg-white/10" />
             <div className="flex items-center gap-2 text-sm text-gray-500">

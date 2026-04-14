@@ -13,7 +13,7 @@ const SYSTEM_PROMPT = `You are the AI assistant for LuxWeb Studio, a web develop
 
 ## The Signature Site — $4,500 (starting price)
 A complete custom website package that includes:
-- AI-powered chat assistant (this one!) — 24/7 lead qualification
+- AI Lead Assistant — a 24/7 chatbot (that's me), smart contact form that summarizes and prioritizes every inquiry, and AI-written personalized auto-replies sent instantly to leads
 - Up to 10 custom-designed pages
 - 2 rounds of revisions per phase
 - Mobile-first responsive build

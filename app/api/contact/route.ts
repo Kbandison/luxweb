@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { sendClientConfirmationEmail, sendAdminNotificationEmail, EmailData } from '@/lib/email'
+import { analyzeIntake } from '@/lib/ai-intake'
+
+export const maxDuration = 60
 
 export async function POST(request: NextRequest) {
   console.log('=== Contact Form Submission Started ===')
@@ -36,10 +39,23 @@ export async function POST(request: NextRequest) {
       'starter': 'starter',
       'growth': 'growth',
       'complete': 'complete',
-      'enterprise': 'complete', // Map enterprise to complete (highest tier in DB)
+      'enterprise': 'complete',
+      'signature': 'complete', // New default: Signature Site maps to highest tier
+      'custom': 'complete',
     }
-    const projectType = projectTypeMap[body.project_type] || 'starter'
+    const projectType = projectTypeMap[body.project_type] || 'complete'
     console.log('Project type mapping:', body.project_type, '->', projectType)
+
+    // Run AI analysis in parallel with DB insert — saves ~1-2s of latency
+    console.log('Starting AI intake analysis...')
+    const analysisPromise = analyzeIntake({
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      message: message.trim(),
+      phone: body.phone?.trim() || undefined,
+      company: body.company?.trim() || undefined,
+      projectType: body.project_type || undefined,
+    })
 
     // Prepare data for database (optional fields handled gracefully)
     const submissionData = {
@@ -48,15 +64,12 @@ export async function POST(request: NextRequest) {
       phone: body.phone?.trim() || null,
       company: body.company?.trim() || null,
       project_type: projectType,
-      project_goals: message.trim(), // Use message as project_goals for DB compatibility
-      budget_range: 'discuss', // Default to "Let's discuss" since it's required in DB
+      project_goals: message.trim(),
+      budget_range: 'discuss',
       additional_details: '',
       status: 'new' as const
     }
 
-    console.log('Submission data prepared:', JSON.stringify(submissionData, null, 2))
-
-    // Save to Supabase
     console.log('Attempting to save to Supabase...')
     const { data: submissionResult, error: dbError } = await supabaseAdmin
       .from('contact_submissions')
@@ -79,20 +92,39 @@ export async function POST(request: NextRequest) {
 
     console.log('Successfully saved to database:', submissionResult?.id)
 
-    // Prepare email data (simplified to match new form)
+    // Wait for AI analysis to complete (started in parallel above)
+    const analysis = await analysisPromise
+    if (analysis) {
+      console.log('AI analysis:', { priority: analysis.priority, tags: analysis.tags })
+      // Persist AI summary alongside the submission for admin view
+      await supabaseAdmin
+        .from('contact_submissions')
+        .update({
+          additional_details: JSON.stringify({
+            ai_summary: analysis.summary,
+            ai_priority: analysis.priority,
+            ai_tags: analysis.tags,
+          }),
+        })
+        .eq('id', submissionResult.id)
+    }
+
+    // Prepare email data with AI-generated context
     const emailData: EmailData = {
       name: submissionData.name,
       email: submissionData.email,
       message: message.trim(),
       phone: submissionData.phone || undefined,
       company: submissionData.company || undefined,
-      project_type: submissionData.project_type || undefined
+      project_type: submissionData.project_type || undefined,
+      aiSummary: analysis?.summary,
+      aiPriority: analysis?.priority,
+      aiTags: analysis?.tags,
+      aiPersonalizedReply: analysis?.personalizedReply,
     }
 
     console.log('Sending emails...')
 
-    // Await emails before responding — setImmediate doesn't run reliably
-    // on Vercel serverless functions (the function freezes after response)
     const [clientResult, adminResult] = await Promise.allSettled([
       sendClientConfirmationEmail(emailData),
       sendAdminNotificationEmail(emailData)

@@ -72,7 +72,7 @@ export default function FAQCondensed() {
             <p className="text-gray-500 text-sm">
               Have more questions?{' '}
               <Link href="/contact" className="text-purple-400 hover:text-purple-300 transition-colors font-medium">
-                Book a free call
+                Get in touch
               </Link>
             </p>
           </div>

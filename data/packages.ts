@@ -12,7 +12,7 @@ export const signatureSite: Package = {
   description: "A custom-designed, mobile-first website built to generate leads and grow your business.",
   price: "Starting at $4,500",
   features: [
-    "AI-powered chat assistant — 24/7 lead qualification & customer Q&A",
+    "AI Lead Assistant — 24/7 chatbot, smart intake, and personalized auto-replies",
     "Up to 10 custom-designed pages",
     "2 rounds of revisions per phase",
     "Mobile-first responsive build",

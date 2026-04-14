@@ -27,7 +27,7 @@ console.log('Email configuration:', {
   isProduction: process.env.NODE_ENV === 'production'
 });
 
-// Simplified EmailData to match the new contact form
+// EmailData — includes optional AI-generated analysis fields
 export interface EmailData {
   name: string
   email: string
@@ -35,17 +35,32 @@ export interface EmailData {
   phone?: string
   company?: string
   project_type?: string
+  // AI Lead Assistant enrichment (optional — emails work without these)
+  aiSummary?: string
+  aiPriority?: 'hot' | 'warm' | 'cold'
+  aiTags?: string[]
+  aiPersonalizedReply?: string
 }
 
 const formatProjectType = (type?: string) => {
   if (!type) return null
   const typeMap: Record<string, string> = {
-    'starter': 'Starter Package',
-    'growth': 'Growth Package',
-    'complete': 'Complete Package',
-    'enterprise': 'Enterprise Package'
+    'signature': 'The Signature Site',
+    'custom': 'Custom Project',
+    // legacy mappings
+    'starter': 'The Signature Site',
+    'growth': 'The Signature Site',
+    'complete': 'The Signature Site',
+    'enterprise': 'Custom Project',
   }
   return typeMap[type] || null
+}
+
+const priorityStyle = (p?: 'hot' | 'warm' | 'cold') => {
+  if (p === 'hot') return { label: 'HOT LEAD', bg: 'rgba(239,68,68,0.12)', color: '#fca5a5', border: 'rgba(239,68,68,0.25)' }
+  if (p === 'warm') return { label: 'WARM LEAD', bg: 'rgba(251,191,36,0.12)', color: '#fcd34d', border: 'rgba(251,191,36,0.25)' }
+  if (p === 'cold') return { label: 'COLD LEAD', bg: 'rgba(148,163,184,0.12)', color: '#cbd5e1', border: 'rgba(148,163,184,0.25)' }
+  return null
 }
 
 // Client confirmation email — dark, premium, matches site aesthetic
@@ -87,7 +102,9 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
                       Hey ${data.name.split(' ')[0]},
                     </h1>
                     <p style="margin: 0; font-size: 16px; color: #9ca3af; line-height: 1.6;">
-                      Thanks for reaching out. We&rsquo;ve got your message and will be in touch within 24 hours.
+                      ${data.aiPersonalizedReply
+                        ? data.aiPersonalizedReply
+                        : 'Thanks for reaching out. We&rsquo;ve got your message and will be in touch within 24 hours.'}
                     </p>
                   </div>
 
@@ -198,6 +215,7 @@ export const sendAdminNotificationEmail = async (data: EmailData) => {
   const now = new Date()
   const dateStr = now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
   const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+  const priority = priorityStyle(data.aiPriority)
 
   const emailHtml = `
     <!DOCTYPE html>
@@ -219,7 +237,7 @@ export const sendAdminNotificationEmail = async (data: EmailData) => {
                   <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
                     <tr>
                       <td>
-                        <span style="font-size: 11px; font-weight: 700; color: #a78bfa; text-transform: uppercase; letter-spacing: 1.5px; background: rgba(139,92,246,0.1); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(139,92,246,0.2);">New Lead</span>
+                        <span style="font-size: 11px; font-weight: 700; color: ${priority ? priority.color : '#a78bfa'}; text-transform: uppercase; letter-spacing: 1.5px; background: ${priority ? priority.bg : 'rgba(139,92,246,0.1)'}; padding: 6px 12px; border-radius: 6px; border: 1px solid ${priority ? priority.border : 'rgba(139,92,246,0.2)'};">${priority ? priority.label : 'New Lead'}</span>
                       </td>
                       <td style="text-align: right;">
                         <span style="font-size: 12px; color: #6b7280;">${dateStr} &middot; ${timeStr}</span>
@@ -228,6 +246,23 @@ export const sendAdminNotificationEmail = async (data: EmailData) => {
                   </table>
                 </td>
               </tr>
+
+              ${data.aiSummary ? `
+              <!-- AI Analysis -->
+              <tr>
+                <td style="padding-bottom: 16px;">
+                  <div style="background: rgba(139,92,246,0.06); border: 1px solid rgba(139,92,246,0.15); border-radius: 12px; padding: 14px 18px;">
+                    <div style="font-size: 10px; font-weight: 700; color: #a78bfa; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 6px;">AI Summary</div>
+                    <div style="font-size: 14px; color: #e5e7eb; line-height: 1.6; margin-bottom: ${data.aiTags && data.aiTags.length ? '10px' : '0'};">${data.aiSummary}</div>
+                    ${data.aiTags && data.aiTags.length ? `
+                    <div style="display: block;">
+                      ${data.aiTags.map(t => `<span style="display: inline-block; font-size: 11px; font-weight: 500; color: #c4b5fd; background: rgba(167,139,250,0.1); padding: 3px 8px; border-radius: 4px; margin-right: 6px; margin-top: 4px;">${t}</span>`).join('')}
+                    </div>
+                    ` : ''}
+                  </div>
+                </td>
+              </tr>
+              ` : ''}
 
               <!-- Main Card -->
               <tr>
