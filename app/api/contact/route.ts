@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { sendClientConfirmationEmail, sendAdminNotificationEmail, EmailData } from '@/lib/email'
 import { analyzeIntake } from '@/lib/ai-intake'
+import { submitLead } from '@/lib/crm'
 
 export const maxDuration = 60
 
@@ -11,6 +12,13 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     console.log('Received body:', JSON.stringify(body, null, 2))
+
+    // Honeypot check — bots fill in the hidden "website" field. Return 200
+    // to avoid signaling rejection, but skip all processing.
+    if (typeof body.website === 'string' && body.website.trim() !== '') {
+      console.warn('[contact] honeypot tripped, dropping submission')
+      return NextResponse.json({ success: true, message: 'Thanks!' })
+    }
 
     // Validate required fields (simplified: only name, email, message)
     const { name, email, message } = body
@@ -109,6 +117,18 @@ export async function POST(request: NextRequest) {
         .eq('id', submissionResult.id)
     }
 
+    // Submit to LuxWeb CRM (portal.luxwebstudio.dev). Runs in parallel with
+    // emails below. CRM failure does not break the form — we already have
+    // the submission saved locally and the client will still get their email.
+    const crmPromise = submitLead({
+      full_name: submissionData.name,
+      email: submissionData.email,
+      company: submissionData.company || undefined,
+      message: message.trim(),
+      source: 'website-contact-form',
+      website: '', // honeypot — already validated as empty above
+    })
+
     // Prepare email data with AI-generated context
     const emailData: EmailData = {
       name: submissionData.name,
@@ -123,11 +143,12 @@ export async function POST(request: NextRequest) {
       aiPersonalizedReply: analysis?.personalizedReply,
     }
 
-    console.log('Sending emails...')
+    console.log('Sending emails and submitting to CRM...')
 
-    const [clientResult, adminResult] = await Promise.allSettled([
+    const [clientResult, adminResult, crmResult] = await Promise.allSettled([
       sendClientConfirmationEmail(emailData),
-      sendAdminNotificationEmail(emailData)
+      sendAdminNotificationEmail(emailData),
+      crmPromise,
     ])
 
     if (clientResult.status === 'rejected' || (clientResult.status === 'fulfilled' && !clientResult.value.success)) {
@@ -140,6 +161,12 @@ export async function POST(request: NextRequest) {
       console.error('Failed to send admin email:', adminResult.status === 'rejected' ? adminResult.reason : adminResult.value.error)
     } else {
       console.log('Admin email sent successfully')
+    }
+
+    if (crmResult.status === 'rejected' || crmResult.value === null) {
+      console.error('CRM submit failed:', crmResult.status === 'rejected' ? crmResult.reason : 'null response')
+    } else {
+      console.log('CRM submit successful:', crmResult.value)
     }
 
     console.log('=== Contact Form Submission Completed Successfully ===')

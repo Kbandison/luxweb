@@ -17,7 +17,8 @@ export default function Contact() {
     phone: '',
     company: '',
     project_type: '',
-    message: ''
+    message: '',
+    website: '', // honeypot — real users leave this empty
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
@@ -85,7 +86,8 @@ export default function Contact() {
         phone: '',
         company: '',
         project_type: '',
-        message: ''
+        message: '',
+        website: '',
       })
       setShowMoreFields(false)
     } catch (error) {
@@ -160,6 +162,18 @@ export default function Contact() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Honeypot — off-screen, invisible to real users, picked up by bots */}
+            <input
+              type="text"
+              name="website"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              value={formData.website}
+              onChange={(e) => handleInputChange('website', e.target.value)}
+              style={{ position: 'absolute', left: '-9999px', width: '1px', height: '1px', opacity: 0 }}
+            />
+
             {/* Essential Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
