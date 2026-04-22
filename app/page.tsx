@@ -8,7 +8,6 @@ import PricingCondensed from "@/components/PricingCondensed"
 import TestimonialCarousel from "@/components/TestimonialCarousel"
 import FAQCondensed from "@/components/FAQCondensed"
 import CTASection from "@/components/CTASection"
-import FloatingCTA from "@/components/FloatingCTA"
 import { getProjects } from "@/lib/projects"
 
 export default async function Home() {
@@ -44,8 +43,6 @@ export default async function Home() {
         <FAQCondensed />
         <CTASection />
       </div>
-
-      <FloatingCTA />
     </main>
   )
 }

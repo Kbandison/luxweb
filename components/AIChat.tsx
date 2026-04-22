@@ -18,6 +18,21 @@ export default function AIChat() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages])
 
+  // Auto-open once per browser session, after a short delay so it doesn't
+  // feel aggressive. If the visitor closes it, sessionStorage keeps it closed
+  // until they open a new tab/window.
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (sessionStorage.getItem('luxweb-chat-auto-opened') === '1') return
+
+    const timer = window.setTimeout(() => {
+      setOpen(true)
+      sessionStorage.setItem('luxweb-chat-auto-opened', '1')
+    }, 2500)
+
+    return () => window.clearTimeout(timer)
+  }, [])
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!input.trim() || isLoading) return
@@ -33,10 +48,10 @@ export default function AIChat() {
 
   return (
     <>
-      {/* Floating button — sits above FloatingCTA on desktop, above mobile CTA bar */}
+      {/* Floating button */}
       <motion.button
         onClick={() => setOpen(true)}
-        className={`fixed bottom-24 right-6 md:bottom-24 md:right-6 z-40 w-14 h-14 rounded-full bg-gradient-to-br from-purple-600 to-violet-600 shadow-lg shadow-purple-500/30 flex items-center justify-center group ${
+        className={`fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-gradient-to-br from-purple-600 to-violet-600 shadow-lg shadow-purple-500/30 flex items-center justify-center group ${
           open ? 'pointer-events-none opacity-0' : ''
         }`}
         whileHover={{ scale: 1.05 }}
@@ -56,7 +71,7 @@ export default function AIChat() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-24 right-6 z-50 w-[calc(100vw-3rem)] sm:w-96 h-[28rem] sm:h-[32rem] max-h-[calc(100vh-8rem)] bg-gray-950 border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+            className="fixed bottom-6 right-6 z-50 w-[calc(100vw-3rem)] sm:w-96 h-[28rem] sm:h-[32rem] max-h-[calc(100vh-3rem)] bg-gray-950 border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-gradient-to-r from-purple-600/10 to-violet-600/10">
