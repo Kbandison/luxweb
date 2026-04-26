@@ -7,7 +7,6 @@ import ProcessSection from "@/components/ProcessSection"
 import PricingCondensed from "@/components/PricingCondensed"
 import TestimonialCarousel from "@/components/TestimonialCarousel"
 import FAQCondensed from "@/components/FAQCondensed"
-import CTASection from "@/components/CTASection"
 import { getProjects } from "@/lib/projects"
 
 export default async function Home() {
@@ -41,7 +40,6 @@ export default async function Home() {
         <PricingCondensed />
         <TestimonialCarousel />
         <FAQCondensed />
-        <CTASection />
       </div>
     </main>
   )
