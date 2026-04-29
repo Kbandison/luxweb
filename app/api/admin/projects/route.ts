@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getAdminUser } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabase-server'
+import { normalizeExternalUrl } from '@/lib/utils'
 
 export async function GET() {
   const user = await getAdminUser()
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest) {
         category: body.category || '',
         images: body.images || [],
         color: body.color || 'from-purple-500 to-pink-500',
-        live_link: body.live_link || null,
+        live_link: normalizeExternalUrl(body.live_link),
         sort_order: nextOrder,
       })
       .select()

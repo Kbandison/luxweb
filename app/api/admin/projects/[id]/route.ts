@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { getAdminUser } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabase-server'
+import { normalizeExternalUrl } from '@/lib/utils'
 
 export async function PATCH(
   request: NextRequest,
@@ -25,7 +26,7 @@ export async function PATCH(
     if (body.category !== undefined) updates.category = body.category
     if (body.images !== undefined) updates.images = body.images
     if (body.color !== undefined) updates.color = body.color
-    if (body.live_link !== undefined) updates.live_link = body.live_link
+    if (body.live_link !== undefined) updates.live_link = normalizeExternalUrl(body.live_link)
     if (body.sort_order !== undefined) updates.sort_order = body.sort_order
 
     const { data, error } = await supabaseAdmin

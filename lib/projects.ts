@@ -1,4 +1,5 @@
 import { supabaseAdmin } from './supabase-server'
+import { normalizeExternalUrl } from './utils'
 import type { Project } from '@/data/projects'
 import { projects as staticProjects } from '@/data/projects'
 
@@ -27,7 +28,7 @@ function rowToProject(row: ProjectRow): Project {
     category: row.category || '',
     images: row.images || [],
     color: row.color || 'from-purple-500 to-pink-500',
-    links: row.live_link ? { live: row.live_link } : undefined,
+    links: row.live_link ? { live: normalizeExternalUrl(row.live_link) ?? row.live_link } : undefined,
   }
 }
 
