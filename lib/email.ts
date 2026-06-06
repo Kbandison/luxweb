@@ -17,7 +17,7 @@ if (fromEmailDomain) {
 }
 
 const fromEmail = parsedFromEmail;
-const finalAdminEmail = adminEmail || 'kbandison@gmail.com';
+const finalAdminEmail = adminEmail || 'hello@luxwebstudio.dev';
 
 console.log('Email configuration:', {
   hasApiKey: !!process.env.RESEND_API_KEY,
