@@ -8,9 +8,11 @@ import PricingCondensed from "@/components/PricingCondensed"
 import TestimonialCarousel from "@/components/TestimonialCarousel"
 import FAQCondensed from "@/components/FAQCondensed"
 import { getProjects } from "@/lib/projects"
+import { getActivePromo } from "@/data/promo"
 
 export default async function Home() {
   const projects = await getProjects()
+  const promo = getActivePromo()
 
   return (
     <main className="min-h-screen relative">
@@ -37,7 +39,7 @@ export default async function Home() {
         <Portfolio projects={projects} />
         <SocialProofStrip />
         <ProcessSection />
-        <PricingCondensed />
+        <PricingCondensed promo={promo} />
         <TestimonialCarousel />
         <FAQCondensed />
       </div>

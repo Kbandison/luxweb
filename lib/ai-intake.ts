@@ -1,5 +1,6 @@
 import { generateText, Output } from 'ai'
 import { z } from 'zod'
+import { getActivePromo } from '@/data/promo'
 
 export interface IntakeData {
   name: string
@@ -34,6 +35,19 @@ Your job is to:
    - Ends by saying we'll follow up within 24 hours to schedule a call
    - No exclamation marks, no "I'm excited to..." filler`
 
+/**
+ * Appends the running offer so the analyzer understands leads who reference the
+ * sale price, and so auto-replies don't contradict what the visitor just saw.
+ */
+function buildSystemPrompt(): string {
+  const promo = getActivePromo()
+  if (!promo) return SYSTEM_PROMPT
+
+  return `${SYSTEM_PROMPT}
+
+Context: a limited-time offer is running — the Signature Site is ${promo.salePriceLabel} (regular ${promo.regularPriceLabel}) through ${promo.endsAtLabel}. Leads mentioning that price are responding to the promotion; treat a deadline reference as a buying signal. Do not quote any price below ${promo.salePriceLabel}.`
+}
+
 export async function analyzeIntake(data: IntakeData): Promise<IntakeAnalysis | null> {
   const prompt = `New inquiry received:
 
@@ -50,7 +64,7 @@ Analyze this inquiry.`
   try {
     const { output } = await generateText({
       model: 'anthropic/claude-sonnet-4.6',
-      system: SYSTEM_PROMPT,
+      system: buildSystemPrompt(),
       prompt,
       output: Output.object({
         schema: z.object({

@@ -1,13 +1,15 @@
 'use client'
 
-import { Check, ArrowRight, Plus } from "lucide-react"
+import { Check, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import ScrollReveal from "./ScrollReveal"
 import Link from "next/link"
-import { signatureSite, addOns } from "@/data/packages"
+import { signatureSite } from "@/data/packages"
+import type { ActivePromo } from "@/data/promo"
+import PromoCountdown from "./PromoCountdown"
 
-export default function PricingCondensed() {
+export default function PricingCondensed({ promo }: { promo?: ActivePromo | null }) {
   return (
     <section className="py-20 lg:py-28 px-6">
       <div className="container mx-auto max-w-3xl">
@@ -30,8 +32,39 @@ export default function PricingCondensed() {
             <div className="text-center mb-8">
               <h3 className="text-2xl font-bold text-white mb-2">{signatureSite.name}</h3>
               <p className="text-gray-400 mb-5">{signatureSite.description}</p>
-              <div className="text-4xl font-bold text-white">{signatureSite.price}</div>
-              <p className="text-sm text-gray-500 mt-1">Payment: 50% deposit, 50% on launch</p>
+
+              {promo ? (
+                <>
+                  <div className="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-400/30">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-purple-300">
+                      {promo.name}
+                    </span>
+                  </div>
+                  <div className="flex items-baseline justify-center gap-3">
+                    <span className="text-2xl font-medium text-gray-500 line-through">
+                      {promo.regularPriceLabel}
+                    </span>
+                    <span className="text-4xl font-bold text-white">
+                      {promo.salePriceQualifier && (
+                        <span className="text-base font-medium text-gray-400 mr-1.5">
+                          {promo.salePriceQualifier}
+                        </span>
+                      )}
+                      {promo.salePriceLabel}
+                    </span>
+                  </div>
+                  <p className="text-sm text-green-400 font-medium mt-2">
+                    Save {promo.savingsLabel} — ends {promo.endsAtLabel}
+                  </p>
+                  <PromoCountdown endsAtMs={promo.endsAtMs} variant="boxed" className="mt-4" />
+                </>
+              ) : (
+                <div className="text-4xl font-bold text-white">{signatureSite.price}</div>
+              )}
+
+              <p className="text-sm text-gray-500 mt-3">
+                Payment: 50% to start, 25% at design sign-off, 25% on launch
+              </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2.5 mb-8">

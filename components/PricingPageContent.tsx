@@ -6,6 +6,9 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Check, X, ChevronDown, TrendingUp } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ScrollReveal from '@/components/ScrollReveal'
+import PromoCountdown from '@/components/PromoCountdown'
+import type { ActivePromo } from '@/data/promo'
+import { addOns, carePlan } from '@/data/packages'
 
 // ── Content ──────────────────────────────────────────────────
 
@@ -58,14 +61,6 @@ const NOT_FOR_YOU: string[] = [
   'You want to manage every pixel yourself',
 ]
 
-const CARE_PLAN_FEATURES: string[] = [
-  'Hosting, security, and software updates handled for you',
-  'Small content edits whenever you need them',
-  'Monthly analytics review so you know what\'s working',
-  'Priority support when something needs attention',
-  'Backups and uptime monitoring running in the background',
-]
-
 const FAQ: { q: string; a: string }[] = [
   {
     q: 'Why not just use Wix, Squarespace, or WordPress?',
@@ -89,7 +84,7 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'Do you offer payment plans?',
-    a: 'Yes — 50% to start, 50% on launch. For most clients that splits the investment across the 2-3 week build.',
+    a: 'Yes — the project is split into three payments: 50% to start, 25% once you sign off on the design, and 25% before launch. That spreads the investment across the build instead of asking for it all up front.',
   },
   {
     q: 'What if I need something bigger than the Signature Site?',
@@ -99,7 +94,7 @@ const FAQ: { q: string; a: string }[] = [
 
 // ── Component ────────────────────────────────────────────────
 
-export default function PricingPageContent() {
+export default function PricingPageContent({ promo }: { promo?: ActivePromo | null }) {
   const scrollToOffer = () => {
     document.getElementById('offer')?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -151,10 +146,48 @@ export default function PricingPageContent() {
                   For established local service businesses ready to stop looking generic online.
                 </p>
 
-                <div className="text-5xl sm:text-6xl font-bold text-white mb-2">$4,500</div>
-                <p className="text-sm text-gray-500 mb-6">
-                  Delivered in 2-3 weeks · 50% to start, 50% on launch
-                </p>
+                {promo ? (
+                  <>
+                    <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-purple-500/15 border border-purple-400/30">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-purple-300">
+                        {promo.name}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1 mb-2">
+                      <span className="text-3xl sm:text-4xl font-medium text-gray-500 line-through">
+                        {promo.regularPriceLabel}
+                      </span>
+                      <span className="text-5xl sm:text-6xl font-bold text-white">
+                        {promo.salePriceQualifier && (
+                          <span className="text-lg sm:text-xl font-medium text-gray-400 mr-2">
+                            {promo.salePriceQualifier}
+                          </span>
+                        )}
+                        {promo.salePriceLabel}
+                      </span>
+                    </div>
+                    <p className="text-base text-green-400 font-semibold mb-1">
+                      Save {promo.savingsLabel}
+                    </p>
+                    <p className="text-sm text-gray-500 mb-6">
+                      Delivered in 2-3 weeks · 50% to start, 25% at design sign-off, 25% on launch
+                    </p>
+
+                    <div className="mb-6">
+                      <p className="text-xs uppercase tracking-wider text-gray-500 mb-3">
+                        Offer ends {promo.endsAtLabel}
+                      </p>
+                      <PromoCountdown endsAtMs={promo.endsAtMs} variant="boxed" />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-5xl sm:text-6xl font-bold text-white mb-2">$4,500</div>
+                    <p className="text-sm text-gray-500 mb-6">
+                      Delivered in 2-3 weeks · 50% to start, 25% at design sign-off, 25% on launch
+                    </p>
+                  </>
+                )}
 
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full">
                   <TrendingUp className="w-4 h-4 text-purple-400" />
@@ -255,13 +288,13 @@ export default function PricingPageContent() {
                   Keep your site running at its best.
                 </h2>
                 <p className="text-gray-400">
-                  The Care Plan —{' '}
-                  <span className="text-purple-400 font-semibold">$175/month</span>
+                  {carePlan.name} —{' '}
+                  <span className="text-purple-400 font-semibold">{carePlan.price}</span>
                 </p>
               </div>
 
               <ul className="space-y-3 mb-6 max-w-xl mx-auto">
-                {CARE_PLAN_FEATURES.map((item, i) => (
+                {carePlan.features.map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-gray-300 text-sm leading-relaxed">
                     <Check className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
                     <span>{item}</span>
@@ -286,14 +319,15 @@ export default function PricingPageContent() {
                 Optional add-ons
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md mx-auto">
-                <div className="flex items-center justify-between bg-white/[0.02] rounded-lg px-4 py-2.5">
-                  <span className="text-sm text-gray-300">Professional copywriting</span>
-                  <span className="text-sm font-medium text-purple-400">+$850</span>
-                </div>
-                <div className="flex items-center justify-between bg-white/[0.02] rounded-lg px-4 py-2.5">
-                  <span className="text-sm text-gray-300">Additional pages</span>
-                  <span className="text-sm font-medium text-purple-400">+$400 each</span>
-                </div>
+                {addOns.map((addOn) => (
+                  <div
+                    key={addOn.name}
+                    className="flex items-center justify-between bg-white/[0.02] rounded-lg px-4 py-2.5"
+                  >
+                    <span className="text-sm text-gray-300">{addOn.name}</span>
+                    <span className="text-sm font-medium text-purple-400">{addOn.price}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </ScrollReveal>

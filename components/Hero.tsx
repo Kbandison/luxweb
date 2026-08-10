@@ -43,7 +43,7 @@ export default function Hero({ projects }: { projects: Project[] }) {
 
   return (
     <section
-      className="min-h-[90vh] lg:min-h-screen flex items-center justify-center px-6 pt-24 pb-12 lg:pt-32 lg:pb-20 relative overflow-hidden"
+      className="min-h-[90vh] lg:min-h-screen flex items-center justify-center px-6 pt-[calc(6rem+var(--promo-offset,0px))] pb-12 lg:pt-[calc(8rem+var(--promo-offset,0px))] lg:pb-20 relative overflow-hidden"
       onMouseMove={handleMouseMove}
     >
       <div className="container mx-auto max-w-6xl relative z-10">

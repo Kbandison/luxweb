@@ -16,7 +16,7 @@ export default async function ProjectsPage() {
   const projects = await getProjects()
 
   return (
-    <main className="min-h-screen pt-20">
+    <main className="min-h-screen pt-[calc(5rem+var(--promo-offset,0px))]">
       <div className="container mx-auto max-w-7xl px-6 py-20">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">

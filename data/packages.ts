@@ -10,7 +10,7 @@ export interface Package {
 export const signatureSite: Package = {
   name: "The Signature Site",
   description: "A custom-designed, mobile-first website built to generate leads and grow your business.",
-  price: "Starting at $4,500",
+  price: "$4,500",
   features: [
     "AI Lead Assistant — 24/7 chatbot, smart intake, and personalized auto-replies",
     "Up to 10 custom-designed pages",
@@ -33,8 +33,21 @@ export const signatureSite: Package = {
   cta: "Get Your Free Quote",
 }
 
+// Optional extras, priced per project. The Care Plan is deliberately kept
+// separate below — it's recurring, not a one-time add-on.
 export const addOns = [
-  { name: "Additional Pages", price: "+$400/page" },
-  { name: "Copywriting", price: "+$850" },
-  { name: "Care Plan", price: "$175/mo", description: "Hosting, updates, small edits, monthly analytics review, priority support" },
+  { name: "Professional copywriting", price: "+$850" },
+  { name: "Additional pages", price: "+$400 each" },
 ]
+
+export const carePlan = {
+  name: "The Care Plan",
+  price: "$175/month",
+  features: [
+    "Hosting, security, and software updates handled for you",
+    "Small content edits whenever you need them",
+    "Monthly analytics review so you know what's working",
+    "Priority support when something needs attention",
+    "Backups and uptime monitoring running in the background",
+  ],
+}

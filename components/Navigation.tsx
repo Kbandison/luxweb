@@ -41,10 +41,12 @@ export default function Navigation() {
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled ? 'py-2' : 'py-3'
         }`}
         style={{
+          // Sits below the promo announcement bar when one is running.
+          top: 'var(--promo-offset, 0px)',
           background: isScrolled ? 'rgba(1, 4, 9, 0.95)' : 'rgba(1, 4, 9, 0.6)',
           backdropFilter: 'blur(30px)',
           borderBottom: isScrolled ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid transparent'

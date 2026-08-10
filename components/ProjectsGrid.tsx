@@ -1,6 +1,6 @@
 'use client'
 
-import { ExternalLink, TrendingUp, Code, Users, Calendar, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
+import { ExternalLink, TrendingUp, Code, Users, Clock, Calendar, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
@@ -44,6 +44,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   const iconMap = {
     Code,
     Users,
+    Clock,
     TrendingUp
   }
 

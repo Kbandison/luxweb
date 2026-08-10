@@ -6,11 +6,17 @@ import { ResponsiveFooter } from "@/components/ResponsiveFooter";
 import AIChat from "@/components/AIChat";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import PromoBar from "@/components/PromoBar";
+import { getActivePromo, PROMO_BAR_HEIGHT } from "@/data/promo";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
 });
+
+// Re-render hourly so an expiring promo drops off the site on its own rather
+// than waiting for the next deploy.
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://luxwebstudio.dev'),
@@ -90,6 +96,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "LuxWeb Studio",
+    "legalName": "LuxWeb Studio LLC",
     "url": "https://luxwebstudio.dev",
     "logo": "https://luxwebstudio.dev/logo-with-text.png",
     "description": "Professional web development studio creating modern, conversion-focused websites for businesses.",
@@ -128,6 +135,8 @@ export default function RootLayout({
     ]
   };
 
+  const activePromo = getActivePromo();
+
   return (
     <html lang="en">
       <head>
@@ -140,7 +149,16 @@ export default function RootLayout({
       </head>
       <body
         className={`${inter.variable} antialiased`}
+        // Drives the top offset for the fixed nav and every page's top padding,
+        // so the announcement bar never overlaps content and leaves no gap
+        // behind when the promo ends.
+        style={
+          {
+            "--promo-offset": activePromo ? PROMO_BAR_HEIGHT : "0px",
+          } as React.CSSProperties
+        }
       >
+        {activePromo && <PromoBar promo={activePromo} />}
         <Navigation />
         <Analytics />
         <SpeedInsights />

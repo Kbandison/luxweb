@@ -12,11 +12,11 @@ export const metadata: Metadata = {
 }
 
 const EFFECTIVE_DATE = "May 14, 2026"
-const LAST_UPDATED = "May 14, 2026"
+const LAST_UPDATED = "August 5, 2026"
 
 export default function PrivacyPolicyPage() {
   return (
-    <main className="min-h-screen pt-24 pb-24 px-6">
+    <main className="min-h-screen pt-[calc(6rem+var(--promo-offset,0px))] pb-24 px-6">
       <article className="container mx-auto max-w-3xl">
         <header className="mb-12">
           <h1 className="text-4xl sm:text-5xl font-bold text-white tracking-tight mb-3">
@@ -29,8 +29,8 @@ export default function PrivacyPolicyPage() {
 
         <div className="space-y-6 text-gray-300 leading-relaxed">
           <p>
-            LuxWeb Studio (&ldquo;LuxWeb Studio,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or
-            &ldquo;our&rdquo;) operates the website{" "}
+            LuxWeb Studio LLC, a Georgia limited liability company (&ldquo;LuxWeb Studio,&rdquo;
+            &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;), operates the website{" "}
             <a
               href="https://luxwebstudio.dev"
               className="text-purple-400 hover:text-purple-300 underline"
@@ -236,7 +236,7 @@ export default function PrivacyPolicyPage() {
           <Section heading="11. Contact Us">
             <p>If you have questions about this Privacy Policy or our data practices, contact us at:</p>
             <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 mt-3">
-              <p className="m-0"><strong className="font-semibold text-white">LuxWeb Studio</strong></p>
+              <p className="m-0"><strong className="font-semibold text-white">LuxWeb Studio LLC</strong></p>
               <p className="m-0">
                 Email:{" "}
                 <a

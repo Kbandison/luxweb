@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen pt-20">
+    <main className="min-h-screen pt-[calc(5rem+var(--promo-offset,0px))]">
       <Suspense fallback={<div className="text-white text-center">Loading...</div>}>
         <Contact />
       </Suspense>

@@ -178,7 +178,7 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
               <tr>
                 <td style="padding: 32px 36px; text-align: center;">
                   <div style="font-size: 12px; color: #4b5563;">
-                    &copy; ${year} LuxWeb Studio &middot; Professional Web Development
+                    &copy; ${year} LuxWeb Studio LLC &middot; Professional Web Development
                   </div>
                   <div style="margin-top: 8px;">
                     <a href="https://luxwebstudio.dev" style="font-size: 12px; color: #6b7280; text-decoration: none;">luxwebstudio.dev</a>

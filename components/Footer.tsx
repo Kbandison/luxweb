@@ -94,7 +94,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-xs text-gray-600">
-            &copy; {currentYear} LuxWeb Studio. All rights reserved.
+            &copy; {currentYear} LuxWeb Studio LLC. All rights reserved.
           </p>
           <div className="flex items-center gap-4 text-xs">
             <Link href="/privacy" className="text-gray-600 hover:text-purple-400 transition-colors">Privacy</Link>

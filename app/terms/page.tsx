@@ -12,11 +12,11 @@ export const metadata: Metadata = {
 }
 
 const EFFECTIVE_DATE = "May 14, 2026"
-const LAST_UPDATED = "May 14, 2026"
+const LAST_UPDATED = "August 5, 2026"
 
 export default function TermsOfServicePage() {
   return (
-    <main className="min-h-screen pt-24 pb-24 px-6">
+    <main className="min-h-screen pt-[calc(6rem+var(--promo-offset,0px))] pb-24 px-6">
       <article className="container mx-auto max-w-3xl">
         <header className="mb-12">
           <h1 className="text-4xl sm:text-5xl font-bold text-white tracking-tight mb-3">
@@ -37,9 +37,9 @@ export default function TermsOfServicePage() {
               luxwebstudio.dev
             </a>{" "}
             (the &ldquo;Site&rdquo;) and any web development services provided by LuxWeb Studio
-            (&ldquo;LuxWeb Studio,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or
-            &ldquo;our&rdquo;). By accessing the Site or engaging us for services, you agree to
-            these Terms.
+            LLC, a Georgia limited liability company (&ldquo;LuxWeb Studio,&rdquo;
+            &ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;). By accessing the Site or
+            engaging us for services, you agree to these Terms.
           </p>
 
           <Section heading="1. Services">
@@ -68,7 +68,8 @@ export default function TermsOfServicePage() {
             <p>Unless otherwise agreed in writing:</p>
             <ul className="list-disc list-outside ml-6 space-y-1">
               <li>A deposit is required before work begins (typically 50% of the total project fee)</li>
-              <li>The remainder is due upon project completion and prior to final delivery or launch</li>
+              <li>A further 25% is due once the design phase is signed off, before development begins</li>
+              <li>The final 25% is due prior to launch or final delivery</li>
               <li>Ongoing services (e.g., retainers, hosting, maintenance) are billed monthly in advance</li>
               <li>Invoices are due within 14 days of issuance</li>
               <li>Late payments may accrue interest at 1.5% per month, or the maximum allowed by law</li>
@@ -262,7 +263,7 @@ export default function TermsOfServicePage() {
           <Section heading="18. Contact">
             <p>For questions about these Terms, contact us at:</p>
             <div className="rounded-xl border border-white/10 bg-white/[0.03] p-5 mt-3">
-              <p className="m-0"><strong className="font-semibold text-white">LuxWeb Studio</strong></p>
+              <p className="m-0"><strong className="font-semibold text-white">LuxWeb Studio LLC</strong></p>
               <p className="m-0">
                 Email:{" "}
                 <a

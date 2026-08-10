@@ -140,23 +140,28 @@ export interface PortfolioStat {
   color: string
 }
 
+// Slot 0 also drives the homepage social-proof strip.
+// "Websites Delivered" is a placeholder count — update it as real projects ship.
+// The other two are deliberately claims we can actually back up: the delivery
+// window quoted everywhere on the site, and the Lighthouse score guaranteed in
+// the package.
 export const portfolioStats: PortfolioStat[] = [
   {
     icon: "Code",
-    value: "50+",
+    value: "10+",
     label: "Websites Delivered",
     color: "green"
   },
   {
-    icon: "Users", 
-    value: "100%",
-    label: "Client Satisfaction",
+    icon: "Clock",
+    value: "2-3 wks",
+    label: "Average Delivery",
     color: "blue"
   },
   {
     icon: "TrendingUp",
-    value: "3x", 
-    label: "Average ROI Increase",
+    value: "90+",
+    label: "Guaranteed Lighthouse Score",
     color: "amber"
   }
 ]
