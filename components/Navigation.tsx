@@ -1,12 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Menu, X, ArrowRight } from 'lucide-react'
+import { Menu, X, ArrowRight, Phone } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Button } from "@/components/ui/button"
+import { businessPhone, telHref } from "@/data/contact"
 
 export default function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -98,11 +99,23 @@ export default function Navigation() {
               />
             </Link>
 
-            <Link href="/contact">
-              <Button className="modern-btn-primary text-white px-3 py-1.5 text-xs font-medium h-auto">
-                Free Quote
-              </Button>
-            </Link>
+            <div className="flex items-center gap-1.5">
+              {/* Tap-to-call. Icon-only to keep the bar from crowding on
+                  narrow phones; the full number is in the menu overlay. */}
+              <a
+                href={telHref}
+                aria-label={`Call ${businessPhone.display}`}
+                className="flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:text-purple-400 active:scale-95"
+              >
+                <Phone size={18} />
+              </a>
+
+              <Link href="/contact">
+                <Button className="modern-btn-primary text-white px-3 py-1.5 text-xs font-medium h-auto">
+                  Free Quote
+                </Button>
+              </Link>
+            </div>
           </div>
 
           {/* Desktop Layout */}
@@ -203,6 +216,21 @@ export default function Navigation() {
                 </Button>
               </Link>
             </motion.div>
+
+            {/* Full number here — visitors who prefer calling shouldn't have
+                to hunt for it in the footer. */}
+            <motion.a
+              href={telHref}
+              onClick={() => setIsMenuOpen(false)}
+              className="mt-6 inline-flex items-center gap-2 text-base font-medium text-gray-400 transition-colors hover:text-purple-400"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ delay: 0.48, duration: 0.4 }}
+            >
+              <Phone className="h-4 w-4" />
+              {businessPhone.display}
+            </motion.a>
           </motion.div>
         )}
       </AnimatePresence>
