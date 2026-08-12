@@ -1,10 +1,11 @@
 import Contact from "@/components/Contact"
 import { Metadata } from "next"
 import { Suspense } from "react"
+import { businessPhone, businessEmail } from "@/data/contact"
 
 export const metadata: Metadata = {
   title: "Contact - LuxWeb Studio | Get Your Free Quote",
-  description: "Ready to transform your business with a professional website? Contact LuxWeb Studio for a free consultation and personalized quote. Call (718) 635-0736 or email support@luxwebstudio.dev",
+  description: `Ready to transform your business with a professional website? Contact LuxWeb Studio for a free consultation and personalized quote. Call ${businessPhone.display} or email ${businessEmail}`,
   openGraph: {
     title: "Contact LuxWeb Studio - Get Your Free Quote",
     description: "Ready to transform your business with a professional website? Contact LuxWeb Studio for a free consultation and personalized quote.",

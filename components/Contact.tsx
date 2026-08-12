@@ -5,9 +5,12 @@ import { useSearchParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Send, CheckCircle, AlertCircle, Clock, Users, Zap } from "lucide-react"
+import { Send, CheckCircle, AlertCircle, Clock, Users, Zap, Phone, Mail } from "lucide-react"
 import { motion } from "framer-motion"
+import Link from "next/link"
 import ScrollReveal from "./ScrollReveal"
+import { CONSENT_TEXT } from "@/data/consent"
+import { businessPhone, businessEmail, telHref, mailtoHref } from "@/data/contact"
 
 export default function Contact() {
   const searchParams = useSearchParams()
@@ -20,6 +23,8 @@ export default function Contact() {
     message: '',
     website: '', // honeypot — real users leave this empty
   })
+  // Kept out of formData: it's a boolean, and handleInputChange is string-typed.
+  const [consentToContact, setConsentToContact] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -70,7 +75,7 @@ export default function Contact() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, consent_to_contact: consentToContact }),
       })
 
       const result = await response.json()
@@ -89,6 +94,7 @@ export default function Contact() {
         message: '',
         website: '',
       })
+      setConsentToContact(false)
       setShowMoreFields(false)
     } catch (error) {
       console.error('Error submitting form:', error)
@@ -282,8 +288,48 @@ export default function Contact() {
               </div>
             )}
 
-            <Button 
-              type="submit" 
+            {/*
+              Express written consent. Unchecked by default and NOT required to
+              submit — the TCPA does not allow consent to autodialed/prerecorded
+              marketing contact to be a condition of purchase. The visible text
+              is rendered from the same constant that gets stored with the
+              submission, so the record always matches what was shown.
+            */}
+            <div className="mb-6 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="consent_to_contact"
+                  checked={consentToContact}
+                  onChange={(e) => setConsentToContact(e.target.checked)}
+                  className="mt-1 h-4 w-4 flex-shrink-0 cursor-pointer rounded border-white/30 bg-white/10 accent-purple-500"
+                />
+                <span className="text-xs leading-relaxed text-gray-400">
+                  {CONSENT_TEXT}{' '}
+                  See our{' '}
+                  <Link
+                    href="/privacy"
+                    className="text-purple-400 underline hover:text-purple-300"
+                  >
+                    Privacy Policy
+                  </Link>{' '}
+                  and{' '}
+                  <Link
+                    href="/terms"
+                    className="text-purple-400 underline hover:text-purple-300"
+                  >
+                    Terms of Service
+                  </Link>
+                  .
+                </span>
+              </label>
+              <p className="mt-2 pl-7 text-xs text-gray-600">
+                Optional — you can still send your message without checking this box.
+              </p>
+            </div>
+
+            <Button
+              type="submit"
               disabled={isSubmitting}
               className="w-full modern-btn-primary text-white font-semibold py-6 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -302,12 +348,23 @@ export default function Contact() {
           </form>
 
           <div className="mt-8 pt-8 border-t border-white/10 text-center">
-            <p className="text-gray-400 text-sm">
-              Or email us directly at{' '}
-              <a href="mailto:support@luxwebstudio.dev" className="text-green-400 hover:text-green-300 transition-colors duration-300 ease-out">
-                support@luxwebstudio.dev
+            <p className="text-gray-400 text-sm mb-3">Prefer to reach out directly?</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+              <a
+                href={telHref}
+                className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors duration-300 ease-out font-medium"
+              >
+                <Phone className="w-4 h-4" />
+                {businessPhone.display}
               </a>
-            </p>
+              <a
+                href={mailtoHref}
+                className="inline-flex items-center gap-2 text-green-400 hover:text-green-300 transition-colors duration-300 ease-out"
+              >
+                <Mail className="w-4 h-4" />
+                {businessEmail}
+              </a>
+            </div>
           </div>
         </motion.div>
         </ScrollReveal>

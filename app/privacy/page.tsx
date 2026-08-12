@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 import Link from "next/link"
+import { businessPhone, telHref } from "@/data/contact"
 
 export const metadata: Metadata = {
   title: "Privacy Policy - LuxWeb Studio",
@@ -248,8 +249,8 @@ export default function PrivacyPolicyPage() {
               </p>
               <p className="m-0">
                 Phone:{" "}
-                <a href="tel:+17186350736" className="text-purple-400 hover:text-purple-300 underline">
-                  (718) 635-0736
+                <a href={telHref} className="text-purple-400 hover:text-purple-300 underline">
+                  {businessPhone.display}
                 </a>
               </p>
               <p className="m-0">Website: luxwebstudio.dev</p>

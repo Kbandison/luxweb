@@ -8,6 +8,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import PromoBar from "@/components/PromoBar";
 import { getActivePromo, PROMO_BAR_HEIGHT } from "@/data/promo";
+import { businessPhone, businessEmail } from "@/data/contact";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -107,9 +108,9 @@ export default function RootLayout({
     },
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+1-718-635-0736",
+      "telephone": businessPhone.schema,
       "contactType": "customer service",
-      "email": "support@luxwebstudio.dev"
+      "email": businessEmail
     },
     "sameAs": [
       "https://github.com/luxwebstudio",

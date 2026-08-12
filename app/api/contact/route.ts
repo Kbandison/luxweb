@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { sendClientConfirmationEmail, sendAdminNotificationEmail, EmailData } from '@/lib/email'
 import { analyzeIntake } from '@/lib/ai-intake'
 import { submitLead } from '@/lib/crm'
+import { buildConsentRecord } from '@/data/consent'
 
 export const maxDuration = 60
 
@@ -65,6 +66,17 @@ export async function POST(request: NextRequest) {
       projectType: body.project_type || undefined,
     })
 
+    // Capture express written consent with the evidence needed to prove it
+    // later: server clock, originating IP, and user agent. The wording and
+    // version come from data/consent.ts, never from the request body.
+    const forwardedFor = request.headers.get('x-forwarded-for')
+    const consent = buildConsentRecord(
+      body.consent_to_contact === true,
+      forwardedFor?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || null,
+      request.headers.get('user-agent')
+    )
+    console.log('Consent captured:', { granted: consent.granted, version: consent.version })
+
     // Prepare data for database (optional fields handled gracefully)
     const submissionData = {
       name: name.trim(),
@@ -74,7 +86,7 @@ export async function POST(request: NextRequest) {
       project_type: projectType,
       project_goals: message.trim(),
       budget_range: 'discuss',
-      additional_details: '',
+      additional_details: JSON.stringify({ consent }),
       status: 'new' as const
     }
 
@@ -104,11 +116,14 @@ export async function POST(request: NextRequest) {
     const analysis = await analysisPromise
     if (analysis) {
       console.log('AI analysis:', { priority: analysis.priority, tags: analysis.tags })
-      // Persist AI summary alongside the submission for admin view
+      // Persist AI summary alongside the submission for admin view.
+      // Consent is re-written here rather than merged in SQL so this update
+      // can't clobber the consent record captured at insert time.
       await supabaseAdmin
         .from('contact_submissions')
         .update({
           additional_details: JSON.stringify({
+            consent,
             ai_summary: analysis.summary,
             ai_priority: analysis.priority,
             ai_tags: analysis.tags,
@@ -141,6 +156,7 @@ export async function POST(request: NextRequest) {
       aiPriority: analysis?.priority,
       aiTags: analysis?.tags,
       aiPersonalizedReply: analysis?.personalizedReply,
+      consentGranted: consent.granted,
     }
 
     console.log('Sending emails and submitting to CRM...')

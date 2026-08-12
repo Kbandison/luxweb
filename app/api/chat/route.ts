@@ -1,5 +1,6 @@
 import { streamText, convertToModelMessages, type UIMessage } from 'ai'
 import { getActivePromo } from '@/data/promo'
+import { businessPhone, businessEmail } from '@/data/contact'
 
 export const maxDuration = 60
 
@@ -10,7 +11,7 @@ const BASE_PROMPT = `You are the AI assistant for LuxWeb Studio, a web developme
 - Stack: Next.js, TypeScript, Tailwind CSS, Supabase
 - Specialty: Custom-designed websites for local businesses that convert visitors into customers
 - Differentiators: Direct access to the developer (no middleman), 2-3 week delivery, performance-first builds, premium design
-- Contact: support@luxwebstudio.dev
+- Contact: ${businessEmail} or ${businessPhone.display}
 
 ## The Signature Site — $4,500
 (Internal note: $4,500 is the baseline for a typical project, not a flat all-inclusive
@@ -42,7 +43,7 @@ A complete custom website package that includes:
 - Care Plan (hosting, updates, small edits, analytics, priority support): $175/month
 
 ## Your Job
-Help visitors understand what LuxWeb Studio offers, answer questions about the process, pricing, timeline, and tech stack, and encourage them to book a free consultation by visiting the /contact page or emailing support@luxwebstudio.dev.
+Help visitors understand what LuxWeb Studio offers, answer questions about the process, pricing, timeline, and tech stack, and encourage them to book a free consultation by visiting the /contact page, calling ${businessPhone.display}, or emailing ${businessEmail}.
 
 ## Rules
 - Be friendly, concise, and direct. No walls of text.

@@ -365,14 +365,7 @@ export default function SubmissionsPage() {
                           </p>
                         </div>
 
-                        {sub.additional_details && (
-                          <div>
-                            <span className="text-gray-500 text-xs">Additional Details</span>
-                            <p className="text-white text-sm whitespace-pre-wrap mt-0.5">
-                              {sub.additional_details}
-                            </p>
-                          </div>
-                        )}
+                        <SubmissionDetails raw={sub.additional_details} />
 
                         {/* Actions */}
                         <div className="flex items-center gap-2 flex-wrap pt-1">
@@ -439,6 +432,103 @@ export default function SubmissionsPage() {
               </div>
             )
           })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+interface ParsedDetails {
+  consent?: {
+    granted: boolean
+    version?: string
+    capturedAt?: string
+    ipAddress?: string | null
+  }
+  ai_summary?: string
+  ai_priority?: string
+  ai_tags?: string[]
+}
+
+/**
+ * `additional_details` holds a JSON blob (consent + AI enrichment) on current
+ * submissions, but older rows contain plain text or nothing. Render whichever
+ * we find rather than dumping raw JSON at the operator.
+ */
+function SubmissionDetails({ raw }: { raw?: string }) {
+  if (!raw) return null
+
+  let parsed: ParsedDetails | null = null
+  try {
+    const candidate = JSON.parse(raw)
+    if (candidate && typeof candidate === 'object') parsed = candidate
+  } catch {
+    // Legacy plain-text value — fall through and show it as-is.
+  }
+
+  if (!parsed) {
+    return (
+      <div>
+        <span className="text-gray-500 text-xs">Additional Details</span>
+        <p className="text-white text-sm whitespace-pre-wrap mt-0.5">{raw}</p>
+      </div>
+    )
+  }
+
+  const { consent, ai_summary, ai_priority, ai_tags } = parsed
+
+  return (
+    <div className="space-y-2">
+      {consent && (
+        <div
+          className={`rounded-lg border px-3 py-2 ${
+            consent.granted
+              ? 'border-green-500/25 bg-green-500/10'
+              : 'border-red-500/25 bg-red-500/10'
+          }`}
+        >
+          <p
+            className={`text-xs font-semibold ${
+              consent.granted ? 'text-green-400' : 'text-red-400'
+            }`}
+          >
+            {consent.granted
+              ? '✓ Consented to calls & texts (incl. automated/AI)'
+              : '✗ No calls or texts — consent not given'}
+          </p>
+          {consent.granted && (
+            <p className="text-[11px] text-gray-500 mt-1">
+              {consent.capturedAt ? new Date(consent.capturedAt).toLocaleString() : 'unknown time'}
+              {consent.ipAddress ? ` · IP ${consent.ipAddress}` : ''}
+              {consent.version ? ` · v${consent.version}` : ''}
+            </p>
+          )}
+        </div>
+      )}
+
+      {ai_summary && (
+        <div>
+          <span className="text-gray-500 text-xs">AI Summary</span>
+          <p className="text-white text-sm mt-0.5">
+            {ai_summary}
+            {ai_priority && (
+              <span className="ml-2 text-xs uppercase tracking-wide text-purple-400">
+                {ai_priority}
+              </span>
+            )}
+          </p>
+          {ai_tags && ai_tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-1.5">
+              {ai_tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-0.5 text-[11px] rounded-full bg-white/5 text-gray-400 border border-white/10"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

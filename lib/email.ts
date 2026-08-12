@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { businessPhone, businessEmail, telHref, mailtoHref } from '@/data/contact'
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const adminEmail = process.env.ADMIN_EMAIL;
@@ -40,6 +41,8 @@ export interface EmailData {
   aiPriority?: 'hot' | 'warm' | 'cold'
   aiTags?: string[]
   aiPersonalizedReply?: string
+  /** Whether the lead gave express written consent to calls/texts. */
+  consentGranted?: boolean
 }
 
 const formatProjectType = (type?: string) => {
@@ -167,7 +170,8 @@ export const sendClientConfirmationEmail = async (data: EmailData) => {
                   <div style="padding: 24px 36px;">
                     <p style="margin: 0; font-size: 14px; color: #6b7280; line-height: 1.6;">
                       Have questions in the meantime? Just reply to this email or reach us at
-                      <a href="mailto:support@luxwebstudio.dev" style="color: #a78bfa; text-decoration: none; font-weight: 500;">support@luxwebstudio.dev</a>
+                      <a href="${mailtoHref}" style="color: #a78bfa; text-decoration: none; font-weight: 500;">${businessEmail}</a>
+                      or call <a href="${telHref}" style="color: #a78bfa; text-decoration: none; font-weight: 500;">${businessPhone.display}</a>
                     </p>
                   </div>
 
@@ -304,6 +308,19 @@ export const sendAdminNotificationEmail = async (data: EmailData) => {
                       </tr>
                       ` : ''}
                     </table>
+
+                    <!-- Contact consent: tells you at a glance whether you may
+                         legally call or text this lead. -->
+                    <div style="margin-top: 16px; padding: 10px 12px; border-radius: 8px; background: ${data.consentGranted ? 'rgba(34,197,94,0.10)' : 'rgba(239,68,68,0.10)'}; border: 1px solid ${data.consentGranted ? 'rgba(34,197,94,0.25)' : 'rgba(239,68,68,0.25)'};">
+                      <div style="font-size: 12px; font-weight: 600; color: ${data.consentGranted ? '#4ade80' : '#f87171'};">
+                        ${data.consentGranted
+                          ? '&#10003; Consented to calls &amp; texts (incl. automated/AI)'
+                          : '&#10007; No calls or texts — consent not given'}
+                      </div>
+                      ${data.consentGranted ? '' : `
+                      <div style="font-size: 11px; color: #9ca3af; margin-top: 3px;">Reply by email only.</div>
+                      `}
+                    </div>
                   </div>
 
                   <!-- Message -->

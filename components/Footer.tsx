@@ -4,6 +4,7 @@ import { Mail, Phone, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from "@/components/ui/button"
+import { businessPhone, businessEmail, telHref, mailtoHref } from "@/data/contact"
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -51,13 +52,13 @@ export default function Footer() {
               Professional web development with a personal touch. Fast delivery, fair pricing.
             </p>
             <div className="space-y-2">
-              <a href="mailto:support@luxwebstudio.dev" className="flex items-center gap-2 text-sm text-gray-500 hover:text-purple-400 transition-colors">
+              <a href={mailtoHref} className="flex items-center gap-2 text-sm text-gray-500 hover:text-purple-400 transition-colors">
                 <Mail className="w-3.5 h-3.5" />
-                support@luxwebstudio.dev
+                {businessEmail}
               </a>
-              <a href="tel:+17186350736" className="flex items-center gap-2 text-sm text-gray-500 hover:text-purple-400 transition-colors">
+              <a href={telHref} className="flex items-center gap-2 text-sm text-gray-500 hover:text-purple-400 transition-colors">
                 <Phone className="w-3.5 h-3.5" />
-                (718) 635-0736
+                {businessPhone.display}
               </a>
             </div>
           </div>
