@@ -34,12 +34,13 @@ export interface Promo {
 }
 
 export const promo: Promo | null = {
-  id: 'launch-2026-09',
-  name: 'Limited-Time Launch Offer',
+  id: 'fall-2026-10',
+  name: 'Fall Offer',
   regularPrice: 4500,
-  salePrice: 3000,
+  salePrice: 2500,
   salePriceQualifier: 'Starting at',
-  endsAt: '2026-09-10T23:59:59-04:00',
+  // Oct 31 is still EDT (DST ends Nov 1, 2026), hence -04:00.
+  endsAt: '2026-10-31T23:59:59-04:00',
 }
 
 /** Height of the announcement bar. Kept in sync with the `--promo-offset` CSS variable set in the root layout. */

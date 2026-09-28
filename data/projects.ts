@@ -16,7 +16,7 @@ export const projects: Project[] = [
     title: "Hoop Metrix",
     description: "Your number one spot for NBA and WNBA Rosters.",
     tech: ["Next.js", "Responsive Design", "TypeScript"],
-    result: "Increased Memberships by 57%",
+    result: "Launched live NBA & WNBA rosters",
     category: "Sports",
     images: [
       "/Screenshot 2025-10-25 203837.png",
@@ -36,9 +36,9 @@ export const projects: Project[] = [
   },
   {
     title: "Cake Haven",
-    description: "Helped local bakery increase online orders with easy-to-use ordering system",
+    description: "Easy-to-use online ordering system for a local bakery",
     tech: ["Next.js", "Responsive Design", "TypeScript"],
-    result: "Increased online orders by 90%",
+    result: "Launched online ordering",
     category: "E-commerce",
     images: [
       "/Screenshot 2025-06-19 133941.png",
@@ -140,7 +140,6 @@ export interface PortfolioStat {
   color: string
 }
 
-// Slot 0 also drives the homepage social-proof strip.
 // "Websites Delivered" is a placeholder count — update it as real projects ship.
 // The other two are deliberately claims we can actually back up: the delivery
 // window quoted everywhere on the site, and the Lighthouse score guaranteed in

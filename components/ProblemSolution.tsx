@@ -32,14 +32,14 @@ const pairs = [
   {
     icon: TrendingUp,
     problem: "Losing Customers",
-    solution: "We design clear calls-to-action and conversion paths that turn 30% more visitors into paying customers.",
+    solution: "We design clear calls-to-action and conversion paths that turn more of your visitors into paying customers.",
     result: "More leads from the same traffic",
   },
   {
     icon: Search,
     problem: "Low Visibility",
     solution: "SEO-optimized structure and fast load times help you appear when customers search for your services.",
-    result: "Found on Google's first page",
+    result: "Built to rank in local search",
   },
   {
     icon: Sparkles,
@@ -49,9 +49,11 @@ const pairs = [
   },
 ]
 
+// Only claims the package itself guarantees (see data/packages.ts). Outcome
+// stats like "3x more leads" need per-client proof before they go back up.
 const stats = [
-  { value: 3, suffix: 'x', label: 'More Leads' },
-  { value: 40, suffix: '%', label: 'Higher Conversion' },
+  { value: 90, suffix: '+', label: 'Lighthouse Score, Guaranteed' },
+  { value: 60, suffix: ' days', label: 'Post-Launch Support Included' },
 ]
 
 export default function ProblemSolution() {

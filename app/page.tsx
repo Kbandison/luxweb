@@ -2,10 +2,8 @@ import Hero from "@/components/Hero"
 import LogoBar from "@/components/LogoBar"
 import ProblemSolution from "@/components/ProblemSolution"
 import Portfolio from "@/components/Portfolio"
-import SocialProofStrip from "@/components/SocialProofStrip"
 import ProcessSection from "@/components/ProcessSection"
 import PricingCondensed from "@/components/PricingCondensed"
-import TestimonialCarousel from "@/components/TestimonialCarousel"
 import FAQCondensed from "@/components/FAQCondensed"
 import { getProjects } from "@/lib/projects"
 import { getActivePromo } from "@/data/promo"
@@ -37,10 +35,8 @@ export default async function Home() {
         <LogoBar projects={projects} />
         <ProblemSolution />
         <Portfolio projects={projects} />
-        <SocialProofStrip />
         <ProcessSection />
         <PricingCondensed promo={promo} />
-        <TestimonialCarousel />
         <FAQCondensed />
       </div>
     </main>
