@@ -1,24 +1,24 @@
 import Contact from "@/components/Contact"
 import { Metadata } from "next"
-import { Suspense } from "react"
+import { ogImage } from "@/lib/og"
 import { businessPhone, businessEmail } from "@/data/contact"
+import { getActivePromo } from "@/data/promo"
 
 export const metadata: Metadata = {
-  title: "Contact - LuxWeb Studio | Get Your Free Quote",
-  description: `Ready to transform your business with a professional website? Contact LuxWeb Studio for a free consultation and personalized quote. Call ${businessPhone.display} or email ${businessEmail}`,
+  title: "Contact — Free 30-Minute Consultation",
+  description: `Tell us about your project and get a free 30-minute consultation. We reply within 24 hours. Call ${businessPhone.display} or email ${businessEmail}.`,
   openGraph: {
-    title: "Contact LuxWeb Studio - Get Your Free Quote",
-    description: "Ready to transform your business with a professional website? Contact LuxWeb Studio for a free consultation and personalized quote.",
+    title: "Contact LuxWeb Studio — Free 30-Minute Consultation",
+    description: "Tell us about your project and get a free 30-minute consultation. We reply within 24 hours.",
     url: "/contact",
+    images: [ogImage],
   },
 }
 
 export default function ContactPage() {
   return (
     <main className="min-h-screen pt-[calc(5rem+var(--promo-offset,0px))]">
-      <Suspense fallback={<div className="text-white text-center">Loading...</div>}>
-        <Contact />
-      </Suspense>
+      <Contact promo={getActivePromo()} />
     </main>
   )
 }

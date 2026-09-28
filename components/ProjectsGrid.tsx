@@ -1,6 +1,6 @@
 'use client'
 
-import { ExternalLink, TrendingUp, Code, Users, Clock, Calendar, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
+import { ExternalLink, TrendingUp, Code, Users, Clock, CheckCircle2, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
@@ -9,8 +9,10 @@ import type { Project } from "@/data/projects"
 import { portfolioStats } from "@/data/projects"
 import ImageLightbox from "./ImageLightbox"
 import Image from "next/image"
+import Link from "next/link"
+import CtaButton from "./CtaButton"
 
-export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+export default function ProjectsGrid({ projects, ctaLabel }: { projects: Project[]; ctaLabel: string }) {
   const [currentImageIndex, setCurrentImageIndex] = useState<Record<number, number>>({})
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxImages, setLightboxImages] = useState<string[]>([])
@@ -93,12 +95,9 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
       {/* Projects Grid */}
       <ScrollReveal delay={0.2}>
         <div className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 text-center">
             Featured <span className="text-purple-400">Projects</span>
           </h2>
-          <p className="text-lg text-gray-400 text-center max-w-2xl mx-auto mb-12">
-            Each project represents a unique solution tailored to our client's specific needs and goals.
-          </p>
         </div>
       </ScrollReveal>
 
@@ -143,7 +142,8 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                         e.stopPropagation()
                         prevImage(index, project.images.length)
                       }}
-                      className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm z-10"
+                      aria-label={`Previous ${project.title} screenshot`}
+                      className="absolute left-4 top-1/2 transform -translate-y-1/2 w-11 h-11 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm z-10"
                     >
                       <ChevronLeft className="w-5 h-5 text-white" />
                     </button>
@@ -152,7 +152,8 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                         e.stopPropagation()
                         nextImage(index, project.images.length)
                       }}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm z-10"
+                      aria-label={`Next ${project.title} screenshot`}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 w-11 h-11 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm z-10"
                     >
                       <ChevronRight className="w-5 h-5 text-white" />
                     </button>
@@ -161,7 +162,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 
                 {/* Image Indicators - Only show if multiple images */}
                 {project.images.length > 1 && (
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 z-10">
                     {project.images.map((_, imageIndex) => (
                       <button
                         key={imageIndex}
@@ -169,6 +170,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                           e.stopPropagation()
                           setCurrentImageIndex(prev => ({ ...prev, [index]: imageIndex }))
                         }}
+                        aria-label={`Show ${project.title} screenshot ${imageIndex + 1}`}
                         className={`w-2 h-2 rounded-full transition-all duration-200 ${
                           (currentImageIndex[index] || 0) === imageIndex
                             ? 'bg-white'
@@ -209,23 +211,18 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 
                 {/* Result */}
                 <div className="flex items-center gap-3 p-4 bg-green-400/10 rounded-xl border border-green-400/20 mb-6">
-                  <TrendingUp className="w-6 h-6 text-green-400 flex-shrink-0" />
+                  <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0" />
                   <span className="text-green-400 font-semibold">{project.result}</span>
                 </div>
 
                 {/* Action Button */}
                 {project.links?.live ? (
-                  <a 
-                    href={project.links.live} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-full"
-                  >
-                    <Button className="w-full modern-btn-primary text-white py-3 text-base font-medium">
-                      <ExternalLink className="w-5 h-5 mr-2" />
+                  <Button asChild className="w-full modern-btn-primary text-white py-3 text-base font-medium h-auto">
+                    <a href={project.links.live} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="w-5 h-5" />
                       View Site
-                    </Button>
-                  </a>
+                    </a>
+                  </Button>
                 ) : (
                   <Button className="w-full modern-btn-secondary text-white py-3 text-base font-medium">
                     View Project Details
@@ -246,21 +243,16 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
               Ready to Start Your <span className="text-purple-400">Next Project?</span>
             </h3>
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-              Let's discuss how we can create a custom solution that drives real results for your business.
+              Tell us about your business and we&apos;ll reply within 24 hours.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/contact">
-                <Button className="modern-btn-primary text-white px-8 py-4 text-lg font-semibold">
-                  Start My Project
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </a>
-              <a href="/pricing">
-                <Button className="modern-btn-outline text-white px-8 py-4 text-lg">
+              <CtaButton label={ctaLabel} location="projects" className="px-8 py-4 text-lg font-semibold" />
+              <Button asChild className="modern-btn-outline text-white px-8 py-4 text-lg h-auto">
+                <Link href="/pricing">
                   View Pricing
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </a>
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

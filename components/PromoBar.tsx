@@ -28,7 +28,9 @@ export default function PromoBar({ promo }: { promo: ActivePromo }) {
         {/* Compact copy on phones, full sentence from `sm` up. */}
         <span className="sm:hidden">
           <span className="font-semibold text-white">{promo.salePriceWithQualifier}</span> through{' '}
-          {promo.endsAtLabel} — save {promo.savingsLabel}
+          {promo.endsAtLabel}
+          {/* Dropped on the narrowest phones, where it would wrap past the bar's fixed height. */}
+          <span className="hidden min-[360px]:inline"> — save {promo.savingsLabel}</span>
         </span>
         <span className="hidden sm:inline">
           <span className="font-semibold text-white">{promo.name}:</span> The Signature Site —{' '}

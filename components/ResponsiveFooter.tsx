@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import Footer from '@/components/Footer'
 
-export function ResponsiveFooter() {
+export function ResponsiveFooter({ ctaLabel }: { ctaLabel: string }) {
   const [user, setUser] = useState<any>(null)
   const pathname = usePathname()
   const isAdminRoute = pathname.startsWith('/admin')
@@ -34,7 +34,7 @@ export function ResponsiveFooter() {
 
   return (
     <div className={footerClasses}>
-      <Footer />
+      <Footer ctaLabel={ctaLabel} />
     </div>
   )
 }

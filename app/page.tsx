@@ -6,11 +6,12 @@ import ProcessSection from "@/components/ProcessSection"
 import PricingCondensed from "@/components/PricingCondensed"
 import FAQCondensed from "@/components/FAQCondensed"
 import { getProjects } from "@/lib/projects"
-import { getActivePromo } from "@/data/promo"
+import { getActivePromo, getCtaLabel } from "@/data/promo"
 
 export default async function Home() {
   const projects = await getProjects()
   const promo = getActivePromo()
+  const ctaLabel = getCtaLabel(promo)
 
   return (
     <main className="min-h-screen relative">
@@ -31,11 +32,11 @@ export default async function Home() {
       </div>
 
       <div className="relative z-10">
-        <Hero projects={projects} />
+        <Hero projects={projects} ctaLabel={ctaLabel} />
         <LogoBar projects={projects} />
         <ProblemSolution />
         <Portfolio projects={projects} />
-        <ProcessSection />
+        <ProcessSection ctaLabel={ctaLabel} />
         <PricingCondensed promo={promo} />
         <FAQCondensed />
       </div>

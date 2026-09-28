@@ -1,12 +1,13 @@
 'use client'
 
-import { Mail, Phone, ArrowRight } from 'lucide-react'
+import { Mail, Phone } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Button } from "@/components/ui/button"
-import { businessPhone, businessEmail, telHref, mailtoHref } from "@/data/contact"
+import { businessPhone, businessEmail, mailtoHref } from "@/data/contact"
+import CtaButton from "./CtaButton"
+import PhoneLink from "./PhoneLink"
 
-export default function Footer() {
+export default function Footer({ ctaLabel }: { ctaLabel: string }) {
   const currentYear = new Date().getFullYear()
 
   const links = {
@@ -27,12 +28,7 @@ export default function Footer() {
         {/* Mini CTA */}
         <div className="text-center mb-14 pb-14 border-b border-white/5">
           <p className="text-lg text-gray-400 mb-4">Ready to get started?</p>
-          <Link href="/contact">
-            <Button className="modern-btn-primary text-white px-6 py-3 text-sm font-medium h-auto">
-              Get a Free Quote
-              <ArrowRight className="w-4 h-4 ml-1.5" />
-            </Button>
-          </Link>
+          <CtaButton label={ctaLabel} location="footer" className="px-6 py-3 text-sm font-medium" />
         </div>
 
         {/* 3-Column Layout */}
@@ -48,18 +44,18 @@ export default function Footer() {
                 className="h-10 w-auto mb-4"
               />
             </Link>
-            <p className="text-sm text-gray-500 mb-4 leading-relaxed">
+            <p className="text-sm text-gray-400 mb-4 leading-relaxed">
               Professional web development with a personal touch. Fast delivery, fair pricing.
             </p>
-            <div className="space-y-2">
-              <a href={mailtoHref} className="flex items-center gap-2 text-sm text-gray-500 hover:text-purple-400 transition-colors">
+            <div>
+              <a href={mailtoHref} className="flex min-h-11 items-center gap-2 text-sm text-gray-400 hover:text-purple-400 transition-colors">
                 <Mail className="w-3.5 h-3.5" />
                 {businessEmail}
               </a>
-              <a href={telHref} className="flex items-center gap-2 text-sm text-gray-500 hover:text-purple-400 transition-colors">
+              <PhoneLink location="footer" className="flex min-h-11 items-center gap-2 text-sm text-gray-400 hover:text-purple-400 transition-colors">
                 <Phone className="w-3.5 h-3.5" />
                 {businessPhone.display}
-              </a>
+              </PhoneLink>
             </div>
           </div>
 
@@ -69,7 +65,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {links.pages.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-gray-500 hover:text-purple-400 transition-colors">
+                  <Link href={link.href} className="text-sm text-gray-400 hover:text-purple-400 transition-colors">
                     {link.name}
                   </Link>
                 </li>
@@ -83,7 +79,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {links.legal.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-sm text-gray-500 hover:text-purple-400 transition-colors">
+                  <Link href={link.href} className="text-sm text-gray-400 hover:text-purple-400 transition-colors">
                     {link.name}
                   </Link>
                 </li>
@@ -94,13 +90,12 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-gray-600">
+          <p className="text-xs text-gray-400">
             &copy; {currentYear} LuxWeb Studio LLC. All rights reserved.
           </p>
           <div className="flex items-center gap-4 text-xs">
-            <Link href="/privacy" className="text-gray-600 hover:text-purple-400 transition-colors">Privacy</Link>
-            <Link href="/terms" className="text-gray-600 hover:text-purple-400 transition-colors">Terms</Link>
-            <Link href="/admin/dashboard" className="text-gray-600 hover:text-purple-400 transition-colors">Admin</Link>
+            <Link href="/privacy" className="text-gray-400 hover:text-purple-400 transition-colors">Privacy</Link>
+            <Link href="/terms" className="text-gray-400 hover:text-purple-400 transition-colors">Terms</Link>
           </div>
         </div>
       </div>

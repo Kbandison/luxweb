@@ -1,9 +1,9 @@
 'use client'
 
 import { motion } from "framer-motion"
-import { MessageCircle, Palette, Code, Rocket, ArrowRight } from "lucide-react"
+import { MessageCircle, Palette, Code, Rocket } from "lucide-react"
 import ScrollReveal from "./ScrollReveal"
-import Link from "next/link"
+import CtaButton from "./CtaButton"
 
 const steps = [
   {
@@ -27,23 +27,20 @@ const steps = [
   {
     number: "04",
     title: "Launch",
-    description: "Your site goes live. Training, support, and optimization included.",
+    description: "Your site goes live, with a training call and 60 days of support.",
     icon: Rocket,
   },
 ]
 
-export default function ProcessSection() {
+export default function ProcessSection({ ctaLabel }: { ctaLabel: string }) {
   return (
     <section className="py-20 lg:py-28 px-6">
       <div className="container mx-auto max-w-6xl">
         <ScrollReveal>
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight">
               How It Works
             </h2>
-            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-              A simple, proven process from first call to launch day.
-            </p>
           </div>
         </ScrollReveal>
 
@@ -132,13 +129,7 @@ export default function ProcessSection() {
         {/* Bottom CTA */}
         <ScrollReveal delay={0.3}>
           <div className="text-center mt-16">
-            <Link
-              href="/contact"
-              className="text-purple-400 hover:text-purple-300 font-medium text-sm inline-flex items-center gap-1.5 transition-colors"
-            >
-              Start Your Project
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            <CtaButton label={ctaLabel} location="process" className="px-8 py-3 text-base font-semibold" />
           </div>
         </ScrollReveal>
       </div>

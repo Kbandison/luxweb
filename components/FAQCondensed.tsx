@@ -29,21 +29,26 @@ export default function FAQCondensed() {
             {faqs.map((faq, index) => (
               <div
                 key={index}
-                className="glass-card-subtle p-5 cursor-pointer hover:border-white/10 transition-colors"
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                className="glass-card-subtle p-5 hover:border-white/10 transition-colors"
               >
-                <div className="flex items-center justify-between">
-                  <h3 className="text-base font-medium text-white pr-4">
-                    {faq.question}
-                  </h3>
-                  <motion.div
-                    animate={{ rotate: openIndex === index ? 180 : 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="flex-shrink-0"
+                {/* Real button so the accordion works by keyboard and screen reader. */}
+                <h3>
+                  <button
+                    type="button"
+                    onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                    aria-expanded={openIndex === index}
+                    className="flex w-full items-center justify-between gap-4 text-left text-base font-medium text-white"
                   >
-                    <ChevronDown className="w-4 h-4 text-gray-500" />
-                  </motion.div>
-                </div>
+                    {faq.question}
+                    <motion.span
+                      animate={{ rotate: openIndex === index ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="flex-shrink-0"
+                    >
+                      <ChevronDown className="w-4 h-4 text-gray-400" />
+                    </motion.span>
+                  </button>
+                </h3>
 
                 <AnimatePresence>
                   {openIndex === index && (
@@ -69,10 +74,14 @@ export default function FAQCondensed() {
 
         <ScrollReveal delay={0.2}>
           <div className="text-center">
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-400 text-sm">
               Have more questions?{' '}
               <Link href="/contact" className="text-purple-400 hover:text-purple-300 transition-colors font-medium">
                 Get in touch
+              </Link>{' '}
+              or{' '}
+              <Link href="/pricing" className="text-purple-400 hover:text-purple-300 transition-colors font-medium">
+                see the full pricing FAQ
               </Link>
             </p>
           </div>

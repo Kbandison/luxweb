@@ -104,7 +104,7 @@ export default function ProblemSolution() {
               }}
               className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors inline-flex items-center gap-1.5"
             >
-              See how we did it
+              See our work
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

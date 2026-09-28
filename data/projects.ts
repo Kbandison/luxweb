@@ -14,7 +14,7 @@ export interface Project {
 export const projects: Project[] = [
   {
     title: "Hoop Metrix",
-    description: "Your number one spot for NBA and WNBA Rosters.",
+    description: "NBA and WNBA rosters, all in one place.",
     tech: ["Next.js", "Responsive Design", "TypeScript"],
     result: "Launched live NBA & WNBA rosters",
     category: "Sports",
@@ -53,9 +53,9 @@ export const projects: Project[] = [
   },
   {
     title: "Galon Consulting",
-    description: "Galon Consulting Services, LLC provides world-class solutions in billing, compliance, and patient care for practices of all sizes.",
+    description: "Billing, compliance, and practice support for healthcare providers of all sizes.",
     tech: ["Professional Design", "Mobile-First", "SEO Optimized"],
-    result: "Enhanced professional credibility",
+    result: "Professional site for a healthcare consultancy",
     category: "Healthcare",
     images: [
       "/Screenshot 2025-06-10 082614.png",
@@ -69,9 +69,9 @@ export const projects: Project[] = [
   },
   {
     title: "Reparation Road",
-    description: "Uncover your family history and explore Black heritage with Reparation Road’s research, genealogy, and cultural resources.",
+    description: "Genealogy research and cultural resources for exploring Black heritage.",
     tech: ["Modern UI/UX", "Accessibility Features", "Content Management"],
-    result: "Improved community engagement",
+    result: "Genealogy and heritage resource hub",
     category: "Community",
     images: [
       "/Screenshot 2025-06-30 092759.png",
@@ -85,9 +85,9 @@ export const projects: Project[] = [
   },
   {
     title: "JSW Law Group",
-    description: "JSW Law Group provides comprehensive legal services in metro-Atlanta including real estate, business law, corporate transactions, and immigration services. Licensed in Georgia and California since 2003.",
+    description: "Metro-Atlanta law firm covering real estate, business, and immigration law.",
     tech: ["Modern UI/UX", "Accessibility Features", "Content Management"],
-    result: "Boosted Client engagement",
+    result: "Multi-practice law firm site",
     category: "Community",
     images: [
       "/Screenshot 2025-07-12 234024.png",
@@ -101,10 +101,10 @@ export const projects: Project[] = [
     }
   },
   {
-    title: "Axiyonix",
-    description: "From launch to legacy—Axionyx empowers brands with premium, future-forward digital solutions. Begin your legacy with our agency’s award-winning web design, SaaS, and ongoing innovation.",
+    title: "Axionyx",
+    description: "Brand site for a digital agency offering web design, SaaS, and ongoing support.",
     tech: ["Modern UI/UX", "Accessibility Features", "Content Management"],
-    result: "Enhanced Client Retention",
+    result: "Premium agency brand site",
     category: "Agency",
     images: [
       "/Screenshot 2025-06-10 140131.png",
@@ -116,9 +116,9 @@ export const projects: Project[] = [
   },
   {
     title: "FlexFit Gym",
-    description: "Join FlexFit Gym and discover the perfect balance of expert guidance, state-of-the-art equipment, and a supportive community to help you achieve your fitness goals.",
+    description: "Gym site highlighting coaching, equipment, and community.",
     tech: ["Modern UI/UX", "Accessibility Features", "Content Management"],
-    result: "Improved Gym Subscriptions",
+    result: "Membership-focused gym site",
     category: "Agency",
     images: [
       "/Screenshot 2025-07-07 163435.png",
@@ -154,7 +154,7 @@ export const portfolioStats: PortfolioStat[] = [
   {
     icon: "Clock",
     value: "2-3 wks",
-    label: "Average Delivery",
+    label: "Typical Delivery",
     color: "blue"
   },
   {

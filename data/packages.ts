@@ -4,7 +4,6 @@ export interface Package {
   price: string
   features: string[]
   idealFor: string
-  cta: string
 }
 
 export const signatureSite: Package = {
@@ -30,7 +29,6 @@ export const signatureSite: Package = {
     "Delivered in 2-3 weeks",
   ],
   idealFor: "Local service businesses, contractors, professional services, and growing brands ready for a website that actually converts",
-  cta: "Get Your Free Quote",
 }
 
 // Optional extras, priced per project. The Care Plan is deliberately kept

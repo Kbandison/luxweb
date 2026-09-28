@@ -1,13 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { ArrowRight, Check, X, ChevronDown, TrendingUp } from 'lucide-react'
+import { Check, X, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ScrollReveal from '@/components/ScrollReveal'
 import PromoCountdown from '@/components/PromoCountdown'
-import type { ActivePromo } from '@/data/promo'
+import CtaButton from '@/components/CtaButton'
+import { getCtaLabel, type ActivePromo } from '@/data/promo'
 import { addOns, carePlan } from '@/data/packages'
 
 // ── Content ──────────────────────────────────────────────────
@@ -15,7 +14,7 @@ import { addOns, carePlan } from '@/data/packages'
 const BENEFITS: { title: string; body: string }[] = [
   {
     title: 'AI Lead Assistant.',
-    body: "A 24/7 chatbot that answers customer questions, a smart contact form that summarizes and prioritizes inquiries for you, and AI-written replies that go out instantly so leads don't go cold.",
+    body: "A 24/7 chatbot, a smart contact form that sorts inquiries for you, and instant AI replies so leads never go cold.",
   },
   {
     title: 'Custom design that matches your brand.',
@@ -50,25 +49,23 @@ const BENEFITS: { title: string; body: string }[] = [
 const FOR_YOU: string[] = [
   'You run an established local service business and want to look like it',
   "You're tired of a site that doesn't bring in leads",
-  'You understand that your website is an investment, not an expense',
   'You want a professional partner, not a DIY platform',
 ]
 
 const NOT_FOR_YOU: string[] = [
-  "You're looking for the cheapest option available",
-  'A basic template site from Wix or Squarespace meets your needs',
-  "You're not ready to invest in growing your business",
+  "You're choosing on price alone",
+  'A Wix or Squarespace template meets your needs',
   'You want to manage every pixel yourself',
 ]
 
 const FAQ: { q: string; a: string }[] = [
   {
     q: 'Why not just use Wix, Squarespace, or WordPress?',
-    a: "Those platforms are built for people who want to build their own site. This is for business owners who'd rather focus on running their business while a professional handles the website. A DIY site looks like a DIY site — and your customers can tell.",
+    a: "Those are built for people who want to build their own site. This is for owners who'd rather run their business and let a professional handle the website. A DIY site looks like a DIY site, and customers can tell.",
   },
   {
     q: 'How is this different from a cheaper developer?',
-    a: 'Cheaper developers typically deliver template sites with generic design, weak SEO, and no strategy behind the layout. The Signature Site is custom-designed for conversion, built on a modern tech stack (Next.js and Vercel) for speed and reliability, and set up to actually generate leads — not just exist online.',
+    a: 'Cheaper developers usually deliver templates with generic design and weak SEO. The Signature Site is custom-designed for conversion, built on Next.js and Vercel for speed, and set up to generate leads — not just exist online.',
   },
   {
     q: 'How long does it take?',
@@ -76,11 +73,11 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'What do I need to provide?',
-    a: 'Your logo, your photos (or access to your existing ones), and information about your services. If you need help with copywriting or photography, we can recommend partners or add copywriting to your project.',
+    a: 'Your logo, your photos, and details about your services. Need help with the writing or photos? We can add copywriting to your project or recommend a photographer.',
   },
   {
     q: 'What happens after launch?',
-    a: 'You get 60 days of post-launch support included, plus a 30-minute training call so you can run with it. Most clients continue with the Care Plan for ongoing updates and support.',
+    a: '60 days of post-launch support and a 30-minute training call are included. After that, the Care Plan covers ongoing updates and support.',
   },
   {
     q: 'Do you offer payment plans?',
@@ -88,13 +85,15 @@ const FAQ: { q: string; a: string }[] = [
   },
   {
     q: 'What if I need something bigger than the Signature Site?',
-    a: "Let's talk. If your needs go beyond a service-business site (custom applications, e-commerce, complex integrations), reach out and we'll scope a custom project.",
+    a: "Let's talk. For custom applications, e-commerce, or complex integrations, we'll scope a custom project.",
   },
 ]
 
 // ── Component ────────────────────────────────────────────────
 
 export default function PricingPageContent({ promo }: { promo?: ActivePromo | null }) {
+  const ctaLabel = getCtaLabel(promo ?? null)
+
   const scrollToOffer = () => {
     document.getElementById('offer')?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -103,33 +102,26 @@ export default function PricingPageContent({ promo }: { promo?: ActivePromo | nu
     <>
       {/* 1. Hero */}
       <section className="px-6 py-20 lg:py-28">
+        {/* No scroll-reveal here: it's above the fold, and the headline should paint without waiting on JS. */}
         <div className="container mx-auto max-w-4xl text-center">
-          <ScrollReveal>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-6">
-              A website that actually{' '}
-              <span className="text-gradient-purple">brings you customers.</span>
-            </h1>
-            <p className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-3xl mx-auto mb-10">
-              Custom-designed, mobile-first websites for local service businesses that want to look
-              like a brand — not a listing. Built to turn visitors into leads, so your business
-              grows beyond word-of-mouth.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/contact">
-                <Button className="modern-btn-primary text-white px-8 py-4 text-base font-semibold h-auto">
-                  Start Your Project
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-              <button
-                onClick={scrollToOffer}
-                className="text-purple-400 hover:text-purple-300 font-medium text-sm transition-colors inline-flex items-center gap-1.5"
-              >
-                See what's included
-                <ChevronDown className="w-4 h-4" />
-              </button>
-            </div>
-          </ScrollReveal>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-6">
+            A website that actually{' '}
+            <span className="text-gradient-purple">brings you customers.</span>
+          </h1>
+          <p className="text-lg md:text-xl text-gray-400 leading-relaxed max-w-3xl mx-auto mb-10">
+            Custom, mobile-first websites for local service businesses that want to look like a
+            brand, not a listing — built to turn visitors into leads.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <CtaButton label={ctaLabel} location="pricing_hero" className="px-8 py-4 text-base font-semibold" />
+            <button
+              onClick={scrollToOffer}
+              className="min-h-11 text-purple-400 hover:text-purple-300 font-medium text-sm transition-colors inline-flex items-center gap-1.5"
+            >
+              See what's included
+              <ChevronDown className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </section>
 
@@ -154,7 +146,7 @@ export default function PricingPageContent({ promo }: { promo?: ActivePromo | nu
                       </span>
                     </div>
                     <div className="flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1 mb-2">
-                      <span className="text-3xl sm:text-4xl font-medium text-gray-500 line-through">
+                      <span className="text-3xl sm:text-4xl font-medium text-gray-400 line-through">
                         {promo.regularPriceLabel}
                       </span>
                       <span className="text-5xl sm:text-6xl font-bold text-white">
@@ -169,12 +161,12 @@ export default function PricingPageContent({ promo }: { promo?: ActivePromo | nu
                     <p className="text-base text-green-400 font-semibold mb-1">
                       Save {promo.savingsLabel}
                     </p>
-                    <p className="text-sm text-gray-500 mb-6">
+                    <p className="text-sm text-gray-400 mb-6">
                       Delivered in 2-3 weeks · 50% to start, 25% at design sign-off, 25% on launch
                     </p>
 
                     <div className="mb-6">
-                      <p className="text-xs uppercase tracking-wider text-gray-500 mb-3">
+                      <p className="text-xs uppercase tracking-wider text-gray-400 mb-3">
                         Offer ends {promo.endsAtLabel}
                       </p>
                       <PromoCountdown endsAtMs={promo.endsAtMs} variant="boxed" />
@@ -183,18 +175,16 @@ export default function PricingPageContent({ promo }: { promo?: ActivePromo | nu
                 ) : (
                   <>
                     <div className="text-5xl sm:text-6xl font-bold text-white mb-2">$4,500</div>
-                    <p className="text-sm text-gray-500 mb-6">
+                    <p className="text-sm text-gray-400 mb-6">
                       Delivered in 2-3 weeks · 50% to start, 25% at design sign-off, 25% on launch
                     </p>
                   </>
                 )}
 
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 border border-purple-500/20 rounded-full">
-                  <TrendingUp className="w-4 h-4 text-purple-400" />
-                  <span className="text-sm text-purple-300 font-medium">
-                    Most clients recover their investment with just a handful of new customers.
-                  </span>
-                </div>
+                {/* Framed as arithmetic, not a claim about past clients. */}
+                <p className="mt-4 text-lg sm:text-xl font-medium text-purple-300">
+                  A handful of new customers can cover the entire investment.
+                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5 mb-10">
@@ -210,12 +200,7 @@ export default function PricingPageContent({ promo }: { promo?: ActivePromo | nu
               </div>
 
               <div className="text-center">
-                <Link href="/contact">
-                  <Button className="modern-btn-primary text-white px-10 py-4 text-base font-semibold h-auto">
-                    Start Your Project
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </Link>
+                <CtaButton label={ctaLabel} location="pricing_offer" className="px-10 py-4 text-base font-semibold" />
               </div>
             </div>
           </ScrollReveal>
@@ -227,12 +212,9 @@ export default function PricingPageContent({ promo }: { promo?: ActivePromo | nu
         <div className="container mx-auto max-w-4xl">
           <ScrollReveal>
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+              <h2 className="text-3xl md:text-4xl font-bold text-white">
                 Is this right for you?
               </h2>
-              <p className="text-gray-400">
-                We're a better fit for some businesses than others.
-              </p>
             </div>
           </ScrollReveal>
 
@@ -260,14 +242,14 @@ export default function PricingPageContent({ promo }: { promo?: ActivePromo | nu
               <div className="modern-card p-6 sm:p-8 h-full">
                 <h3 className="text-lg font-semibold text-white mb-5 flex items-center gap-2">
                   <span className="w-7 h-7 rounded-full bg-white/5 flex items-center justify-center">
-                    <X className="w-4 h-4 text-gray-500" />
+                    <X className="w-4 h-4 text-gray-400" />
                   </span>
                   This isn't for you if...
                 </h3>
                 <ul className="space-y-3">
                   {NOT_FOR_YOU.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-gray-500 text-sm leading-relaxed">
-                      <X className="w-4 h-4 text-gray-600 mt-0.5 flex-shrink-0" />
+                    <li key={i} className="flex items-start gap-2.5 text-gray-400 text-sm leading-relaxed">
+                      <X className="w-4 h-4 text-gray-500 mt-0.5 flex-shrink-0" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -302,8 +284,8 @@ export default function PricingPageContent({ promo }: { promo?: ActivePromo | nu
                 ))}
               </ul>
 
-              <p className="text-center text-xs text-gray-500">
-                Most clients add the Care Plan at launch. Cancel anytime.
+              <p className="text-center text-xs text-gray-400">
+                Add it at launch or anytime after. Cancel anytime.
               </p>
             </div>
           </ScrollReveal>
@@ -360,15 +342,10 @@ export default function PricingPageContent({ promo }: { promo?: ActivePromo | nu
               <span className="text-gradient-purple">works as hard as you do?</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto mb-8 leading-relaxed">
-              Tell us about your business and your goals. We'll reply within 24 hours to set up a
-              free 20-minute call and see if the Signature Site is the right fit.
+              Tell us about your business. We'll reply within 24 hours to set up a free 30-minute
+              call and see if it's the right fit.
             </p>
-            <Link href="/contact">
-              <Button className="modern-btn-primary text-white px-10 py-4 text-base font-semibold h-auto">
-                Start the Conversation
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
+            <CtaButton label={ctaLabel} location="pricing_closing" className="px-10 py-4 text-base font-semibold" />
           </ScrollReveal>
         </div>
       </section>
@@ -388,19 +365,25 @@ function PricingFAQ() {
         return (
           <motion.div
             key={index}
-            className="modern-card p-5 cursor-pointer hover:border-purple-400/40 transition-colors"
-            onClick={() => setOpenIndex(isOpen ? null : index)}
+            className="modern-card p-5 hover:border-purple-400/40 transition-colors"
           >
-            <div className="flex items-center justify-between gap-4">
-              <h3 className="text-base font-semibold text-white">{faq.q}</h3>
-              <motion.div
-                animate={{ rotate: isOpen ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
-                className="flex-shrink-0"
+            <h3>
+              <button
+                type="button"
+                onClick={() => setOpenIndex(isOpen ? null : index)}
+                aria-expanded={isOpen}
+                className="flex w-full items-center justify-between gap-4 text-left text-base font-semibold text-white"
               >
-                <ChevronDown className="w-5 h-5 text-purple-400" />
-              </motion.div>
-            </div>
+                {faq.q}
+                <motion.span
+                  animate={{ rotate: isOpen ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex-shrink-0"
+                >
+                  <ChevronDown className="w-5 h-5 text-purple-400" />
+                </motion.span>
+              </button>
+            </h3>
             <AnimatePresence>
               {isOpen && (
                 <motion.div

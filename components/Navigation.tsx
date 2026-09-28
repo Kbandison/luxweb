@@ -1,15 +1,22 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Menu, X, ArrowRight, Phone } from 'lucide-react'
+import { Menu, X, Phone } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { Button } from "@/components/ui/button"
-import { businessPhone, telHref } from "@/data/contact"
+import { businessPhone } from "@/data/contact"
+import CtaButton from "./CtaButton"
+import PhoneLink from "./PhoneLink"
 
-export default function Navigation() {
+interface NavigationProps {
+  ctaLabel: string
+  /** Fits the narrow mobile bar. */
+  ctaShortLabel: string
+}
+
+export default function Navigation({ ctaLabel, ctaShortLabel }: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const pathname = usePathname()
@@ -41,7 +48,7 @@ export default function Navigation() {
 
   return (
     <>
-      <motion.nav
+      <nav
         className={`fixed left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled ? 'py-2' : 'py-3'
         }`}
@@ -52,19 +59,20 @@ export default function Navigation() {
           backdropFilter: 'blur(30px)',
           borderBottom: isScrolled ? '1px solid rgba(255, 255, 255, 0.06)' : '1px solid transparent'
         }}
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
       >
         <div className="container mx-auto px-4">
           {/* Mobile Layout */}
-          <div className="flex items-center justify-between h-10 md:hidden">
+          <div className="flex items-center justify-between h-11 md:hidden">
             <motion.button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-white hover:text-purple-400 transition-colors z-[60] flex items-center justify-center h-10 w-10"
+              aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-menu"
+              className="text-white hover:text-purple-400 transition-colors z-[60] flex items-center justify-center h-11 w-11"
               whileTap={{ scale: 0.9 }}
             >
-              <AnimatePresence mode="wait">
+              {/* initial={false}: the icon paints on first render instead of fading in after hydration. */}
+              <AnimatePresence mode="wait" initial={false}>
                 {isMenuOpen ? (
                   <motion.div
                     key="close"
@@ -102,19 +110,19 @@ export default function Navigation() {
             <div className="flex items-center gap-1.5">
               {/* Tap-to-call. Icon-only to keep the bar from crowding on
                   narrow phones; the full number is in the menu overlay. */}
-              <a
-                href={telHref}
+              <PhoneLink
+                location="nav_mobile"
                 aria-label={`Call ${businessPhone.display}`}
-                className="flex h-10 w-10 items-center justify-center rounded-full text-white transition-colors hover:text-purple-400 active:scale-95"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-white transition-colors hover:text-purple-400 active:scale-95"
               >
                 <Phone size={18} />
-              </a>
+              </PhoneLink>
 
-              <Link href="/contact">
-                <Button className="modern-btn-primary text-white px-3 py-1.5 text-xs font-medium h-auto">
-                  Free Quote
-                </Button>
-              </Link>
+              <CtaButton
+                label={ctaShortLabel}
+                location="nav_mobile"
+                className="min-h-11 px-3.5 text-sm font-medium [&_svg]:hidden"
+              />
             </div>
           </div>
 
@@ -156,20 +164,16 @@ export default function Navigation() {
               })}
             </div>
 
-            <Link href="/contact">
-              <Button className="modern-btn-primary text-white px-5 py-2 text-sm font-medium h-auto">
-                Get a Free Quote
-                <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
-              </Button>
-            </Link>
+            <CtaButton label={ctaLabel} location="nav_desktop" className="px-5 py-2 text-sm font-medium" />
           </div>
         </div>
-      </motion.nav>
+      </nav>
 
       {/* Mobile Full-Screen Overlay */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
+            id="mobile-menu"
             className="fixed inset-0 z-[55] md:hidden flex flex-col items-center justify-center"
             initial={{ clipPath: 'circle(0% at 24px 28px)' }}
             animate={{ clipPath: 'circle(150% at 24px 28px)' }}
@@ -209,28 +213,29 @@ export default function Navigation() {
               exit={{ opacity: 0, y: 20 }}
               transition={{ delay: 0.4, duration: 0.4 }}
             >
-              <Link href="/contact" onClick={() => setIsMenuOpen(false)}>
-                <Button className="modern-btn-primary text-white px-8 py-3 text-base font-medium h-auto">
-                  Get a Free Quote
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
+              <div onClick={() => setIsMenuOpen(false)}>
+                <CtaButton label={ctaLabel} location="nav_menu" className="px-8 py-3 text-base font-medium" />
+              </div>
             </motion.div>
 
             {/* Full number here — visitors who prefer calling shouldn't have
                 to hunt for it in the footer. */}
-            <motion.a
-              href={telHref}
-              onClick={() => setIsMenuOpen(false)}
-              className="mt-6 inline-flex items-center gap-2 text-base font-medium text-gray-400 transition-colors hover:text-purple-400"
+            <motion.div
+              className="mt-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ delay: 0.48, duration: 0.4 }}
             >
-              <Phone className="h-4 w-4" />
-              {businessPhone.display}
-            </motion.a>
+              <PhoneLink
+                location="nav_menu"
+                onClick={() => setIsMenuOpen(false)}
+                className="inline-flex min-h-11 items-center gap-2 text-base font-medium text-gray-400 transition-colors hover:text-purple-400"
+              >
+                <Phone className="h-4 w-4" />
+                {businessPhone.display}
+              </PhoneLink>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

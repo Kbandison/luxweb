@@ -23,7 +23,7 @@ export default function PrivacyPolicyPage() {
           <h1 className="text-4xl sm:text-5xl font-bold text-white tracking-tight mb-3">
             Privacy Policy
           </h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-400">
             Effective Date: {EFFECTIVE_DATE} &nbsp;·&nbsp; Last Updated: {LAST_UPDATED}
           </p>
         </header>
@@ -257,7 +257,7 @@ export default function PrivacyPolicyPage() {
             </div>
           </Section>
 
-          <div className="pt-8 border-t border-white/10 mt-12 text-sm text-gray-500">
+          <div className="pt-8 border-t border-white/10 mt-12 text-sm text-gray-400">
             <p>
               See also our{" "}
               <Link href="/terms" className="text-purple-400 hover:text-purple-300 underline">

@@ -7,7 +7,7 @@ import AIChat from "@/components/AIChat";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import PromoBar from "@/components/PromoBar";
-import { getActivePromo, PROMO_BAR_HEIGHT } from "@/data/promo";
+import { getActivePromo, getCtaLabel, PROMO_BAR_HEIGHT } from "@/data/promo";
 import { businessPhone, businessEmail } from "@/data/contact";
 
 const inter = Inter({
@@ -59,20 +59,11 @@ export const metadata: Metadata = {
     title: 'LuxWeb Studio - Custom Websites That Bring You Customers',
     description: 'A website that actually brings you customers. Custom-designed, mobile-first websites for local service businesses — delivered in 2-3 weeks.',
     siteName: 'LuxWeb Studio',
-    images: [
-      {
-        url: '/logo-with-text.png',
-        width: 1200,
-        height: 630,
-        alt: 'LuxWeb Studio - Professional Web Development',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'LuxWeb Studio - Custom Websites That Bring You Customers',
     description: 'A website that actually brings you customers. Custom-designed, mobile-first websites for local service businesses — delivered in 2-3 weeks.',
-    images: ['/logo-with-text.png'],
     creator: '@luxwebstudio',
   },
   robots: {
@@ -137,6 +128,7 @@ export default function RootLayout({
   };
 
   const activePromo = getActivePromo();
+  const ctaLabel = getCtaLabel(activePromo);
 
   return (
     <html lang="en">
@@ -160,11 +152,11 @@ export default function RootLayout({
         }
       >
         {activePromo && <PromoBar promo={activePromo} />}
-        <Navigation />
+        <Navigation ctaLabel={ctaLabel} ctaShortLabel={getCtaLabel(activePromo, true)} />
         <Analytics />
         <SpeedInsights />
         {children}
-        <ResponsiveFooter />
+        <ResponsiveFooter ctaLabel={ctaLabel} />
         <AIChat />
       </body>
     </html>

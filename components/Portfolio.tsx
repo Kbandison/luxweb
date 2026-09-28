@@ -33,13 +33,10 @@ export default function Portfolio({ projects }: { projects: Project[] }) {
       <div className="container mx-auto max-w-6xl">
         <ScrollReveal>
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
-              Real Results for{' '}
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight">
+              Real Sites for{' '}
               <span className="text-gradient-purple">Real Businesses</span>
             </h2>
-            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-              See how we&apos;ve helped businesses grow with professional, conversion-focused websites.
-            </p>
           </div>
         </ScrollReveal>
 
@@ -143,16 +140,16 @@ function PortfolioCard({
       <div className="absolute bottom-0 left-0 right-0 p-5 lg:p-6">
         <div className="flex flex-wrap gap-1.5 mb-2">
           {project.tech.slice(0, 2).map((tech) => (
-            <span key={tech} className="text-[10px] uppercase tracking-wider text-gray-400 bg-white/10 px-2 py-0.5 rounded">
+            <span key={tech} className="text-[10px] uppercase tracking-wider text-gray-300 bg-white/10 px-2 py-0.5 rounded">
               {tech}
             </span>
           ))}
         </div>
         <h3 className="text-lg font-semibold text-white mb-1">{project.title}</h3>
-        <p className="text-sm text-gray-400">{project.result}</p>
+        <p className="text-sm text-gray-300">{project.result}</p>
 
         {/* View Project link on hover */}
-        <div className="mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="mt-3 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300">
           {project.links?.live ? (
             <a
               href={project.links.live}

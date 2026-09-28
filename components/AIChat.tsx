@@ -4,9 +4,30 @@ import { useState, useRef, useEffect } from 'react'
 import { useChat } from '@ai-sdk/react'
 import { MessageCircle, X, Send, Sparkles, Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { trackEvent } from '@/lib/analytics'
+
+const AUTO_PROMPT_KEY = 'luxweb-chat-auto-opened'
+
+/** sessionStorage throws in some private-browsing modes; treat that as "not seen". */
+function hasSeenAutoPrompt(): boolean {
+  try {
+    return sessionStorage.getItem(AUTO_PROMPT_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+function markAutoPromptSeen() {
+  try {
+    sessionStorage.setItem(AUTO_PROMPT_KEY, '1')
+  } catch {
+    // Nothing to do — worst case the prompt shows again next page load.
+  }
+}
 
 export default function AIChat() {
   const [open, setOpen] = useState(false)
+  const [showTeaser, setShowTeaser] = useState(false)
   const [input, setInput] = useState('')
   const { messages, sendMessage, status } = useChat()
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -18,20 +39,31 @@ export default function AIChat() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages])
 
-  // Auto-open once per browser session, after a short delay so it doesn't
-  // feel aggressive. If the visitor closes it, sessionStorage keeps it closed
-  // until they open a new tab/window.
+  // Prompt once per browser session. On desktop the panel opens by itself; on
+  // smaller screens it would cover most of the page while the visitor is still
+  // reading the hero, so it shows a small teaser bubble instead.
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    if (sessionStorage.getItem('luxweb-chat-auto-opened') === '1') return
+    if (hasSeenAutoPrompt()) return
 
+    const isDesktop = window.matchMedia('(min-width: 1024px)').matches
     const timer = window.setTimeout(() => {
-      setOpen(true)
-      sessionStorage.setItem('luxweb-chat-auto-opened', '1')
-    }, 2500)
+      markAutoPromptSeen()
+      if (isDesktop) {
+        setOpen(true)
+        trackEvent('chat_opened', { trigger: 'auto' })
+      } else {
+        setShowTeaser(true)
+      }
+    }, isDesktop ? 2500 : 4000)
 
     return () => window.clearTimeout(timer)
   }, [])
+
+  const openChat = (trigger: 'button' | 'teaser') => {
+    setOpen(true)
+    setShowTeaser(false)
+    trackEvent('chat_opened', { trigger })
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,9 +80,36 @@ export default function AIChat() {
 
   return (
     <>
+      {/* Mobile teaser — small enough to never cover the page */}
+      <AnimatePresence>
+        {showTeaser && !open && (
+          <motion.div
+            initial={{ opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 12 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-7 right-[5.25rem] z-40 flex max-w-[calc(100vw-7rem)] items-center rounded-2xl border border-white/10 bg-gray-950/95 shadow-lg shadow-black/40 backdrop-blur"
+          >
+            <button
+              onClick={() => openChat('teaser')}
+              className="min-h-11 py-2 pl-4 pr-1 text-left text-sm text-gray-200"
+            >
+              Questions about pricing or timing? <span className="font-semibold text-purple-300">Ask me.</span>
+            </button>
+            <button
+              onClick={() => setShowTeaser(false)}
+              className="flex h-11 w-11 flex-shrink-0 items-center justify-center text-gray-400 hover:text-white"
+              aria-label="Dismiss chat prompt"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Floating button */}
       <motion.button
-        onClick={() => setOpen(true)}
+        onClick={() => openChat('button')}
         className={`fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-gradient-to-br from-purple-600 to-violet-600 shadow-lg shadow-purple-500/30 flex items-center justify-center group ${
           open ? 'pointer-events-none opacity-0' : ''
         }`}
@@ -89,7 +148,7 @@ export default function AIChat() {
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="p-1.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+                className="-mr-2 flex h-11 w-11 items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                 aria-label="Close chat"
               >
                 <X className="w-4 h-4" />
@@ -167,7 +226,7 @@ export default function AIChat() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask about pricing, process, timeline..."
-                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/40"
+                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500/40"
                   disabled={isLoading}
                 />
                 <button
@@ -179,7 +238,7 @@ export default function AIChat() {
                   <Send className="w-4 h-4" />
                 </button>
               </div>
-              <p className="text-[10px] text-gray-600 mt-1.5 text-center">
+              <p className="text-[10px] text-gray-400 mt-1.5 text-center">
                 Powered by Claude · Responses may contain inaccuracies
               </p>
             </form>

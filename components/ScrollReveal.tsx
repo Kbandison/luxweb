@@ -24,10 +24,10 @@ export default function ScrollReveal({
   const reduceMotion = shouldReduceMotion()
   
   const directionVariants = {
-    up: { opacity: 0, y: reduceMotion ? 0 : 60 },
-    down: { opacity: 0, y: reduceMotion ? 0 : -60 },
-    left: { opacity: 0, x: reduceMotion ? 0 : -60 },
-    right: { opacity: 0, x: reduceMotion ? 0 : 60 }
+    up: { opacity: 0, y: reduceMotion ? 0 : 24 },
+    down: { opacity: 0, y: reduceMotion ? 0 : -24 },
+    left: { opacity: 0, x: reduceMotion ? 0 : -24 },
+    right: { opacity: 0, x: reduceMotion ? 0 : 24 }
   }
 
   const variants = {

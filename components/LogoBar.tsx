@@ -11,7 +11,7 @@ export default function LogoBar({ projects }: { projects: Project[] }) {
   return (
     <section className="py-12 border-y border-white/5 overflow-hidden">
       <div className="container mx-auto px-4 mb-6">
-        <p className="text-center text-sm text-gray-600 tracking-wide uppercase">
+        <p className="text-center text-sm text-gray-400 tracking-wide uppercase">
           Trusted by businesses across industries
         </p>
       </div>
@@ -25,7 +25,7 @@ export default function LogoBar({ projects }: { projects: Project[] }) {
           {marqueeItems.map((name, i) => (
             <span
               key={`${name}-${i}`}
-              className="text-lg font-semibold text-gray-600 select-none flex-shrink-0"
+              className="text-lg font-semibold text-gray-400 select-none flex-shrink-0"
             >
               {name}
             </span>

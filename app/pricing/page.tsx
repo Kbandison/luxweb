@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import { ogImage } from "@/lib/og"
 import PricingPageContent from "@/components/PricingPageContent"
 import { getActivePromo } from "@/data/promo"
 
@@ -8,8 +9,8 @@ export function generateMetadata(): Metadata {
   const promo = getActivePromo()
 
   const title = promo
-    ? `Pricing - LuxWeb Studio | The Signature Site ${promo.salePriceWithQualifier} (reg. ${promo.regularPriceLabel})`
-    : "Pricing - LuxWeb Studio | The Signature Site at $4,500"
+    ? `Pricing — The Signature Site, ${promo.salePriceWithQualifier} (reg. ${promo.regularPriceLabel})`
+    : "Pricing — The Signature Site at $4,500"
 
   const description = promo
     ? `Limited-time offer: The Signature Site is ${promo.salePriceWithQualifier.toLowerCase()} instead of ${promo.regularPriceLabel} through ${promo.endsAtLabel}. Custom-designed, mobile-first websites for local service businesses, delivered in 2-3 weeks.`
@@ -24,6 +25,7 @@ export function generateMetadata(): Metadata {
         : "LuxWeb Studio Pricing - The Signature Site",
       description,
       url: "/pricing",
+      images: [ogImage],
     },
   }
 }

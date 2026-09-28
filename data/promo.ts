@@ -79,6 +79,16 @@ export interface ActivePromo extends Promo {
 }
 
 /**
+ * Label for the primary call-to-action. Sale-specific while an offer runs, so
+ * every button flips back on its own when the promo expires. `short` is for
+ * tight spots like the mobile nav bar.
+ */
+export function getCtaLabel(promo: ActivePromo | null, short = false): string {
+  if (promo) return short ? `Claim ${promo.salePriceLabel}` : `Claim the ${promo.salePriceLabel} Rate`
+  return short ? 'Get Started' : 'Start Your Project'
+}
+
+/**
  * Returns the promo only while it is still running, otherwise null.
  * Callers should treat null as "show regular pricing".
  */

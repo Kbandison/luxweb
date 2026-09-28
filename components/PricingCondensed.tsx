@@ -1,13 +1,13 @@
 'use client'
 
 import { Check, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
 import ScrollReveal from "./ScrollReveal"
 import Link from "next/link"
 import { signatureSite } from "@/data/packages"
-import type { ActivePromo } from "@/data/promo"
+import { getCtaLabel, type ActivePromo } from "@/data/promo"
 import PromoCountdown from "./PromoCountdown"
+import CtaButton from "./CtaButton"
 
 export default function PricingCondensed({ promo }: { promo?: ActivePromo | null }) {
   return (
@@ -15,12 +15,9 @@ export default function PricingCondensed({ promo }: { promo?: ActivePromo | null
       <div className="container mx-auto max-w-3xl">
         <ScrollReveal>
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 tracking-tight">
-              One Package. <span className="text-gradient-purple">Real Results.</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight">
+              Simple, <span className="text-gradient-purple">Upfront Pricing.</span>
             </h2>
-            <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-              No confusing tiers. Just a complete, professional website built to grow your business.
-            </p>
           </div>
         </ScrollReveal>
 
@@ -41,7 +38,7 @@ export default function PricingCondensed({ promo }: { promo?: ActivePromo | null
                     </span>
                   </div>
                   <div className="flex items-baseline justify-center gap-3">
-                    <span className="text-2xl font-medium text-gray-500 line-through">
+                    <span className="text-2xl font-medium text-gray-400 line-through">
                       {promo.regularPriceLabel}
                     </span>
                     <span className="text-4xl font-bold text-white">
@@ -62,7 +59,7 @@ export default function PricingCondensed({ promo }: { promo?: ActivePromo | null
                 <div className="text-4xl font-bold text-white">{signatureSite.price}</div>
               )}
 
-              <p className="text-sm text-gray-500 mt-3">
+              <p className="text-sm text-gray-400 mt-3">
                 Payment: 50% to start, 25% at design sign-off, 25% on launch
               </p>
             </div>
@@ -77,12 +74,7 @@ export default function PricingCondensed({ promo }: { promo?: ActivePromo | null
             </div>
 
             <div className="text-center">
-              <a href="/contact">
-                <Button className="modern-btn-primary text-white px-8 py-3 text-base font-semibold h-auto">
-                  {signatureSite.cta}
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </a>
+              <CtaButton label={getCtaLabel(promo ?? null)} location="home_pricing" className="px-8 py-3 text-base font-semibold" />
             </div>
           </motion.div>
         </ScrollReveal>
