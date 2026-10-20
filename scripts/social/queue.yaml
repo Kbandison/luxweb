@@ -1,0 +1,81 @@
+# LuxWeb social post queue.
+#
+# /social-batch only touches entries with `status: approved`. It renders the
+# graphic, pushes it, schedules every network listed, then flips the entry to
+# `status: scheduled` and writes the dates and links back under `result`.
+#
+# Statuses:  draft -> approved -> scheduled   (and `skip` to park one)
+#
+# Fields
+#   id        unique, date-first: 2026-10-20-demo-barber
+#   type      intro | demo | roast | process | story | offer | kevin
+#   networks  any of facebook, instagram, twitter, linkedin, gmb (default: all five)
+#   graphic   template: text | screenshot | ai
+#             text:        headline, sub, tag  ("|" splits lines)
+#             screenshot:  headline, image (path to a screenshot in the repo)
+#             ai:          prompt  (1:1, Higgsfield; converted to PNG)
+#             file:        output name in public/socials/
+#   copy      base, plus per-network overrides where the base won't do.
+#             Rules for each network are in CLAUDE.md. Kevin approves the copy
+#             as written here; the batch never edits it.
+#   gmb_button  optional: {type: LEARN_MORE, link: https://luxwebstudio.dev}
+
+- id: 2026-10-13-intro
+  status: scheduled
+  type: intro
+  networks: [facebook, instagram, twitter, linkedin, gmb]
+  graphic:
+    template: text
+    headline: "Websites for|small businesses|around Atlanta."
+    sub: "Buford, Georgia.|Most sites live in 1–2 weeks."
+    tag: "Veteran owned and Black owned."
+    file: luxweb-intro.png
+  copy:
+    base: |
+      Just set this page up. I run LuxWeb Studio, a web design agency in Buford. I build websites for small businesses around Atlanta, usually done in a week or two.
+
+      Veteran owned and Black owned. If you need a website or want to redo the one you have, reach out. luxwebstudio.dev
+    overrides:
+      instagram: |
+        Just set this page up. I run LuxWeb Studio, a web design agency in Buford. I build websites for small businesses around Atlanta, usually done in a week or two.
+
+        Veteran owned and Black owned. If you need a website or want to redo the one you have, link in bio.
+
+        #BufordGA #AtlantaSmallBusiness #WebDesign #BlackOwnedBusiness
+      twitter: |
+        I run LuxWeb Studio, a web design agency in Buford GA. I build websites for small businesses around Atlanta, usually done in a week or two. Veteran owned, Black owned. luxwebstudio.dev
+      linkedin: |
+        Just set up the LuxWeb Studio page. I run a small web design agency in Buford, GA and build custom websites for small businesses around Atlanta. Most are done in a week or two, and I quote the full project up front.
+
+        Veteran owned and Black owned. luxwebstudio.dev
+      gmb: |
+        LuxWeb Studio is a web design agency in Buford. I build custom websites for small businesses around Atlanta, usually done in a week or two. Veteran owned and Black owned.
+  gmb_button: {type: LEARN_MORE, link: https://luxwebstudio.dev}
+  result:
+    scheduled_for: 2026-10-13T20:00:00-04:00
+    facebook: https://facebook.com/LuxWebStudio1/posts/1736664471292633
+    instagram: https://www.instagram.com/p/DedDNgZCNUz/
+    twitter: https://twitter.com/a/status/2110159580873253193
+    linkedin: https://linkedin.com/feed/update/urn:li:share:7515925054270898176
+    gmb: https://local.google.com/place?id=2638105958723141762&use=posts&lpsid=CIHM0ogKEIz3uZ_JhILUfA
+    notes: Google Business post went out without the Learn more button; Metricool dropped it.
+
+# Template for the next one. Copy, fill in, set status: approved when Kevin signs off.
+#
+# - id: 2026-10-20-demo-barber
+#   status: draft
+#   type: demo
+#   graphic:
+#     template: screenshot
+#     headline: "Built this one|in two days."
+#     image: scripts/social/shots/demo-barber-home.png
+#     file: demo-barber.png
+#   copy:
+#     base: |
+#       ...
+#     overrides:
+#       instagram: |
+#         ...
+#       twitter: |
+#         ...
+#   gmb_button: {type: LEARN_MORE, link: https://luxwebstudio.dev}

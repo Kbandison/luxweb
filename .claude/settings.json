@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 scripts/social/render.py:*)",
+      "Bash(python scripts/social/render.py:*)",
+      "Bash(pip install -r scripts/social/requirements.txt:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git status:*)",
+      "Bash(curl -sI https://luxwebstudio.dev/socials/*)",
+      "Bash(sleep:*)",
+      "mcp__metricool__*",
+      "mcp__claude_ai_Higgsfield__generate_image",
+      "mcp__claude_ai_Higgsfield__jobs_wait",
+      "mcp__claude_ai_Higgsfield__media_import_url"
+    ]
+  }
+}
