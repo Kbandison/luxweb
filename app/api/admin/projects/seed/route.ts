@@ -34,6 +34,7 @@ export async function POST() {
       color: p.color,
       live_link: p.links?.live || null,
       sort_order: index,
+      concept: p.concept ?? false,
     }))
 
     const { data, error } = await supabaseAdmin

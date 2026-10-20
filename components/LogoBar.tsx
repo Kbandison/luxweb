@@ -3,8 +3,8 @@
 import type { Project } from '@/data/projects'
 
 export default function LogoBar({ projects }: { projects: Project[] }) {
-  // Use project names as "logos"
-  const names = projects.map(p => p.title)
+  // Use client project names as "logos"; concept builds aren't clients
+  const names = projects.filter(p => !p.concept).map(p => p.title)
   // Duplicate for seamless loop
   const marqueeItems = [...names, ...names]
 

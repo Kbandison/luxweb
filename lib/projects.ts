@@ -16,6 +16,7 @@ export interface ProjectRow {
   live_link: string | null
   sort_order: number
   created_at: string
+  concept: boolean
 }
 
 // Map DB row to the Project interface used by public components
@@ -29,6 +30,7 @@ function rowToProject(row: ProjectRow): Project {
     images: row.images || [],
     color: row.color || 'from-purple-500 to-pink-500',
     links: row.live_link ? { live: normalizeExternalUrl(row.live_link) ?? row.live_link } : undefined,
+    concept: row.concept,
   }
 }
 

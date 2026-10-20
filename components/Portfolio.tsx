@@ -82,7 +82,8 @@ export default function Portfolio({ projects }: { projects: Project[] }) {
           <ScrollReveal delay={0.25} className="lg:col-span-2">
             <Link href="/projects" className="block h-full">
               <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-purple-500/10 to-violet-500/5 h-full min-h-[220px] flex flex-col items-center justify-center p-8 group hover:border-purple-500/30 transition-all duration-300">
-                <div className="text-3xl font-bold text-white mb-2">{projects.length}+</div>
+                {/* Client work only: concept builds don't count as delivered projects. */}
+                <div className="text-3xl font-bold text-white mb-2">{projects.filter((project) => !project.concept).length}+</div>
                 <div className="text-gray-400 mb-4">Projects Delivered</div>
                 <div className="text-purple-400 font-medium text-sm flex items-center gap-1.5 group-hover:gap-2.5 transition-all duration-300">
                   View All Projects

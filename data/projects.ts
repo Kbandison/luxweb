@@ -9,6 +9,9 @@ export interface Project {
   links?: {
     live?: string
   }
+  // A LuxWeb concept build (a demo for a fictional business), not client work. Concepts sit at the end of
+  // the list, below client work and planned sites, and aren't counted as delivered projects.
+  concept?: boolean
 }
 
 export const projects: Project[] = [
@@ -129,6 +132,25 @@ export const projects: Project[] = [
     links: {
       live: "https://flexfit-gym-eight.vercel.app/"
     }
+  },
+  // Concept builds go below this line.
+  {
+    title: "Settles Bridge Lawn & Landscape",
+    description: "A concept site for a north Gwinnett lawn and pine straw crew, built around the shop's route board.",
+    tech: ["Next.js", "GSAP Scroll", "Mobile-First"],
+    result: "Concept build: prices up front, route day by city",
+    category: "Concept",
+    images: [
+      "/projects/settles-bridge-lawn-1.jpg",
+      "/projects/settles-bridge-lawn-2.jpg",
+      "/projects/settles-bridge-lawn-3.jpg",
+      "/projects/settles-bridge-lawn-4.jpg"
+    ],
+    color: "from-green-900 to-emerald-950",
+    links: {
+      live: "https://settles-bridge-lawn.luxwebstudio.dev"
+    },
+    concept: true
   }
 ]
 
