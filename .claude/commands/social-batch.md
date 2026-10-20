@@ -3,7 +3,7 @@ description: Approve drafts, then render, push, and schedule every approved post
 allowed-tools: Bash(python3 scripts/social/render.py:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(curl:*), Bash(sleep:*), Read, Edit, mcp__metricool__*, mcp__claude_ai_Higgsfield__*
 ---
 
-Run the LuxWeb social batch. Read the "LuxWeb social posts" section of CLAUDE.md first; every rule there applies.
+Run the LuxWeb social batch. Read `scripts/social/RULES.md` first; every rule there applies.
 
 ## 0. Approve drafts
 
@@ -17,7 +17,7 @@ Collect entries with `status: approved`, in file order. If there are none, say s
 
 ## 2. Copy check (stop on failure, never rewrite)
 
-For each approved entry, check the base copy and every override against the AI filter in CLAUDE.md: banned words, banned phrases, banned structures (em dashes included). Also check the per-network rules: X under 280 characters, Instagram ends with "link in bio" and 4–5 hashtags, LinkedIn 3 hashtags, Google Business no hashtags and no "link in bio".
+For each approved entry, check the base copy and every override against the AI filter in `scripts/social/RULES.md`: banned words, banned phrases, banned structures (em dashes included). Also check the per-network rules: X under 280 characters, Instagram ends with "link in bio" and 4–5 hashtags, LinkedIn 3 hashtags, Google Business no hashtags and no "link in bio".
 
 Any hit: print the entry id, the network, and the exact offending text, then stop the whole run. Kevin fixes the copy and approves again. This command does not edit copy.
 

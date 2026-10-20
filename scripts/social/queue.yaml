@@ -18,7 +18,7 @@
 #             ai:          prompt  (1:1, Higgsfield; converted to PNG)
 #             file:        output name in public/socials/
 #   copy      base, plus per-network overrides where the base won't do.
-#             Rules for each network are in CLAUDE.md. Kevin approves the copy
+#             Rules for each network are in scripts/social/RULES.md. Kevin approves the copy
 #             as written here; the batch never edits it.
 #   gmb_button  optional: {type: LEARN_MORE, link: https://luxwebstudio.dev}
 
