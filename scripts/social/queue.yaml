@@ -1,8 +1,10 @@
 # LuxWeb social post queue.
 #
-# /social-batch only touches entries with `status: approved`. It renders the
-# graphic, pushes it, schedules every network listed, then flips the entry to
-# `status: scheduled` and writes the dates and links back under `result`.
+# /social-batch first shows every `status: draft` entry and asks which to
+# approve (the weekly demo routine writes its posts as drafts). Then it only
+# touches entries with `status: approved`: it renders the graphic, pushes it,
+# schedules every network listed, then flips the entry to `status: scheduled`
+# and writes the dates and links back under `result`.
 #
 # Statuses:  draft -> approved -> scheduled   (and `skip` to park one)
 #
