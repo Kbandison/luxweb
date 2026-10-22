@@ -5,11 +5,13 @@ import Portfolio from "@/components/Portfolio"
 import ProcessSection from "@/components/ProcessSection"
 import PricingCondensed from "@/components/PricingCondensed"
 import FAQCondensed from "@/components/FAQCondensed"
+import Reviews from "@/components/Reviews"
 import { getProjects } from "@/lib/projects"
+import { getReviews } from "@/lib/reviews"
 import { getActivePromo, getCtaLabel } from "@/data/promo"
 
 export default async function Home() {
-  const projects = await getProjects()
+  const [projects, reviews] = await Promise.all([getProjects(), getReviews()])
   const promo = getActivePromo()
   const ctaLabel = getCtaLabel(promo)
 
@@ -36,6 +38,7 @@ export default async function Home() {
         <LogoBar projects={projects} />
         <ProblemSolution />
         <Portfolio projects={projects} />
+        <Reviews feed={reviews} />
         <ProcessSection ctaLabel={ctaLabel} />
         <PricingCondensed promo={promo} />
         <FAQCondensed />
