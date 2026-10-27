@@ -9,6 +9,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import PromoBar from "@/components/PromoBar";
 import { getActivePromo, getCtaLabel, PROMO_BAR_HEIGHT } from "@/data/promo";
 import { businessPhone, businessEmail } from "@/data/contact";
+import { socialProfiles, xHandle } from "@/data/social";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -64,7 +65,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'LuxWeb Studio - Custom Websites That Bring You Customers',
     description: 'A website that actually brings you customers. Custom-designed, mobile-first websites for local service businesses — delivered in 2-3 weeks.',
-    creator: '@luxwebstudio',
+    site: xHandle,
+    creator: xHandle,
   },
   robots: {
     index: true,
@@ -103,11 +105,7 @@ export default function RootLayout({
       "contactType": "customer service",
       "email": businessEmail
     },
-    "sameAs": [
-      "https://github.com/luxwebstudio",
-      "https://linkedin.com/company/luxwebstudio",
-      "https://twitter.com/luxwebstudio"
-    ],
+    "sameAs": socialProfiles.map((profile) => profile.href),
     "services": [
       {
         "@type": "Service",

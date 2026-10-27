@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { businessPhone, businessEmail, mailtoHref } from "@/data/contact"
 import CtaButton from "./CtaButton"
 import PhoneLink from "./PhoneLink"
+import SocialLinks from "./SocialLinks"
 
 export default function Footer({ ctaLabel }: { ctaLabel: string }) {
   const currentYear = new Date().getFullYear()
@@ -57,6 +58,7 @@ export default function Footer({ ctaLabel }: { ctaLabel: string }) {
                 {businessPhone.display}
               </PhoneLink>
             </div>
+            <SocialLinks location="footer" className="mt-4" />
           </div>
 
           {/* Pages */}

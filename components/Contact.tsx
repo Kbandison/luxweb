@@ -12,6 +12,7 @@ import { businessPhone, businessEmail, mailtoHref } from "@/data/contact"
 import type { ActivePromo } from "@/data/promo"
 import { trackEvent } from "@/lib/analytics"
 import PhoneLink from "./PhoneLink"
+import SocialLinks from "./SocialLinks"
 
 export default function Contact({ promo }: { promo: ActivePromo | null }) {
   const router = useRouter()
@@ -355,6 +356,7 @@ export default function Contact({ promo }: { promo: ActivePromo | null }) {
                 {businessEmail}
               </a>
             </div>
+            <SocialLinks location="contact" className="mt-4 justify-center" />
           </div>
         </div>
       </div>
