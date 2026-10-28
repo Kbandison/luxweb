@@ -16,6 +16,8 @@ type EventMap = {
   chat_opened: { trigger: 'button' | 'teaser' | 'auto' }
   /** A tap-to-call link was used. */
   tel_click: { location: string }
+  /** A social profile link was clicked. */
+  social_click: { network: string; location: string }
 }
 
 export function trackEvent<E extends keyof EventMap>(name: E, props: EventMap[E]) {
